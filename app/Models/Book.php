@@ -7,10 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
-    // 2. Adım: Sınıfın içine bu özelliği dahil ediyoruz (En kritik yer burası)
     use HasFactory;
 
+    // İlişki Tanımı: Bir kitap sadece bir kategoriye ait olabilir
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    // İlişki: Bir kitap birden fazla kullanıcının kütüphanesinde yer alabilir (Many-to-Many)
+  public function users()
+  {
+    return $this->belongsToMany(User::class, 'book_user')
+                ->withPivot('status')
+                ->withTimestamps();
+   }
+
+    // Toplu veri yükleme izni olan sütunlar (category_id'yi buraya ekledik)
     protected $fillable = [
+        'category_id', // <-- Yeni eklediğimiz yabancı anahtar sütunu
         'title',
         'author',
         'description',

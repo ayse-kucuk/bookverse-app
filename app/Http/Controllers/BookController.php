@@ -13,7 +13,7 @@ class BookController extends Controller
         $kitaplar = Book::all();
 
         return view('books', compact('kitaplar'));
-    } // <-- index fonksiyonu burada tertemiz bitti!
+    } 
 
     // 2. Tek bir kitabın detayını getiren fonksiyon
     public function show($id)
@@ -22,5 +22,5 @@ class BookController extends Controller
         $kitap = Book::findOrFail($id);
 
         return response()->json($kitap);
-    } // <-- show fonksiyonu burada bitti!
+    } 
 }

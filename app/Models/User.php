@@ -45,4 +45,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    /*
+     * İlişki: Bir kullanıcının kütüphanesinde birden fazla kitap olabilir (Many-to-Many)
+     * Pivot tablosundaki 'status' (okuma durumu) sütununu da birlikte getirir.
+     */
+    public function books()
+    {
+        return $this->belongsToMany(Book::class, 'book_user')
+                    ->withPivot('status')
+                    ->withTimestamps();
+    }
 }

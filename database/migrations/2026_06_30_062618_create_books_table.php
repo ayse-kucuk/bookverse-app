@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
         $table->id();                               
-        $table->string('title');                    
+        $table->string('title');
+        // categories tablosundaki id ile bağ kurar; o kategori silinirse ona ait tüm kitapları da otomatik siler.
+        $table->foreignId('category_id')->constrained()->onDelete('cascade');                    
         $table->string('author');                   
         $table->text('description')->nullable();     
         $table->integer('page_count');              
