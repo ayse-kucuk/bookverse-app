@@ -15,6 +15,11 @@ class Book extends Model
         return $this->belongsTo(Category::class);
     }
     // İlişki: Bir kitap birden fazla kullanıcının kütüphanesinde yer alabilir (Many-to-Many)
+    // Bir kitabın birden çok yorumu olabilir ilişkisi
+   public function comments()
+  {
+    return $this->hasMany(Comment::class);
+  }
   public function users()
   {
     return $this->belongsToMany(User::class, 'book_user')

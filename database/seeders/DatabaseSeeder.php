@@ -3,8 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Category;
+use App\Models\Book;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +16,41 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Book::factory(10)->create();
-
+        // 1. TEST KULLANICILARI 
+        // Normal Kullanıcı Hesabı
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Ayşe Developer',
+            'email' => 'ayse@example.com',
+            'password' => Hash::make('password123'),
+        ]);
+
+        // Yönetici (Admin) Hesabı
+        User::factory()->create([
+            'name' => 'Admin İrem',
+            'email' => 'irem@example.com',
+            'password' => Hash::make('password123'),
+            // Not: İleride rolleri ayırırken buraya bir is_admin sütunu ekleyebiliriz.
+        ]);
+
+        // 2. TEST KATEGORİLERİ
+        $fantastik = Category::create(['name' => 'Fantastik']);
+        $bilimKurgu = Category::create(['name' => 'Bilim Kurgu']);
+
+       // 3. TEST KİTAPLARI 
+        Book::create([
+            'title' => 'Cam Şato (Throne of Glass)',
+            'author' => 'Sarah J. Maas',
+            'description' => 'Genç bir suikastçı olan Celaena Sardothien\'in özgürlüğü için girdiği ölümcül turnuvayı ve krallığın karanlık sırlarını konu alan epik fantastik seri.',
+            'category_id' => $fantastik->id,
+            'page_count' => 416, // Burayı ekledik!
+        ]);
+
+        Book::create([
+            'title' => 'Dune',
+            'author' => 'Frank Herbert',
+            'description' => 'Arrakis adındaki çöl gezegeninde, evrenin en değerli maddesi olan "baharat" üzerindeki hakimiyet mücadelesini ve Paul Atreides\'in yükselişini anlatan başyapıt.',
+            'category_id' => $bilimKurgu->id,
+            'page_count' => 712, // Burayı ekledik!
         ]);
     }
 }

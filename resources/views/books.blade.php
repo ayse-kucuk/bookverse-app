@@ -3,50 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name') }} - Kitaplığım</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{{ $book->title }} - Detay</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-gray-100 text-gray-900 font-sans">
+<body class="bg-[#FCE7F3] text-gray-800 font-sans antialiased selection:bg-rose-300 selection:text-gray-900">
 
-    <nav class="bg-white shadow-md p-4 mb-8">
-        <div class="container mx-auto flex justify-between items-center">
-            <!-- İsmi burada dinamik olarak çağırdık -->
-            <h1 class="text-2xl font-bold text-amber-600 tracking-wide">
-                {{ config('app.name') }} 
-                <span class="text-gray-500 text-sm font-normal">Platformu</span>
-            </h1>
-            <span class="text-gray-600 font-medium">Hoş Geldin, Ayşe</span>
+    <nav class="border-b border-[#F472B6]/20 bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-xs">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">📚</span>
+                <span class="text-xl font-black text-gray-800 tracking-tight">Bookverse <span class="text-[#DB2777] font-medium text-base">Books</span></span>
+            </div>
+            
+            <div class="flex items-center gap-6 text-sm font-semibold">
+                <a href="/" class="text-amber-800 hover:text-amber-900 transition">← Anasayfaya Dön</a>
+                
+                @auth
+                    <span class="text-gray-300">|</span>
+                    <span class="text-gray-700 font-medium">Selam, <span class="text-[#DB2777] font-bold">{{ Auth::user()->name }}</span>! 🌸</span>
+                @endauth
+            </div>
         </div>
     </nav>
 
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-extrabold text-gray-800 mb-6">Keşfetmeye Hazır Kitaplar</h2>
+    <main class="max-w-5xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-8">
+        
+        <div class="md:col-span-1 space-y-6">
+            <div class="w-full aspect-[3/4] bg-amber-900 rounded-3xl shadow-sm flex flex-col items-center justify-center p-6 text-center text-white relative overflow-hidden border border-amber-950">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                <span class="text-6xl mb-4 relative z-10">📖</span>
+                <h3 class="font-bold text-xl relative z-10 px-2 tracking-tight">{{ $book->title }}</h3>
+                <p class="text-xs text-amber-200 mt-1 relative z-10 font-medium">{{ $book->author }}</p>
+            </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white p-5 rounded-3xl border border-rose-100 shadow-xs space-y-3">
+                <label class="block text-[10px] font-extrabold uppercase tracking-wider text-gray-400">Kütüphane Durumu</label>
+                <select class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-2 focus:ring-rose-400">
+                    <option>Kütüphaneme Ekle</option>
+                    <option>Okuyorum</option>
+                    <option>Okundu</option>
+                    <option>Okuyacağım</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="md:col-span-2 space-y-8">
             
-            @foreach($kitaplar as $kitap)
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 flex flex-col justify-between">
-                <div>
-                    <img src="{{ $kitap->cover_image }}" alt="Kitap Kapağı" class="w-full h-48 object-cover">
-                    
-                    <div class="p-5">
-                        <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Sayfa: {{ $kitap->page_count }}</span>
-                        <h3 class="text-xl font-bold mt-2 text-gray-800 line-clamp-1">{{ $kitap->title }}</h3>
-                        <p class="text-sm text-gray-500 mt-1 italic">Yazar: {{ $kitap->author }}</p>
-                        <p class="text-gray-600 text-sm mt-3 line-clamp-3">{{ $kitap->description }}</p>
-                    </div>
-                </div>
+            <div class="bg-white p-8 rounded-3xl border border-rose-100 shadow-xs">
+                <span class="bg-[#FDF2F8] text-[#DB2777] text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider border border-[#FBCFE8]">
+                    {{ $book->category->name ?? 'Genel' }}
+                </span>
                 
-                <div class="p-5 pt-0">
-                    <a href="/kitaplar/{{ $kitap->id }}" class="block text-center w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                        İncele & Puanla
-                    </a>
+                <h1 class="text-3xl font-black text-gray-800 mt-4 mb-1 tracking-tight">{{ $book->title }}</h1>
+                <p class="text-sm font-semibold text-gray-500 mb-6">Yazar: <span class="text-gray-800">{{ $book->author }}</span></p>
+                
+                <div class="border-t border-b border-gray-100 py-3 flex gap-6 text-xs text-gray-500 font-semibold my-6">
+                    <div>📄 Sayfa Sayısı: <span class="text-gray-800 font-extrabold">{{ $book->page_count ?? 'Belirtilmemiş' }}</span></div>
+                    <div class="text-gray-200">|</div>
+                    <div>📌 Durum: <span class="text-rose-600 font-extrabold">Yayında</span></div>
+                </div>
+
+                <h3 class="text-base font-bold text-gray-800 mb-3">Kitap Açıklaması</h3>
+                <p class="text-gray-600 leading-relaxed text-sm md:text-base whitespace-pre-line">{{ $book->description }}</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-3xl border border-rose-100 shadow-xs space-y-6">
+                <h3 class="text-lg font-bold text-gray-800 tracking-tight">💬 Okuyucu Yorumları ({{ $book->comments->count() }})</h3>
+                
+                @auth
+                    <form action="{{ route('books.comment.store', $book->id) }}" method="POST" class="space-y-3">
+                        @csrf
+                        <div>
+                            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-gray-400 mb-2">Düşüncelerini Paylaş</label>
+                            <textarea name="content" rows="3" required class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#DB2777]/50 placeholder:text-gray-400" placeholder="Bu kitap hakkında ne düşünüyorsun, {{ Auth::user()->name }}? 🌸"></textarea>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-[#DB2777] hover:bg-[#C2185B] text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-xs cursor-pointer">
+                                Yorumu Gönder ✨
+                            </button>
+                        </div>
+                    </form>
+                @endauth
+
+                @guest
+                    <div class="bg-rose-50/50 border border-dashed border-rose-200 p-4 rounded-2xl text-center text-xs font-semibold text-gray-600">
+                        🔒 Kitaba yorum yapabilmek için lütfen önce <a href="{{ route('login') }}" class="text-[#DB2777] underline">Giriş Yapın</a>.
+                    </div>
+                @endguest
+
+                <div class="space-y-4 pt-4 border-t border-gray-50">
+                    @forelse($book->comments as $comment)
+                        <div class="bg-gray-50/60 p-4 rounded-2xl border border-gray-100/70">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-xs font-bold text-gray-800 flex items-center gap-1">
+                                    ✨ {{ $comment->user_name }}
+                                </span>
+                                <span class="text-[10px] font-semibold text-gray-400">
+                                    {{ $comment->created_at ? \Carbon\Carbon::parse($comment->created_at)->diffForHumans() : 'Şimdi' }}
+                                </span>
+                            </div>
+                            <p class="text-gray-600 text-xs md:text-sm leading-relaxed whitespace-pre-line">
+                                {{ $comment->content }}
+                            </p>
+                        </div>
+                    @empty
+                        <div class="text-center py-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                            <p class="text-xs font-semibold text-gray-500">Bu kitaba henüz yorum yapılmamış. İlk yorumu sen yap!</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
-            @endforeach
 
         </div>
-    </div>
+    </main>
 
 </body>
 </html>
