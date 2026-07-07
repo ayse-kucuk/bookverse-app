@@ -8,20 +8,23 @@
 </head>
 <body class="bg-[#FCE7F3] min-h-screen text-gray-800 font-sans antialiased selection:bg-[#F472B6] selection:text-white">
 
-    <!-- Üst Menü / Navbar -->
     <nav class="border-b border-[#F472B6]/20 bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-xs">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <span class="text-xl">📚</span>
-                <span class="text-xl font-black text-gray-800 tracking-tight">Bookverse <span class="text-[#DB2777] font-medium text-base">Books</span></span>
-            </div>
+            <a href="/" class="flex items-center gap-2 group cursor-pointer">
+                <span class="text-xl transition group-hover:scale-110 duration-200">📚</span>
+                <span class="text-xl font-black text-gray-800 tracking-tight group-hover:text-[#DB2777] transition duration-200">
+                    Bookverse <span class="text-[#DB2777] font-medium text-base">Books</span>
+                </span>
+            </a>
             
             <div class="flex items-center gap-6 text-sm font-semibold">
                 <a href="/" class="text-gray-900 hover:text-[#DB2777] transition">Keşfet</a>
                 
                 @auth
                     <span class="text-gray-300">|</span>
-                    <span class="text-gray-700 font-medium">Selam, <span class="text-[#DB2777] font-bold">{{ Auth::user()->name }}</span>! 🌸</span>
+                    <a href="{{ route('profile') }}" class="text-gray-700 font-medium hover:text-[#DB2777] transition">
+                        Selam, <span class="text-[#DB2777] font-bold">{{ Auth::user()->name }}</span>! 🌸
+                    </a>
                     
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
@@ -42,12 +45,10 @@
         </div>
     </nav>
 
-    <!-- Ana Başlık -->
     <header class="max-w-4xl mx-auto pt-12 pb-8 px-4 text-center">
         <h1 class="text-4xl font-extrabold text-gray-800 mb-3 tracking-tight">🌸 Okuma Dünyası</h1>
     </header>
 
-    <!-- Kitap Kartları -->
     <main class="max-w-4xl mx-auto pb-24 px-4">
         <div class="grid md:grid-cols-2 gap-6">
             @foreach($books as $book)

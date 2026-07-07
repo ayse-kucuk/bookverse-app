@@ -29,9 +29,10 @@ class Book extends Model
 
     // Toplu veri yükleme izni olan sütunlar (category_id'yi buraya ekledik)
     protected $fillable = [
-        'category_id', // <-- Yeni eklediğimiz yabancı anahtar sütunu
+        'category_id', 
         'title',
         'author',
+        'image_url',
         'description',
         'page_count',
         'cover_image'

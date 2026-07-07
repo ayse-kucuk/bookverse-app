@@ -50,9 +50,7 @@ class User extends Authenticatable
      * Pivot tablosundaki 'status' (okuma durumu) sütununu da birlikte getirir.
      */
     public function books()
-    {
-        return $this->belongsToMany(Book::class, 'book_user')
-                    ->withPivot('status')
-                    ->withTimestamps();
-    }
+{
+    return $this->belongsToMany(Book::class, 'book_user')->withPivot('status')->withTimestamps();
+}
 }

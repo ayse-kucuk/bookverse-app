@@ -10,17 +10,20 @@
 
     <nav class="border-b border-[#F472B6]/20 bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-xs">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <span class="text-xl">📚</span>
-                <span class="text-xl font-black text-gray-800 tracking-tight">Bookverse <span class="text-[#DB2777] font-medium text-base">Books</span></span>
-            </div>
+            <!-- Sol Taraf: Tıklanabilir Logo -->
+            <a href="/" class="flex items-center gap-2 group cursor-pointer">
+                <span class="text-xl transition group-hover:scale-110 duration-200">📚</span>
+                <span class="text-xl font-black text-gray-800 tracking-tight group-hover:text-[#DB2777] transition duration-200">
+                    Bookverse <span class="text-[#DB2777] font-medium text-base group-hover:text-[#C2185B]">Books</span>
+                </span>
+            </a>
             
+            <!-- Sağ Taraf: Dinamik Giriş / Profil Alanı -->
             <div class="flex items-center gap-6 text-sm font-semibold">
-                <a href="/" class="text-amber-800 hover:text-amber-900 transition">← Anasayfaya Dön</a>
-                
                 @auth
-                    <span class="text-gray-300">|</span>
-                    <span class="text-gray-700 font-medium">Selam, <span class="text-[#DB2777] font-bold">{{ Auth::user()->name }}</span>! 🌸</span>
+                    <a href="{{ route('profile') }}" class="text-gray-700 font-medium hover:text-[#DB2777] transition">
+                        Selam, <span class="text-[#DB2777] font-bold">{{ Auth::user()->name }}</span>! 🌸
+                    </a>
                 @endauth
             </div>
         </div>
@@ -29,21 +32,29 @@
     <main class="max-w-5xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-8">
         
         <div class="md:col-span-1 space-y-6">
-            <div class="w-full aspect-[3/4] bg-amber-900 rounded-3xl shadow-sm flex flex-col items-center justify-center p-6 text-center text-white relative overflow-hidden border border-amber-950">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-                <span class="text-6xl mb-4 relative z-10">📖</span>
-                <h3 class="font-bold text-xl relative z-10 px-2 tracking-tight">{{ $book->title }}</h3>
-                <p class="text-xs text-amber-200 mt-1 relative z-10 font-medium">{{ $book->author }}</p>
+            <!-- Kitap Kapağı Alanı -->
+            <div class="w-full aspect-[3/4] bg-amber-900 rounded-3xl shadow-sm overflow-hidden border border-amber-950 flex flex-col items-center justify-center text-center text-white relative">
+                @if($book->image_url)
+                    <img src="{{ $book->image_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
+                @else
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                    <span class="text-6xl mb-4 relative z-10">📖</span>
+                    <h3 class="font-bold text-xl relative z-10 px-2 tracking-tight">{{ $book->title }}</h3>
+                    <p class="text-xs text-amber-200 mt-1 relative z-10 font-medium">{{ $book->author }}</p>
+                @endif
             </div>
 
             <div class="bg-white p-5 rounded-3xl border border-rose-100 shadow-xs space-y-3">
-                <label class="block text-[10px] font-extrabold uppercase tracking-wider text-gray-400">Kütüphane Durumu</label>
-                <select class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-2 focus:ring-rose-400">
-                    <option>Kütüphaneme Ekle</option>
-                    <option>Okuyorum</option>
-                    <option>Okundu</option>
-                    <option>Okuyacağım</option>
-                </select>
+                <form action="{{ route('books.status.update', $book->id) }}" method="POST" onchange="this.submit()">
+                    @csrf
+                    <label class="block text-[10px] font-extrabold uppercase tracking-wider text-gray-400 mb-2">Kütüphane Durumu</label>
+                    <select name="status" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-2 focus:ring-rose-400">
+                        <option value="" disabled selected>Kütüphaneme Ekle</option>
+                        <option value="okuyacagim" {{ (auth()->user() && auth()->user()->books()->where('book_id', $book->id)->first()?->pivot->status == 'okuyacagim') ? 'selected' : '' }}>Okuyacağım</option>
+                        <option value="okuyorum" {{ (auth()->user() && auth()->user()->books()->where('book_id', $book->id)->first()?->pivot->status == 'okuyorum') ? 'selected' : '' }}>Okuyorum</option>
+                        <option value="okundu" {{ (auth()->user() && auth()->user()->books()->where('book_id', $book->id)->first()?->pivot->status == 'okundu') ? 'selected' : '' }}>Okundu</option>
+                    </select>
+                </form>
             </div>
         </div>
 
@@ -55,6 +66,13 @@
                 </span>
                 
                 <h1 class="text-3xl font-black text-gray-800 mt-4 mb-1 tracking-tight">{{ $book->title }}</h1>
+                @if(auth()->check() && auth()->user()->is_admin)
+    <div class="mt-2 mb-4">
+        <a href="{{ route('admin.books.edit', $book->id) }}" class="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-4 rounded-lg text-xs transition shadow-sm">
+            ⚙️ Bu Kitabı Düzenle (Admin)
+        </a>
+    </div>
+@endif
                 <p class="text-sm font-semibold text-gray-500 mb-6">Yazar: <span class="text-gray-800">{{ $book->author }}</span></p>
                 
                 <div class="border-t border-b border-gray-100 py-3 flex gap-6 text-xs text-gray-500 font-semibold my-6">
