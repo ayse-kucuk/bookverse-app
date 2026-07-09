@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('book_id')->constrained()->onDelete('cascade');
             $table->string('status')->default('okuyacagim'); // Başlangıç durum
+            $table->boolean('is_protected')->default(false);
             $table->timestamps();
         });
     }

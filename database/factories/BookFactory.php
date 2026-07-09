@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,11 +19,13 @@ class BookFactory extends Factory
     public function definition(): array
 {
     return [
+        'category_id' => Category::firstOrCreate(['name' => 'Test Kategori'])->id,
         'title' => fake()->sentence(3), // Rastgele 3 kelimelik bir kitap adı üretir
         'author' => fake()->name(),     // Rastgele bir yazar adı üretir
         'description' => fake()->paragraph(2), // Rastgele 2 paragraflık bir kitap özeti üretir
         'page_count' => fake()->numberBetween(100, 800), // 100 ile 800 arasında rastgele sayfa sayısı
-        'cover_image' => 'https://picsum.photos/200/300', // Test için rastgele bir resim linki
+        'image_url' => 'https://picsum.photos/200/300', // Test için rastgele bir resim linki
+        'is_protected' => false,
     ];
 }
 }

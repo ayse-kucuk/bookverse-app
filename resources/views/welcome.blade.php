@@ -8,48 +8,23 @@
 </head>
 <body class="bg-[#FCE7F3] min-h-screen text-gray-800 font-sans antialiased selection:bg-[#F472B6] selection:text-white">
 
-    <nav class="border-b border-[#F472B6]/20 bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-xs">
-        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2 group cursor-pointer">
-                <span class="text-xl transition group-hover:scale-110 duration-200">📚</span>
-                <span class="text-xl font-black text-gray-800 tracking-tight group-hover:text-[#DB2777] transition duration-200">
-                    Bookverse <span class="text-[#DB2777] font-medium text-base">Books</span>
-                </span>
-            </a>
-            
-            <div class="flex items-center gap-6 text-sm font-semibold">
-                <a href="/" class="text-gray-900 hover:text-[#DB2777] transition">Keşfet</a>
-                
-                @auth
-                    <span class="text-gray-300">|</span>
-                    <a href="{{ route('profile') }}" class="text-gray-700 font-medium hover:text-[#DB2777] transition">
-                        Selam, <span class="text-[#DB2777] font-bold">{{ Auth::user()->name }}</span>! 🌸
-                    </a>
-                    
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-gray-500 hover:text-[#DB2777] transition cursor-pointer">
-                            Çıkış Yap
-                        </button>
-                    </form>
-                @endauth
-
-                @guest
-                    <span class="text-gray-300">|</span>
-                    <a href="{{ route('login') }}" class="text-gray-600 hover:text-[#DB2777] transition">Giriş Yap</a>
-                    <a href="{{ route('register') }}" class="bg-[#DB2777] hover:bg-[#C2185B] text-white px-4 py-2 rounded-xl transition shadow-xs">
-                        Kayıt Ol
-                    </a>
-                @endguest
-            </div>
-        </div>
-    </nav>
+    @include('partials.site-nav')
 
     <header class="max-w-4xl mx-auto pt-12 pb-8 px-4 text-center">
         <h1 class="text-4xl font-extrabold text-gray-800 mb-3 tracking-tight">🌸 Okuma Dünyası</h1>
     </header>
 
     <main class="max-w-4xl mx-auto pb-24 px-4">
+        @auth
+            @if(Auth::user()->is_admin)
+                <div class="mb-6 flex justify-end">
+                    <a href="{{ route('admin.books.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-[#DB2777] px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-[#C2185B]">
+                        ➕ Kitap Ekle
+                    </a>
+                </div>
+            @endif
+        @endauth
+
         <div class="grid md:grid-cols-2 gap-6">
             @foreach($books as $book)
                 <div class="bg-white p-6 rounded-3xl shadow-xs border border-[#F472B6]/20 flex flex-col justify-between hover:shadow-md transition duration-200">

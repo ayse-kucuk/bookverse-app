@@ -9,6 +9,20 @@ class Book extends Model
 {
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::creating(function ($book) {
+        // Eğer is_protected değeri atanmamışsa true yap, atanmışsa dokunma
+        if (!isset($book->is_protected)) {
+            $book->is_protected = true;
+        }
+    });
+
+    static::deleting(function ($book) {
+        return !$book->is_protected;
+    });
+    }
+
     // İlişki Tanımı: Bir kitap sadece bir kategoriye ait olabilir
     public function category()
     {
@@ -35,6 +49,7 @@ class Book extends Model
         'image_url',
         'description',
         'page_count',
-        'cover_image'
+        'cover_image',
+        'is_protected'
     ];
 }

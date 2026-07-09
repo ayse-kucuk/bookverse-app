@@ -26,8 +26,18 @@ class BookController extends Controller
             'status' => 'required|in:okuyorum,okundu,okuyacagim'
         ]);
 
-        auth()->user()->books()->syncWithoutDetaching([
-            $id => ['status' => $request->status]
+        $user = auth()->user();
+        $existing = $user->books()->where('books.id', $id)->first();
+
+        if ($existing && $existing->pivot->is_protected) {
+            return back()->with('success', 'Bu kitap rafı korumalı olduğu için durumu değiştirilemez. 🔒');
+        }
+
+        $user->books()->syncWithoutDetaching([
+            $id => [
+                'status' => $request->status,
+                'is_protected' => true,
+            ]
         ]);
 
         return back()->with('success', 'Kitap durumun güncellendi! 📚');
@@ -74,12 +84,14 @@ class BookController extends Controller
         $reading = $userBooks->where('pivot.status', 'okuyorum');
         $read = $userBooks->where('pivot.status', 'okundu');
         $willRead = $userBooks->where('pivot.status', 'okuyacagim');
+        $posts = $user->posts()->with('book')->paginate(10, ['*'], 'posts_page');
 
         return view('profile', [
             'user' => $user,
             'reading' => $reading,
             'read' => $read,
-            'willRead' => $willRead
+            'willRead' => $willRead,
+            'posts' => $posts,
         ]);
     }
 
@@ -112,6 +124,7 @@ class BookController extends Controller
             'image_url' => $request->image_url,
             'description' => $request->description,
             'page_count' => $request->page_count,
+            'is_protected' => true,
         ]);
 
         return redirect()->route('home')->with('success', 'Yeni kitap başarıyla kütüphaneye eklendi! 🚀');
