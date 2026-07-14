@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Book;
 use App\Models\Category;
+use App\Services\GoogleBooksCoverResolver;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -35,6 +36,7 @@ class BookSeeder extends Seeder
 
     public function run(): void
     {
+        $coverResolver = app(GoogleBooksCoverResolver::class);
         $apiKey = config('services.google_books.key');
 
         // Farklı kategorilerde arama yapalım
@@ -70,6 +72,7 @@ class BookSeeder extends Seeder
                     'error' => $e->getMessage(),
                 ]);
                 $this->command?->warn($kategoriIsmi . ' kategorisi icin API istegi basarisiz.');
+                $this->seedFallbackBooks($kategori, $coverResolver);
                 continue;
             }
 
@@ -93,7 +96,7 @@ class BookSeeder extends Seeder
                     'body' => $response->body(),
                 ]);
                 $this->command?->warn($kategoriIsmi . ' kategorisi icin API hatasi: ' . $response->status());
-                $this->seedFallbackBooks($kategori);
+                $this->seedFallbackBooks($kategori, $coverResolver);
                 continue;
             }
 
@@ -101,7 +104,7 @@ class BookSeeder extends Seeder
 
             if (empty($books)) {
                 $this->command?->warn($kategoriIsmi . ' kategorisi icin kitap bulunamadi.');
-                $this->seedFallbackBooks($kategori);
+                $this->seedFallbackBooks($kategori, $coverResolver);
                 continue;
             }
 
@@ -119,7 +122,8 @@ class BookSeeder extends Seeder
                         'author' => implode(', ', data_get($info, 'authors', ['Bilinmiyor'])),
                     ],
                     [
-                        'image_url' => data_get($info, 'imageLinks.thumbnail', 'https://picsum.photos/200/300'),
+                        'image_url' => $coverResolver->pickBestLink(data_get($info, 'imageLinks', []))
+                            ?? $coverResolver->resolve($title, implode(', ', data_get($info, 'authors', []))),
                         'description' => substr((string) data_get($info, 'description', 'Açıklama yok.'), 0, 999), // Veritabanı sınırına takılmamak için
                         'category_id' => $kategori->id,
                         'page_count' => (int) data_get($info, 'pageCount', 200),
@@ -130,24 +134,28 @@ class BookSeeder extends Seeder
         }
     }
 
-    private function seedFallbackBooks(Category $category): void
+    private function seedFallbackBooks(Category $category, GoogleBooksCoverResolver $coverResolver): void
     {
         $items = self::FALLBACK_BOOKS[$category->name] ?? [];
 
         foreach ($items as $item) {
+            $cover = $coverResolver->resolve($item['title'], $item['author']);
+
             Book::updateOrCreate(
                 [
                     'title' => $item['title'],
                     'author' => $item['author'],
                 ],
                 [
-                    'image_url' => 'https://picsum.photos/200/300',
+                    'image_url' => $cover,
                     'description' => $item['title'] . ' kitabı için otomatik fallback kaydı.',
                     'category_id' => $category->id,
                     'page_count' => 300,
                     'is_protected' => true,
                 ]
             );
+
+            usleep(400000);
         }
     }
 }

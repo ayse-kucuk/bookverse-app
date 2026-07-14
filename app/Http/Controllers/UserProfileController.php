@@ -16,11 +16,19 @@ class UserProfileController extends Controller
             abort(403, 'Bu profil yalnızca takipçilere açık.');
         }
 
+        $user->loadCount(['followers', 'following']);
+        $followers = $user->followers()->orderByPivot('created_at', 'desc')->get();
+        $following = $user->following()->orderByPivot('created_at', 'desc')->get();
         $userBooks = $user->books;
-        $posts = $user->posts()->with('book')->paginate(10);
+        $posts = $user->posts()
+            ->with('book')
+            ->withLikeMeta($viewer)
+            ->paginate(10);
 
         return view('users.show', [
             'profileUser' => $user,
+            'followers' => $followers,
+            'following' => $following,
             'viewer' => $viewer,
             'isFollowing' => $viewer ? $user->isFollowedBy($viewer) && $viewer->id !== $user->id : false,
             'reading' => $userBooks->where('pivot.status', 'okuyorum'),

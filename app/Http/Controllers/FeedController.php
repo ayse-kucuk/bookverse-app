@@ -15,24 +15,8 @@ class FeedController extends Controller
         $viewer = $request->user();
 
         $posts = Post::with(['user', 'book'])
-            ->whereHas('user', function ($query) use ($viewer) {
-                if (! $viewer) {
-                    $query->where('account_visibility', User::VISIBILITY_PUBLIC);
-
-                    return;
-                }
-
-                $followingIds = $viewer->following()->pluck('users.id');
-
-                $query->where(function ($inner) use ($viewer, $followingIds) {
-                    $inner->where('users.id', $viewer->id)
-                        ->orWhere('account_visibility', User::VISIBILITY_PUBLIC)
-                        ->orWhere(function ($private) use ($followingIds) {
-                            $private->where('account_visibility', User::VISIBILITY_FOLLOWERS)
-                                ->whereIn('users.id', $followingIds);
-                        });
-                });
-            })
+            ->withLikeMeta($viewer)
+            ->whereHas('user', fn ($query) => $query->visibleTo($viewer))
             ->latest()
             ->paginate(15);
 

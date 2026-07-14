@@ -1,113 +1,137 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $book->title }} - Detay</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    @include('partials.head', ['title' => $book->title . ' — Bookverse'])
 </head>
-<body class="bg-[#FCE7F3] text-gray-800 font-sans antialiased selection:bg-rose-300 selection:text-gray-900">
+<body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-rose-200">
 
     @include('partials.site-nav')
 
-    <main class="max-w-5xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-8">
-        
-        <div class="md:col-span-1 space-y-6">
-            <!-- Kitap Kapağı Alanı -->
-            <div class="w-full aspect-[3/4] bg-amber-900 rounded-3xl shadow-sm overflow-hidden border border-amber-950 flex flex-col items-center justify-center text-center text-white relative">
+    <main class="mx-auto grid max-w-5xl gap-8 px-4 py-10 md:grid-cols-3 sm:px-6">
+
+        @if(session('success'))
+            <div class="bv-card bv-animate-up rounded-2xl border border-emerald-200/60 bg-emerald-50/80 px-4 py-3 text-sm font-semibold text-emerald-700 md:col-span-3">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="bv-animate-up space-y-5 md:col-span-1">
+            <div class="bv-card aspect-[3/4] w-full overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10 transition duration-500 hover:shadow-rose-500/10">
                 @if($book->image_url)
-                    <img src="{{ $book->image_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
+                    <img src="{{ $book->image_url }}" alt="{{ $book->title }}" class="h-full w-full object-cover">
                 @else
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-                    <span class="text-6xl mb-4 relative z-10">📖</span>
-                    <h3 class="font-bold text-xl relative z-10 px-2 tracking-tight">{{ $book->title }}</h3>
-                    <p class="text-xs text-amber-200 mt-1 relative z-10 font-medium">{{ $book->author }}</p>
+                    <div class="flex h-full flex-col items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900 p-6 text-center text-white">
+                        <span class="mb-4 text-6xl">📖</span>
+                        <h3 class="text-xl font-bold tracking-tight">{{ $book->title }}</h3>
+                        <p class="mt-1 text-xs font-medium text-slate-300">{{ $book->author }}</p>
+                    </div>
                 @endif
             </div>
 
-            <div class="bg-white p-5 rounded-3xl border border-rose-100 shadow-xs space-y-3">
-                <form action="{{ route('books.status.update', $book->id) }}" method="POST" onchange="this.submit()">
-                    @csrf
-                    <label class="block text-[10px] font-extrabold uppercase tracking-wider text-gray-400 mb-2">Kütüphane Durumu</label>
-                    <select name="status" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-2 focus:ring-rose-400">
-                        <option value="" disabled selected>Kütüphaneme Ekle</option>
-                        <option value="okuyacagim" {{ (auth()->user() && auth()->user()->books()->where('book_id', $book->id)->first()?->pivot->status == 'okuyacagim') ? 'selected' : '' }}>Okuyacağım</option>
-                        <option value="okuyorum" {{ (auth()->user() && auth()->user()->books()->where('book_id', $book->id)->first()?->pivot->status == 'okuyorum') ? 'selected' : '' }}>Okuyorum</option>
-                        <option value="okundu" {{ (auth()->user() && auth()->user()->books()->where('book_id', $book->id)->first()?->pivot->status == 'okundu') ? 'selected' : '' }}>Okundu</option>
-                    </select>
-                </form>
-            </div>
-        </div>
-
-        <div class="md:col-span-2 space-y-8">
-            
-            <div class="bg-white p-8 rounded-3xl border border-rose-100 shadow-xs">
-                <span class="bg-[#FDF2F8] text-[#DB2777] text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider border border-[#FBCFE8]">
-                    {{ $book->category->name ?? 'Genel' }}
-                </span>
-                
-                <h1 class="text-3xl font-black text-gray-800 mt-4 mb-1 tracking-tight">{{ $book->title }}</h1>
-                @if(auth()->check() && auth()->user()->is_admin)
-    <div class="mt-2 mb-4">
-        <a href="{{ route('admin.books.edit', $book->id) }}" class="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-4 rounded-lg text-xs transition shadow-sm">
-            ⚙️ Bu Kitabı Düzenle (Admin)
-        </a>
-    </div>
-@endif
-                <p class="text-sm font-semibold text-gray-500 mb-6">Yazar: <span class="text-gray-800">{{ $book->author }}</span></p>
-                
-                <div class="border-t border-b border-gray-100 py-3 flex gap-6 text-xs text-gray-500 font-semibold my-6">
-                    <div>📄 Sayfa Sayısı: <span class="text-gray-800 font-extrabold">{{ $book->page_count ?? 'Belirtilmemiş' }}</span></div>
-                    <div class="text-gray-200">|</div>
-                    <div>📌 Durum: <span class="text-rose-600 font-extrabold">Yayında</span></div>
+            @auth
+                <div class="bv-card rounded-2xl p-5">
+                    <label class="mb-2 block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Puanın</label>
+                    @include('partials.stars-input', ['bookId' => $book->id, 'current' => $userRating])
                 </div>
 
-                <h3 class="text-base font-bold text-gray-800 mb-3">Kitap Açıklaması</h3>
-                <p class="text-gray-600 leading-relaxed text-sm md:text-base whitespace-pre-line">{{ $book->description }}</p>
+                <div class="bv-card rounded-2xl p-5">
+                    <form action="{{ route('books.status.update', $book->id) }}" method="POST" onchange="this.submit()">
+                        @csrf
+                        <label class="mb-2 block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Kütüphane Durumu</label>
+                        <select name="status" class="bv-input w-full rounded-xl border border-slate-200/80 bg-white/60 px-3 py-2.5 text-xs font-semibold text-slate-700 transition">
+                            <option value="" disabled {{ !auth()->user()->books()->where('book_id', $book->id)->exists() ? 'selected' : '' }}>Kütüphaneme Ekle</option>
+                            <option value="okuyacagim" {{ (auth()->user()->books()->where('book_id', $book->id)->first()?->pivot->status == 'okuyacagim') ? 'selected' : '' }}>Okuyacağım</option>
+                            <option value="okuyorum" {{ (auth()->user()->books()->where('book_id', $book->id)->first()?->pivot->status == 'okuyorum') ? 'selected' : '' }}>Okuyorum</option>
+                            <option value="okundu" {{ (auth()->user()->books()->where('book_id', $book->id)->first()?->pivot->status == 'okundu') ? 'selected' : '' }}>Okundu</option>
+                        </select>
+                    </form>
+                </div>
+            @endauth
+        </div>
+
+        <div class="bv-animate-up-delay-1 space-y-6 md:col-span-2">
+
+            <div class="bv-card rounded-2xl p-7 sm:p-8">
+                <span class="inline-block rounded-full bg-rose-100/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-700">
+                    {{ $book->category->name ?? 'Genel' }}
+                </span>
+
+                <h1 class="mt-3 text-3xl font-extrabold tracking-tight text-slate-800">{{ $book->title }}</h1>
+
+                @if(auth()->check() && auth()->user()->is_admin)
+                    <div class="mt-3">
+                        <a href="{{ route('admin.books.edit', $book) }}" class="inline-block rounded-full bg-amber-500 px-4 py-1.5 text-xs font-bold text-white transition hover:bg-amber-600">
+                            ⚙️ Bu Kitabı Düzenle
+                        </a>
+                    </div>
+                @endif
+
+                <p class="mb-4 mt-2 text-sm font-semibold text-slate-400">Yazar: <span class="text-slate-700">{{ $book->author }}</span></p>
+
+                <div id="book-rating-summary" class="mb-6 flex flex-wrap items-center gap-3" data-book-rating-summary>
+                    @if($book->ratings_count > 0)
+                        @include('partials.stars-display', ['value' => (float) $book->average_rating, 'size' => 'md'])
+                        <span class="text-sm font-bold text-slate-700">{{ $book->formattedAverageRating() }}</span>
+                        <span class="text-xs text-slate-400">({{ $book->ratings_count }} puan)</span>
+                    @else
+                        <span class="text-xs font-semibold text-slate-400">Henüz puanlanmamış — ilk puanı sen ver!</span>
+                    @endif
+                </div>
+
+                <div class="my-6 flex flex-wrap gap-4 border-y border-slate-100 py-3 text-xs font-semibold text-slate-400">
+                    <div>📄 <span class="text-slate-700">{{ $book->page_count ?? 'Belirtilmemiş' }}</span> sayfa</div>
+                    <div class="hidden sm:block text-slate-200">|</div>
+                    <div>📌 Durum: <span class="text-rose-600">Yayında</span></div>
+                </div>
+
+                <h3 class="mb-2 text-sm font-extrabold uppercase tracking-wider text-slate-400">Açıklama</h3>
+                <p class="whitespace-pre-line text-sm leading-relaxed text-slate-600 md:text-base">{{ $book->description }}</p>
             </div>
 
-            <div class="bg-white p-8 rounded-3xl border border-rose-100 shadow-xs space-y-6">
-                <h3 class="text-lg font-bold text-gray-800 tracking-tight">💬 Okuyucu Yorumları ({{ $book->comments->count() }})</h3>
-                
+            <div class="bv-card bv-animate-up-delay-2 space-y-6 rounded-2xl p-7 sm:p-8">
+                <h3 class="text-lg font-extrabold tracking-tight text-slate-800">💬 Okuyucu Yorumları <span class="text-slate-400">({{ $book->comments->count() }})</span></h3>
+
                 @auth
                     <form action="{{ route('books.comment.store', $book->id) }}" method="POST" class="space-y-3">
                         @csrf
                         <div>
-                            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-gray-400 mb-2">Düşüncelerini Paylaş</label>
-                            <textarea name="content" rows="3" required class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#DB2777]/50 placeholder:text-gray-400" placeholder="Bu kitap hakkında ne düşünüyorsun, {{ Auth::user()->name }}? 🌸"></textarea>
+                            <label class="mb-2 block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Düşüncelerini Paylaş</label>
+                            <textarea name="content" rows="3" required class="bv-input w-full resize-none rounded-2xl border border-slate-200/80 bg-white/60 p-4 text-sm font-medium text-slate-700 transition placeholder:text-slate-400" placeholder="Bu kitap hakkında ne düşünüyorsun, {{ Auth::user()->name }}?"></textarea>
                         </div>
                         <div class="flex justify-end">
-                            <button type="submit" class="bg-[#DB2777] hover:bg-[#C2185B] text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-xs cursor-pointer">
-                                Yorumu Gönder ✨
+                            <button type="submit" class="bv-btn rounded-full px-5 py-2.5 text-xs font-bold text-white">
+                                Yorumu Gönder
                             </button>
                         </div>
                     </form>
                 @endauth
 
                 @guest
-                    <div class="bg-rose-50/50 border border-dashed border-rose-200 p-4 rounded-2xl text-center text-xs font-semibold text-gray-600">
-                        🔒 Kitaba yorum yapabilmek için lütfen önce <a href="{{ route('login') }}" class="text-[#DB2777] underline">Giriş Yapın</a>.
+                    <div class="rounded-2xl border border-dashed border-rose-200/80 bg-rose-50/50 p-4 text-center text-xs font-semibold text-slate-500">
+                        🔒 Yorum yapmak için <a href="{{ route('login') }}" class="font-bold text-rose-600 underline decoration-rose-300 underline-offset-2">giriş yap</a>.
                     </div>
                 @endguest
 
-                <div class="space-y-4 pt-4 border-t border-gray-50">
+                <div class="space-y-3 border-t border-slate-100 pt-4">
                     @forelse($book->comments as $comment)
-                        <div class="bg-gray-50/60 p-4 rounded-2xl border border-gray-100/70">
-                            <div class="flex justify-between items-center mb-1.5">
-                                <span class="text-xs font-bold text-gray-800 flex items-center gap-1">
-                                    ✨ {{ $comment->user_name }}
-                                </span>
-                                <span class="text-[10px] font-semibold text-gray-400">
+                        <div class="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
+                            <div class="mb-1.5 flex items-center justify-between">
+                                @if($comment->user)
+                                    <a href="{{ route('users.show', $comment->user) }}" class="flex items-center gap-1 text-xs font-bold text-slate-700 transition hover:text-rose-600">
+                                        ✨ {{ $comment->user->name }}
+                                    </a>
+                                @else
+                                    <span class="flex items-center gap-1 text-xs font-bold text-slate-700">✨ Anonim</span>
+                                @endif
+                                <span class="text-[10px] font-semibold text-slate-400">
                                     {{ $comment->created_at ? \Carbon\Carbon::parse($comment->created_at)->diffForHumans() : 'Şimdi' }}
                                 </span>
                             </div>
-                            <p class="text-gray-600 text-xs md:text-sm leading-relaxed whitespace-pre-line">
-                                {{ $comment->content }}
-                            </p>
+                            <p class="whitespace-pre-line text-xs leading-relaxed text-slate-600 md:text-sm">{{ $comment->content }}</p>
                         </div>
                     @empty
-                        <div class="text-center py-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                            <p class="text-xs font-semibold text-gray-500">Bu kitaba henüz yorum yapılmamış. İlk yorumu sen yap!</p>
+                        <div class="rounded-2xl border border-dashed border-slate-200 py-8 text-center">
+                            <p class="text-xs font-semibold text-slate-400">Bu kitaba henüz yorum yapılmamış. İlk yorumu sen yap!</p>
                         </div>
                     @endforelse
                 </div>

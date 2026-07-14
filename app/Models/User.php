@@ -52,12 +52,13 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
     public function books()
     {
-        return $this->belongsToMany(Book::class, 'book_user')->withPivot(['status', 'is_protected'])->withTimestamps();
+        return $this->belongsToMany(Book::class, 'book_user')->withPivot(['status', 'rating', 'is_protected'])->withTimestamps();
     }
 
     public function posts(): HasMany
@@ -73,6 +74,16 @@ class User extends Authenticatable
     public function following(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')->withTimestamps();
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function unreadNotificationsCount(): int
+    {
+        return $this->notifications()->unread()->count();
     }
 
     public function isPublic(): bool
@@ -113,6 +124,24 @@ class User extends Authenticatable
         }
 
         return $this->isFollowedBy($viewer);
+    }
+
+    public function scopeVisibleTo($query, ?User $viewer)
+    {
+        if (! $viewer) {
+            return $query->where('account_visibility', self::VISIBILITY_PUBLIC);
+        }
+
+        $followingIds = $viewer->following()->pluck('users.id');
+
+        return $query->where(function ($inner) use ($viewer, $followingIds) {
+            $inner->where('users.id', $viewer->id)
+                ->orWhere('account_visibility', self::VISIBILITY_PUBLIC)
+                ->orWhere(function ($private) use ($followingIds) {
+                    $private->where('account_visibility', self::VISIBILITY_FOLLOWERS)
+                        ->whereIn('users.id', $followingIds);
+                });
+        });
     }
 
     public function follow(User $user): void

@@ -64,6 +64,41 @@ class SocialFeedTest extends TestCase
         ]);
     }
 
+    public function test_authenticated_user_sees_public_posts_without_following(): void
+    {
+        $author = User::factory()->create(['account_visibility' => User::VISIBILITY_PUBLIC]);
+        $viewer = User::factory()->create();
+        Post::factory()->for($author)->create(['content' => 'Takip edilmeyen paylasim']);
+
+        $this->actingAs($viewer)
+            ->get(route('home'))
+            ->assertOk()
+            ->assertSee('Takip edilmeyen paylasim');
+    }
+
+    public function test_authenticated_user_does_not_see_unfollowed_private_posts(): void
+    {
+        $author = User::factory()->create(['account_visibility' => User::VISIBILITY_FOLLOWERS]);
+        $viewer = User::factory()->create();
+        Post::factory()->for($author)->create(['content' => 'Gizli takip edilmeyen paylasim']);
+
+        $this->actingAs($viewer)
+            ->get(route('home'))
+            ->assertOk()
+            ->assertDontSee('Gizli takip edilmeyen paylasim');
+    }
+
+    public function test_authenticated_user_sees_own_posts_in_feed(): void
+    {
+        $user = User::factory()->create();
+        Post::factory()->for($user)->create(['content' => 'Kendi paylasimim']);
+
+        $this->actingAs($user)
+            ->get(route('home'))
+            ->assertOk()
+            ->assertSee('Kendi paylasimim');
+    }
+
     public function test_private_profile_is_blocked_for_non_followers(): void
     {
         $author = User::factory()->create(['account_visibility' => User::VISIBILITY_FOLLOWERS]);

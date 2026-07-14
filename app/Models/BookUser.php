@@ -20,6 +20,15 @@ class BookUser extends Model
         'user_id',
         'book_id',
         'status',
-        'is_protected'
+        'rating',
+        'is_protected',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'rating' => 'integer',
+            'is_protected' => 'boolean',
+        ];
+    }
 }

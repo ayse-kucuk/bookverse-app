@@ -14,8 +14,8 @@
                     </x-nav-link>
 
                     @if(auth()->check() && auth()->user()->is_admin)
-                        <x-nav-link :href="route('admin.books.create')" :active="request()->routeIs('admin.books.create')">
-                            {{ __('Yeni Kitap Ekle 🛠️') }}
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                            {{ __('Yönetim Paneli') }}
                         </x-nav-link>
                     @endif
                 </div>
@@ -71,8 +71,8 @@
             </x-responsive-nav-link>
 
             @if(auth()->check() && auth()->user()->is_admin)
-                <x-responsive-nav-link :href="route('admin.books.create')" :active="request()->routeIs('admin.books.create')">
-                    {{ __('Yeni Kitap Ekle 🛠️') }}
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                    {{ __('Yönetim Paneli') }}
                 </x-responsive-nav-link>
             @endif
         </div>

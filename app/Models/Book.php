@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\BookUser;
 
 class Book extends Model
 {
@@ -37,9 +38,34 @@ class Book extends Model
   public function users()
   {
     return $this->belongsToMany(User::class, 'book_user')
-                ->withPivot('status')
+                ->withPivot(['status', 'rating', 'is_protected'])
                 ->withTimestamps();
    }
+
+    public function scopeWithRatingStats($query)
+    {
+        return $query
+            ->select('books.*')
+            ->withCount(['users as ratings_count' => function ($q) {
+                $q->whereNotNull('book_user.rating');
+            }])
+            ->addSelect([
+                'average_rating' => BookUser::query()
+                    ->selectRaw('round(avg(rating), 1)')
+                    ->whereColumn('book_user.book_id', 'books.id')
+                    ->whereNotNull('rating')
+                    ->limit(1),
+            ]);
+    }
+
+    public function formattedAverageRating(): ?string
+    {
+        if (! $this->average_rating) {
+            return null;
+        }
+
+        return number_format((float) $this->average_rating, 1);
+    }
 
     // Toplu veri yükleme izni olan sütunlar (category_id'yi buraya ekledik)
     protected $fillable = [

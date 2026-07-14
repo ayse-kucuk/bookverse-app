@@ -3,19 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use App\Models\Comment; 
+use App\Models\Comment;
 use App\Models\Category;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    // Anasayfa (Kitap Listesi)
-    public function index()
+    // Keşfet sayfası (Kitap Listesi)
+    public function index(Request $request)
     {
-        $books = Book::with(['category', 'comments'])->get();
+        $query = Book::query()
+            ->with(['category'])
+            ->withCount('comments')
+            ->withRatingStats();
+
+        if ($categoryId = $request->input('category')) {
+            $query->where('category_id', $categoryId);
+        }
+
+        if ($search = trim((string) $request->input('q', ''))) {
+            $query->where(function ($builder) use ($search) {
+                $builder->where('title', 'like', "%{$search}%")
+                    ->orWhere('author', 'like', "%{$search}%");
+            });
+        }
+
+        $sort = $request->input('sort', 'latest');
+        match ($sort) {
+            'title' => $query->orderBy('title'),
+            'rating' => $query->orderByDesc('average_rating')->orderByDesc('ratings_count'),
+            default => $query->latest(),
+        };
+
+        $books = $query->paginate(12)->withQueryString();
+        $categories = Category::orderBy('name')->get();
 
         return view('welcome', [
-            'books' => $books
+            'books' => $books,
+            'categories' => $categories,
+            'currentCategory' => $categoryId ?? null,
+            'currentSort' => $sort,
+            'searchQuery' => $search,
         ]);
     }
 
@@ -30,28 +60,73 @@ class BookController extends Controller
         $existing = $user->books()->where('books.id', $id)->first();
 
         if ($existing && $existing->pivot->is_protected) {
-            return back()->with('success', 'Bu kitap rafı korumalı olduğu için durumu değiştirilemez. 🔒');
+            return back()->with('error', 'Bu kitap rafına eklendikten sonra başka rafa taşınamaz. 🔒');
         }
 
         $user->books()->syncWithoutDetaching([
             $id => [
                 'status' => $request->status,
                 'is_protected' => true,
+                'rating' => $existing?->pivot->rating,
             ]
         ]);
 
-        return back()->with('success', 'Kitap durumun güncellendi! 📚');
+        return back()->with('success', 'Kitap "' . $this->statusLabel($request->status) . '" rafına eklendi. Bu raf artık kilitli. 📚');
+    }
+
+    public function updateRating(Request $request, $id): JsonResponse|RedirectResponse
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $user = auth()->user();
+        $existing = $user->books()->where('books.id', $id)->first();
+
+        $pivotData = [
+            'rating' => (int) $request->rating,
+            'is_protected' => $existing ? (bool) $existing->pivot->is_protected : false,
+            'status' => $existing?->pivot->status ?? 'okuyacagim',
+        ];
+
+        $user->books()->syncWithoutDetaching([
+            $id => $pivotData,
+        ]);
+
+        if ($request->expectsJson()) {
+            $book = Book::withRatingStats()->findOrFail($id);
+
+            return response()->json([
+                'user_rating' => (int) $request->rating,
+                'average_rating' => $book->average_rating ? round((float) $book->average_rating, 1) : null,
+                'ratings_count' => (int) $book->ratings_count,
+            ]);
+        }
+
+        return back()->with('success', 'Puanın kaydedildi! ⭐');
     }
 
     // Kitap Detay Sayfası
     public function show($id)
     {
-        $book = Book::with(['category', 'comments' => function($query) {
-            $query->latest();
-        }])->findOrFail($id);
+        $book = Book::with(['category', 'comments' => function ($query) {
+            $query->with('user')->latest();
+        }])
+            ->withRatingStats()
+            ->findOrFail($id);
+
+        $userRating = null;
+        if (auth()->check()) {
+            $userRating = auth()->user()->books()
+                ->where('books.id', $id)
+                ->first()
+                ?->pivot
+                ?->rating;
+        }
 
         return view('books', [
-            'book' => $book
+            'book' => $book,
+            'userRating' => $userRating,
         ]);
     }
 
@@ -78,16 +153,20 @@ class BookController extends Controller
             return redirect()->route('login');
         }
 
-        $user = auth()->user();
+        $user = auth()->user()->loadCount(['followers', 'following']);
         $userBooks = $user->books;
+        $followers = $user->followers()->orderByPivot('created_at', 'desc')->get();
+        $following = $user->following()->orderByPivot('created_at', 'desc')->get();
 
         $reading = $userBooks->where('pivot.status', 'okuyorum');
         $read = $userBooks->where('pivot.status', 'okundu');
         $willRead = $userBooks->where('pivot.status', 'okuyacagim');
-        $posts = $user->posts()->with('book')->paginate(10, ['*'], 'posts_page');
+        $posts = $user->posts()->with('book')->withLikeMeta($user)->paginate(10, ['*'], 'posts_page');
 
         return view('profile', [
             'user' => $user,
+            'followers' => $followers,
+            'following' => $following,
             'reading' => $reading,
             'read' => $read,
             'willRead' => $willRead,
@@ -95,78 +174,12 @@ class BookController extends Controller
         ]);
     }
 
-    // 1. Form Sayfasını Gösteren Metot
-    public function createBook()
+    private function statusLabel(string $status): string
     {
-        $categories = Category::all();
-        
-        return view('admin.create-book', [
-            'categories' => $categories
-        ]);
+        return match ($status) {
+            'okuyorum' => 'Okuyorum',
+            'okundu' => 'Okundu',
+            default => 'Okuyacağım',
+        };
     }
-
-    // 2. Formdan Gelen Verileri Doğrulayıp Veri Tabanına Kaydeden Metot
-    public function storeBook(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'author' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id', 
-            'image_url' => 'required|url', 
-            'description' => 'required|string|min:10',
-            'page_count' => 'required|integer|min:1',
-        ]);
-
-        Book::create([
-            'title' => $request->title,
-            'author' => $request->author,
-            'category_id' => $request->category_id,
-            'image_url' => $request->image_url,
-            'description' => $request->description,
-            'page_count' => $request->page_count,
-            'is_protected' => true,
-        ]);
-
-        return redirect()->route('home')->with('success', 'Yeni kitap başarıyla kütüphaneye eklendi! 🚀');
-    }
-    // 1. Düzenleme Formunu Mevcut Bilgilerle Açan Metot
-public function editBook($id)
-{
-    $book = Book::findOrFail($id);
-    $categories = Category::all(); // Kategoriyi değiştirebilmek için listeyi çekiyoruz
-    
-    return view('admin.edit-book', [
-        'book' => $book,
-        'categories' => $categories
-    ]);
-}
-
-// 2. Formdan Gelen Yeni Bilgileri Supabase'de Güncelleyen Metot
-public function updateBook(Request $request, $id)
-{
-    $book = Book::findOrFail($id);
-
-    // Gelen verileri tekrar güvenli şekilde doğruluyoruz
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'author' => 'required|string|max:255',
-        'category_id' => 'required|exists:categories,id', 
-        'image_url' => 'required|url', // Görseli düzeltebilmen için burası kritik!
-        'description' => 'required|string|min:10',
-        'page_count' => 'required|integer|min:1',
-    ]);
-
-    // Veri tabanında güncelleme işlemi
-    $book->update([
-        'title' => $request->title,
-        'author' => $request->author,
-        'category_id' => $request->category_id,
-        'image_url' => $request->image_url,
-        'description' => $request->description,
-        'page_count' => $request->page_count,
-    ]);
-
-    // Düzelttikten sonra kullanıcıyı kitap detay sayfasına gönderip başarı mesajı verelim
-    return redirect()->route('books.show', $id)->with('success', 'Kitap bilgileri ve kapak görseli başarıyla güncellendi! ✍️');
-}
 }

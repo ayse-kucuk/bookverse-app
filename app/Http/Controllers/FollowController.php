@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,6 +18,8 @@ class FollowController extends Controller
         }
 
         $follower->follow($user);
+
+        Notification::recordFollow($user, $follower);
 
         return back()->with('success', $user->name . ' takip edildi.');
     }
