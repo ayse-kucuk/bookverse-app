@@ -34,9 +34,14 @@ class Post extends Model
         return $this->hasMany(PostLike::class);
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(PostComment::class);
+    }
+
     public function scopeWithLikeMeta(Builder $query, ?User $viewer): Builder
     {
-        $query->withCount('likes');
+        $query->withCount(['likes', 'comments']);
 
         if ($viewer) {
             return $query->withExists([

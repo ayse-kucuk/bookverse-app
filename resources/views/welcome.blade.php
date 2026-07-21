@@ -3,19 +3,19 @@
 <head>
     @include('partials.head', ['title' => 'Bookverse — Keşfet'])
 </head>
-<body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-rose-200">
+<body class="bv-mesh min-h-screen antialiased selection:bg-[#e8dfd2]">
 
     @include('partials.site-nav')
 
-    <header class="bv-animate-up mx-auto max-w-5xl px-4 pb-6 pt-10 text-center sm:pt-14">
-        <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-rose-600">Kitap Koleksiyonu</p>
-        <h1 class="text-4xl font-extrabold tracking-tight text-slate-800 sm:text-5xl">
+    <header class="bv-page bv-animate-up pb-8 pt-12 text-center sm:pt-16">
+        <span class="bv-badge mb-4">Kitap Koleksiyonu</span>
+        <h1 class="bv-hero-title">
             <span class="bv-gradient-text">Okuma Dünyası</span>
         </h1>
-        <p class="bv-animate-up-delay-1 mx-auto mt-3 max-w-md text-sm text-slate-500">Klasiklerden modern eserlere — keşfet, oku, paylaş.</p>
+        <p class="bv-animate-up-delay-1 mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#6b6560]">Klasiklerden modern eserlere — keşfet, oku, paylaş.</p>
     </header>
 
-    <main class="mx-auto max-w-5xl px-4 pb-24">
+    <main class="bv-page pb-24">
         @auth
             @if(Auth::user()->is_admin)
                 <div class="bv-animate-up-delay-1 mb-6 flex justify-end">
@@ -65,10 +65,10 @@
 
                     <div class="flex min-w-0 flex-1 flex-col justify-between p-5">
                         <div>
-                            <span class="inline-block rounded-full bg-rose-100/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-700">
+                            <span class="inline-block border border-[#e8e4de] bg-[#f9f8f6] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-bv-accent">
                                 {{ $book->category->name ?? 'Genel' }}
                             </span>
-                            <h2 class="mt-2 text-lg font-extrabold leading-tight tracking-tight text-slate-800 transition duration-200 group-hover:text-rose-700">{{ $book->title }}</h2>
+                            <h2 class="mt-2 text-lg font-semibold leading-tight tracking-tight text-[#1c1c1c] transition duration-200 group-hover:text-bv-accent">{{ $book->title }}</h2>
                             <p class="mt-0.5 text-xs font-semibold text-slate-400">{{ $book->author }}</p>
                             @if($book->ratings_count > 0)
                                 <div class="mt-2 flex items-center gap-1.5">
@@ -84,7 +84,7 @@
                             <span class="flex items-center gap-1 text-[10px] font-semibold text-slate-400">
                                 💬 {{ $book->comments_count > 0 ? $book->comments_count . ' yorum' : 'Yorum yok' }}
                             </span>
-                            <a href="{{ route('books.show', $book) }}" class="rounded-full bg-slate-800 px-4 py-2 text-[11px] font-bold text-white transition duration-200 hover:bg-rose-600">
+                            <a href="{{ route('books.show', $book) }}" class="bv-btn px-4 py-2 text-[11px] font-bold uppercase tracking-wider">
                                 Detayları Gör →
                             </a>
                         </div>

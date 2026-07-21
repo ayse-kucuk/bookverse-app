@@ -4,57 +4,38 @@
     $isOwnProfile = $isOwnProfile ?? true;
 @endphp
 
-<div id="follow-panel-followers" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-labelledby="follow-title-followers">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeFollowPanel()"></div>
-    <div class="absolute inset-x-4 top-24 bottom-8 mx-auto flex max-w-md flex-col overflow-hidden rounded-2xl bv-card shadow-2xl sm:inset-x-8">
-        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-4">
-            <h2 id="follow-title-followers" class="text-lg font-extrabold text-slate-800">Takipçiler</h2>
-            <button type="button" onclick="closeFollowPanel()" class="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-500 transition hover:bg-rose-50 hover:text-rose-700">Kapat ✕</button>
-        </div>
-        <div class="flex-1 overflow-y-auto px-3 py-3">
-            @forelse($followers as $follower)
-                <a href="{{ route('users.show', $follower) }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-rose-50">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-rose-100 text-sm">
-                        @if($follower->profile_photo_path)
-                            <img src="{{ asset('storage/' . $follower->profile_photo_path) }}" alt="" class="h-full w-full object-cover">
-                        @else
-                            👤
-                        @endif
-                    </div>
-                    <span class="truncate text-sm font-bold text-slate-800">{{ $follower->name }}</span>
-                </a>
-            @empty
-                <p class="py-10 text-center text-sm font-medium italic text-slate-400">{{ $isOwnProfile ? 'Henüz takipçin yok.' : 'Henüz takipçisi yok.' }}</p>
-            @endforelse
-        </div>
-    </div>
-</div>
-
-<div id="follow-panel-following" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-labelledby="follow-title-following">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeFollowPanel()"></div>
-    <div class="absolute inset-x-4 top-24 bottom-8 mx-auto flex max-w-md flex-col overflow-hidden rounded-2xl bv-card shadow-2xl sm:inset-x-8">
-        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-4">
-            <h2 id="follow-title-following" class="text-lg font-extrabold text-slate-800">Takip edilenler</h2>
-            <button type="button" onclick="closeFollowPanel()" class="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-500 transition hover:bg-rose-50 hover:text-rose-700">Kapat ✕</button>
-        </div>
-        <div class="flex-1 overflow-y-auto px-3 py-3">
-            @forelse($following as $followed)
-                <a href="{{ route('users.show', $followed) }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-rose-50">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-rose-100 text-sm">
-                        @if($followed->profile_photo_path)
-                            <img src="{{ asset('storage/' . $followed->profile_photo_path) }}" alt="" class="h-full w-full object-cover">
-                        @else
-                            👤
-                        @endif
-                    </div>
-                    <span class="truncate text-sm font-bold text-slate-800">{{ $followed->name }}</span>
-                </a>
-            @empty
-                <p class="py-10 text-center text-sm font-medium italic text-slate-400">{{ $isOwnProfile ? 'Henüz kimseyi takip etmiyorsun.' : 'Henüz kimseyi takip etmiyor.' }}</p>
-            @endforelse
+@foreach(['followers' => ['title' => 'Takipçiler', 'items' => $followers], 'following' => ['title' => 'Takip Edilenler', 'items' => $following]] as $type => $panel)
+    <div id="follow-panel-{{ $type }}" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-labelledby="follow-title-{{ $type }}">
+        <div class="absolute inset-0 bg-[#1c1c1c]/60 backdrop-blur-sm" onclick="closeFollowPanel()"></div>
+        <div class="absolute inset-x-4 top-24 bottom-8 mx-auto flex max-w-md flex-col overflow-hidden border border-[#e8e4de] bg-white shadow-2xl sm:inset-x-8">
+            <div class="flex shrink-0 items-center justify-between border-b border-[#e8e4de] px-5 py-4">
+                <h2 id="follow-title-{{ $type }}" class="bv-display text-xl font-medium text-[#1c1c1c]">{{ $panel['title'] }}</h2>
+                <button type="button" onclick="closeFollowPanel()" class="border border-[#e8e4de] px-3 py-1.5 text-xs font-bold text-[#6b6560] transition hover:text-bv-accent">Kapat ✕</button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-3 py-3">
+                @forelse($panel['items'] as $person)
+                    <a href="{{ route('users.show', $person) }}" class="flex items-center gap-3 px-3 py-3 transition hover:bg-[#f3f0eb]">
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] bg-[#f3f0eb] text-sm">
+                            @if($person->profile_photo_path)
+                                <img src="{{ asset('storage/' . $person->profile_photo_path) }}" alt="" class="h-full w-full object-cover">
+                            @else
+                                👤
+                            @endif
+                        </div>
+                        <span class="truncate text-sm font-medium text-[#2a2a2a]">{{ $person->name }}</span>
+                    </a>
+                @empty
+                    @php
+                        $emptyMsg = $type === 'followers'
+                            ? ($isOwnProfile ? 'Henüz takipçin yok.' : 'Henüz takipçisi yok.')
+                            : ($isOwnProfile ? 'Henüz kimseyi takip etmiyorsun.' : 'Henüz kimseyi takip etmiyor.');
+                    @endphp
+                    <p class="py-10 text-center text-sm italic text-[#9a948d]">{{ $emptyMsg }}</p>
+                @endforelse
+            </div>
         </div>
     </div>
-</div>
+@endforeach
 
 <script>
 let activeFollowPanel = null;
@@ -78,7 +59,5 @@ function closeFollowPanel() {
     }
 }
 
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeFollowPanel();
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFollowPanel(); });
 </script>

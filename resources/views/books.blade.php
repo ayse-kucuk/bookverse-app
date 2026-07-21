@@ -3,11 +3,11 @@
 <head>
     @include('partials.head', ['title' => $book->title . ' — Bookverse'])
 </head>
-<body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-rose-200">
+<body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-\[#e8dfd2\]">
 
     @include('partials.site-nav')
 
-    <main class="mx-auto grid max-w-5xl gap-8 px-4 py-10 md:grid-cols-3 sm:px-6">
+    <main class="bv-page grid gap-8 py-10 md:grid-cols-3">
 
         @if(session('success'))
             <div class="bv-card bv-animate-up rounded-2xl border border-emerald-200/60 bg-emerald-50/80 px-4 py-3 text-sm font-semibold text-emerald-700 md:col-span-3">
@@ -52,7 +52,7 @@
         <div class="bv-animate-up-delay-1 space-y-6 md:col-span-2">
 
             <div class="bv-card rounded-2xl p-7 sm:p-8">
-                <span class="inline-block rounded-full bg-rose-100/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-700">
+                <span class="inline-block rounded-full bg-rose-100/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-bv-accent">
                     {{ $book->category->name ?? 'Genel' }}
                 </span>
 
@@ -81,7 +81,7 @@
                 <div class="my-6 flex flex-wrap gap-4 border-y border-slate-100 py-3 text-xs font-semibold text-slate-400">
                     <div>📄 <span class="text-slate-700">{{ $book->page_count ?? 'Belirtilmemiş' }}</span> sayfa</div>
                     <div class="hidden sm:block text-slate-200">|</div>
-                    <div>📌 Durum: <span class="text-rose-600">Yayında</span></div>
+                    <div>📌 Durum: <span class="text-bv-accent">Yayında</span></div>
                 </div>
 
                 <h3 class="mb-2 text-sm font-extrabold uppercase tracking-wider text-slate-400">Açıklama</h3>
@@ -107,8 +107,8 @@
                 @endauth
 
                 @guest
-                    <div class="rounded-2xl border border-dashed border-rose-200/80 bg-rose-50/50 p-4 text-center text-xs font-semibold text-slate-500">
-                        🔒 Yorum yapmak için <a href="{{ route('login') }}" class="font-bold text-rose-600 underline decoration-rose-300 underline-offset-2">giriş yap</a>.
+                    <div class="rounded-2xl border border-dashed border-\[#e8e4de\]/80 bg-rose-50/50 p-4 text-center text-xs font-semibold text-slate-500">
+                        🔒 Yorum yapmak için <a href="{{ route('login') }}" class="font-bold text-bv-accent underline decoration-rose-300 underline-offset-2">giriş yap</a>.
                     </div>
                 @endguest
 
@@ -117,7 +117,7 @@
                         <div class="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-100">
                             <div class="mb-1.5 flex items-center justify-between">
                                 @if($comment->user)
-                                    <a href="{{ route('users.show', $comment->user) }}" class="flex items-center gap-1 text-xs font-bold text-slate-700 transition hover:text-rose-600">
+                                    <a href="{{ route('users.show', $comment->user) }}" class="flex items-center gap-1 text-xs font-bold text-slate-700 transition hover:text-bv-accent">
                                         ✨ {{ $comment->user->name }}
                                     </a>
                                 @else

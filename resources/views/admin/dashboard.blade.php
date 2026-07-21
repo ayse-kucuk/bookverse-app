@@ -26,7 +26,7 @@
         <section class="bv-card rounded-2xl p-5">
             <div class="mb-3 flex items-center justify-between">
                 <h2 class="text-sm font-extrabold text-slate-800">Son kitaplar</h2>
-                <a href="{{ route('admin.books.create') }}" class="text-xs font-bold text-rose-600 hover:text-rose-700">+ Ekle</a>
+                <a href="{{ route('admin.books.create') }}" class="text-xs font-bold text-bv-accent hover:text-bv-accent">+ Ekle</a>
             </div>
             <ul class="space-y-2">
                 @forelse($recentBooks as $book)
@@ -35,7 +35,7 @@
                             <p class="truncate text-sm font-bold text-slate-800">{{ $book->title }}</p>
                             <p class="text-[10px] text-slate-400">{{ $book->category?->name }}</p>
                         </div>
-                        <a href="{{ route('admin.books.edit', $book) }}" class="shrink-0 text-xs font-bold text-rose-600">Düzenle</a>
+                        <a href="{{ route('admin.books.edit', $book) }}" class="shrink-0 text-xs font-bold text-bv-accent">Düzenle</a>
                     </li>
                 @empty
                     <li class="text-sm text-slate-400">Henüz kitap yok.</li>
@@ -46,7 +46,7 @@
         <section class="bv-card rounded-2xl p-5">
             <div class="mb-3 flex items-center justify-between">
                 <h2 class="text-sm font-extrabold text-slate-800">Son kullanıcılar</h2>
-                <a href="{{ route('admin.users.index') }}" class="text-xs font-bold text-rose-600 hover:text-rose-700">Tümü</a>
+                <a href="{{ route('admin.users.index') }}" class="text-xs font-bold text-bv-accent hover:text-bv-accent">Tümü</a>
             </div>
             <ul class="space-y-2">
                 @forelse($recentUsers as $user)
@@ -56,7 +56,7 @@
                             <p class="truncate text-[10px] text-slate-400">{{ $user->email }}</p>
                         </div>
                         @if($user->is_admin)
-                            <span class="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700">Admin</span>
+                            <span class="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-bv-accent">Admin</span>
                         @endif
                     </li>
                 @empty
@@ -79,7 +79,7 @@
                         <form action="{{ route('admin.comments.destroy', $comment) }}" method="POST" onsubmit="return confirm('Yorumu silmek istiyor musun?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="text-[10px] font-bold text-slate-400 hover:text-rose-600">Sil</button>
+                            <button type="submit" class="text-[10px] font-bold text-slate-400 hover:text-bv-accent">Sil</button>
                         </form>
                     </div>
                     <p class="text-xs leading-relaxed text-slate-600">{{ \Illuminate\Support\Str::limit($comment->content, 160) }}</p>

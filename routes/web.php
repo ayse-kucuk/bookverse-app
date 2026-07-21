@@ -9,8 +9,10 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReadingGoalController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +42,8 @@ Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show')
 Route::middleware('auth')->group(function () {
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::post('/posts/{post}/like', [PostController::class, 'toggleLike'])->name('posts.like.toggle');
+    Route::post('/posts/{post}/comments', [PostCommentController::class, 'store'])->name('posts.comments.store');
+    Route::delete('/posts/{post}/comments/{comment}', [PostCommentController::class, 'destroy'])->name('posts.comments.destroy');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 
     Route::post('/users/{user}/follow', [FollowController::class, 'store'])->name('users.follow');
@@ -51,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications/{notification}/open', [NotificationController::class, 'open'])->name('notifications.open');
 
     Route::get('/profile', [BookController::class, 'profile'])->name('profile');
+    Route::post('/reading-goal', [ReadingGoalController::class, 'update'])->name('reading-goal.update');
+    Route::delete('/reading-goal', [ReadingGoalController::class, 'destroy'])->name('reading-goal.destroy');
     Route::get('/account-settings', [ProfileController::class, 'edit'])->name('account.settings');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -3,16 +3,16 @@
 <head>
     @include('partials.head', ['title' => 'Arama — Bookverse'])
 </head>
-<body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-rose-200">
+<body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-\[#e8dfd2\]">
 
     @include('partials.site-nav')
 
-    <main class="mx-auto max-w-3xl space-y-8 px-4 py-8 sm:px-6">
+    <main class="bv-page space-y-8 py-8">
         <header class="bv-animate-up">
             <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Arama</h1>
             @if(mb_strlen($query) >= 1)
                 <p class="mt-1 text-sm text-slate-500">
-                    <span class="font-semibold text-rose-600">"{{ $query }}"</span> için sonuçlar
+                    <span class="font-semibold text-bv-accent">"{{ $query }}"</span> için sonuçlar
                 </p>
             @else
                 <p class="mt-1 text-sm text-slate-400">Kitap, kullanıcı veya paylaşım ara.</p>
@@ -47,7 +47,7 @@
                                         @endif
                                     </div>
                                     <div class="min-w-0 flex-1">
-                                        <p class="font-bold text-slate-800 transition group-hover:text-rose-600">{{ $book->title }}</p>
+                                        <p class="font-bold text-slate-800 transition group-hover:text-bv-accent">{{ $book->title }}</p>
                                         <p class="text-xs text-slate-400">{{ $book->author }}</p>
                                         @if($book->ratings_count > 0)
                                             <p class="mt-0.5 text-[10px] font-semibold text-amber-600">★ {{ $book->formattedAverageRating() }} ({{ $book->ratings_count }})</p>
@@ -65,7 +65,7 @@
                         <div class="bv-stagger space-y-2">
                             @foreach($users as $user)
                                 <a href="{{ route('users.show', $user) }}" class="bv-card bv-card-interactive flex items-center gap-3 rounded-2xl p-4 transition">
-                                    <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-rose-100 to-orange-100 text-lg ring-2 ring-rose-100">
+                                    <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-\[#f3f0eb\] to-\[#f9f8f6\] text-lg ring-2 ring-\[#e8e4de\]">
                                         @if($user->profile_photo_path)
                                             <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="" class="h-full w-full object-cover">
                                         @else

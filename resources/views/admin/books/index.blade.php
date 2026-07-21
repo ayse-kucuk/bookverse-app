@@ -23,7 +23,7 @@
                 @endforeach
             </select>
         </div>
-        <button type="submit" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-rose-50 hover:text-rose-700">Filtrele</button>
+        <button type="submit" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-\[#f3f0eb\] hover:text-bv-accent">Filtrele</button>
     </form>
 
     <div class="bv-card overflow-hidden rounded-2xl">
@@ -40,7 +40,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($books as $book)
-                        <tr class="hover:bg-rose-50/40">
+                        <tr class="hover:bg-\[#f3f0eb\]/40">
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-3">
                                     <div class="h-12 w-8 shrink-0 overflow-hidden rounded-md bg-slate-800">
@@ -66,11 +66,11 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('books.show', $book) }}" class="text-xs font-bold text-slate-400 hover:text-slate-700">Gör</a>
-                                    <a href="{{ route('admin.books.edit', $book) }}" class="text-xs font-bold text-rose-600 hover:text-rose-700">Düzenle</a>
+                                    <a href="{{ route('admin.books.edit', $book) }}" class="text-xs font-bold text-bv-accent hover:text-bv-accent">Düzenle</a>
                                     <form action="{{ route('admin.books.destroy', $book) }}" method="POST" onsubmit="return confirm('Bu kitabı silmek istiyor musun?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-xs font-bold text-slate-400 hover:text-rose-600">Sil</button>
+                                        <button type="submit" class="text-xs font-bold text-slate-400 hover:text-bv-accent">Sil</button>
                                     </form>
                                 </div>
                             </td>

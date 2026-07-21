@@ -4,7 +4,10 @@
 
 <div>
     <label class="mb-1 block text-xs font-bold text-slate-600">Kitap adı</label>
-    <input type="text" name="title" value="{{ old('title', $book?->title) }}" required class="bv-input w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm">
+    <input type="text" name="title" value="{{ old('title', $book?->title) }}" required class="bv-input w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm @error('title') border-rose-400 @enderror">
+    @error('title')
+        <p class="mt-1 text-xs font-semibold text-bv-accent">{{ $message }}</p>
+    @enderror
 </div>
 
 <div>
@@ -29,7 +32,7 @@
     </div>
     <div class="flex items-end pb-1">
         <label class="flex items-center gap-2 text-xs font-bold text-slate-600">
-            <input type="checkbox" name="is_protected" value="1" class="rounded border-slate-300 text-rose-600 focus:ring-rose-500" @checked(old('is_protected', $book?->is_protected ?? true))>
+            <input type="checkbox" name="is_protected" value="1" class="rounded border-slate-300 text-bv-accent focus:ring-rose-500" @checked(old('is_protected', $book?->is_protected ?? true))>
             Silinmeye karşı koru
         </label>
     </div>

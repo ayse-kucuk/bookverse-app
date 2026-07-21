@@ -11,6 +11,8 @@ class Notification extends Model
 
     public const TYPE_POST_LIKE = 'post_like';
 
+    public const TYPE_POST_COMMENT = 'post_comment';
+
     protected $fillable = [
         'user_id',
         'actor_id',
@@ -63,6 +65,7 @@ class Notification extends Model
         return match ($this->type) {
             self::TYPE_FOLLOW => $this->actor->name.' seni takip etti',
             self::TYPE_POST_LIKE => $this->actor->name.' paylaşımını beğendi',
+            self::TYPE_POST_COMMENT => $this->actor->name.' paylaşımına yorum yaptı',
             default => 'Yeni bir bildirimin var',
         };
     }
@@ -71,8 +74,8 @@ class Notification extends Model
     {
         return match ($this->type) {
             self::TYPE_FOLLOW => route('users.show', $this->actor),
-            self::TYPE_POST_LIKE => $this->post_id
-                ? route('posts.show', $this->post_id)
+            self::TYPE_POST_LIKE, self::TYPE_POST_COMMENT => $this->post_id
+                ? route('posts.show', $this->post_id).'#comments'
                 : route('profile'),
             default => route('home'),
         };
@@ -114,5 +117,22 @@ class Notification extends Model
             'type' => self::TYPE_POST_LIKE,
             'post_id' => $post->id,
         ])->delete();
+    }
+
+    public static function recordPostComment(Post $post, User $actor): void
+    {
+        if ($post->user_id === $actor->id) {
+            return;
+        }
+
+        static::updateOrCreate(
+            [
+                'user_id' => $post->user_id,
+                'actor_id' => $actor->id,
+                'type' => self::TYPE_POST_COMMENT,
+                'post_id' => $post->id,
+            ],
+            ['read_at' => null]
+        );
     }
 }

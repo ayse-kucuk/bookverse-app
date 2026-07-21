@@ -38,7 +38,7 @@
                         <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Kategoriyi silmek istiyor musun?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="rounded-full border border-slate-200 px-3 py-2 text-xs font-bold text-slate-400 hover:border-rose-200 hover:text-rose-600">Sil</button>
+                            <button type="submit" class="rounded-full border border-slate-200 px-3 py-2 text-xs font-bold text-slate-400 hover:border-\[#e8e4de\] hover:text-bv-accent">Sil</button>
                         </form>
                     </div>
                 </div>

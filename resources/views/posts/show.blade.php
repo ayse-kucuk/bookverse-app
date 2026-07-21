@@ -3,13 +3,14 @@
 <head>
     @include('partials.head', ['title' => 'Paylaşım — Bookverse'])
 </head>
-<body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-rose-200">
+<body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-\[#e8dfd2\]">
 
     @include('partials.site-nav')
 
-    <main class="mx-auto max-w-2xl space-y-4 px-4 py-8 sm:px-6">
-        <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('home') }}" class="inline-flex items-center gap-1 text-xs font-bold text-slate-400 transition hover:text-rose-600">← Geri</a>
+    <main class="bv-page space-y-4 py-8">
+        <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('home') }}" class="inline-flex items-center gap-1 text-xs font-bold text-slate-400 transition hover:text-bv-accent">← Geri</a>
         @include('partials.post-card', ['post' => $post])
+        @include('partials.post-comments', ['post' => $post])
     </main>
 
 </body>

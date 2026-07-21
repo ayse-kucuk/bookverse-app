@@ -19,7 +19,7 @@
                 <option value="user" @selected($role === 'user')>Kullanıcı</option>
             </select>
         </div>
-        <button type="submit" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-rose-50 hover:text-rose-700">Filtrele</button>
+        <button type="submit" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-\[#f3f0eb\] hover:text-bv-accent">Filtrele</button>
     </form>
 
     <div class="bv-card overflow-hidden rounded-2xl">
@@ -35,14 +35,14 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($users as $user)
-                        <tr class="hover:bg-rose-50/40">
+                        <tr class="hover:bg-\[#f3f0eb\]/40">
                             <td class="px-4 py-3">
                                 <p class="font-bold text-slate-800">{{ $user->name }}</p>
                                 <p class="text-xs text-slate-400">{{ $user->email }}</p>
                             </td>
                             <td class="px-4 py-3">
                                 @if($user->is_admin)
-                                    <span class="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700">Admin</span>
+                                    <span class="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-bv-accent">Admin</span>
                                 @else
                                     <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">Kullanıcı</span>
                                 @endif
@@ -55,7 +55,7 @@
                                     <a href="{{ route('users.show', $user) }}" class="text-xs font-bold text-slate-400 hover:text-slate-700">Profil</a>
                                     <form action="{{ route('admin.users.toggle-admin', $user) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="text-xs font-bold text-rose-600 hover:text-rose-700">
+                                        <button type="submit" class="text-xs font-bold text-bv-accent hover:text-bv-accent">
                                             {{ $user->is_admin ? 'Admin kaldır' : 'Admin yap' }}
                                         </button>
                                     </form>
@@ -63,7 +63,7 @@
                                         <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Kullanıcıyı silmek istiyor musun?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-xs font-bold text-slate-400 hover:text-rose-600">Sil</button>
+                                            <button type="submit" class="text-xs font-bold text-slate-400 hover:text-bv-accent">Sil</button>
                                         </form>
                                     @endif
                                 </div>

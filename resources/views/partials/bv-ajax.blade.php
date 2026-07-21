@@ -1,3 +1,41 @@
+<div id="bv-toast-container" aria-live="polite" aria-atomic="false"></div>
+
+<script>
+// ── Toast sistemi (global) ──────────────────────────────────────────────────
+window.showToast = function (message, type = 'success', duration = 3500) {
+    const container = document.getElementById('bv-toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `bv-toast bv-toast-${type}`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <span class="bv-toast-bar"></span>
+        <span class="bv-toast-msg">${message}</span>
+        <button class="bv-toast-close" aria-label="Kapat">✕</button>
+    `;
+
+    const dismiss = () => {
+        toast.classList.add('bv-toast-out');
+        toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    };
+
+    toast.querySelector('.bv-toast-close').addEventListener('click', dismiss);
+    container.appendChild(toast);
+    setTimeout(dismiss, duration);
+};
+
+// Flash mesajlarını (session) otomatik toast'a çevir
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-bv-flash]').forEach(el => {
+        const type = el.dataset.bvFlash || 'success';
+        const msg  = el.textContent.trim();
+        if (msg) window.showToast(msg, type);
+        el.remove();
+    });
+});
+</script>
+
 <script>
 (function () {
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -26,10 +64,10 @@
         const countEl = btn.querySelector('.bv-like-count');
 
         btn.setAttribute('aria-pressed', liked ? 'true' : 'false');
-        btn.classList.toggle('text-rose-600', liked);
+        btn.classList.toggle('text-bv-accent', liked);
         btn.classList.toggle('text-slate-400', !liked);
-        btn.classList.toggle('hover:bg-rose-50', !liked);
-        btn.classList.toggle('hover:text-rose-600', !liked);
+        btn.classList.toggle('hover:bg-\[#f3f0eb\]', !liked);
+        btn.classList.toggle('hover:text-bv-accent', !liked);
 
         if (icon) icon.textContent = liked ? '❤️' : '🤍';
         if (countEl) {
@@ -94,7 +132,7 @@
         if (!badge && bell) {
             badge = document.createElement('span');
             badge.dataset.notificationBadge = '';
-            badge.className = 'absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-[9px] font-bold text-white';
+            badge.className = 'absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center bg-[#1c1c1c] px-1 text-[9px] font-bold text-white';
             bell.appendChild(badge);
         }
 
@@ -223,8 +261,12 @@
             try {
                 const data = await postJson(likeBtn.dataset.url, {});
                 setLikeButtonState(likeBtn, data.liked, data.likes_count);
+                if (typeof showToast === 'function') {
+                    showToast(data.liked ? 'Paylaşım beğenildi' : 'Beğeni kaldırıldı', 'info', 2000);
+                }
             } catch {
                 likeBtn.classList.add('shake');
+                if (typeof showToast === 'function') showToast('Bir hata oluştu', 'error');
             } finally {
                 likeBtn.disabled = false;
                 likeBtn.classList.remove('opacity-60');
@@ -246,9 +288,11 @@
                 const data = await postJson(widget.dataset.url, { rating });
                 setStarButtons(widget, data.user_rating);
                 updateBookRatingSummary(data);
+                if (typeof showToast === 'function') showToast(`${data.user_rating}/5 puan verildi`, 'success', 2500);
             } catch {
                 const previous = parseInt(widget.dataset.current, 10) || 0;
                 setStarButtons(widget, previous);
+                if (typeof showToast === 'function') showToast('Puanlama kaydedilemedi', 'error');
             } finally {
                 widget.querySelectorAll('[data-rating-star]').forEach((b) => b.disabled = false);
             }
@@ -299,7 +343,7 @@
                         ? `<img src="${escapeHtml(book.image_url)}" alt="" class="h-full w-full object-cover">`
                         : '<span class="text-xs text-white">📖</span>';
                     html += `
-                        <a href="${escapeHtml(book.url)}" class="flex items-center gap-3 px-3 py-2.5 transition hover:bg-rose-50" role="option">
+                        <a href="${escapeHtml(book.url)}" class="flex items-center gap-3 px-3 py-2.5 transition hover:bg-\[#f3f0eb\]" role="option">
                             <div class="flex h-12 w-8 shrink-0 items-center justify-center overflow-hidden rounded-md bg-slate-800 ring-1 ring-slate-200">${cover}</div>
                             <div class="min-w-0">
                                 <p class="truncate text-sm font-bold text-slate-900">${escapeHtml(book.title)}</p>
@@ -313,7 +357,7 @@
                 html += '<p class="px-4 pb-1 pt-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">Kullanıcılar</p>';
                 data.users.forEach((user) => {
                     html += `
-                        <a href="${escapeHtml(user.url)}" class="flex items-center gap-3 px-3 py-2.5 transition hover:bg-rose-50" role="option">
+                        <a href="${escapeHtml(user.url)}" class="flex items-center gap-3 px-3 py-2.5 transition hover:bg-\[#f3f0eb\]" role="option">
                             <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-rose-100 text-sm">👤</span>
                             <p class="truncate text-sm font-bold text-slate-900">${escapeHtml(user.name)}</p>
                         </a>`;
@@ -324,7 +368,7 @@
                 html += '<p class="px-4 pb-1 pt-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">Paylaşımlar</p>';
                 data.posts.forEach((post) => {
                     html += `
-                        <a href="${escapeHtml(post.url)}" class="block px-3 py-2.5 transition hover:bg-rose-50" role="option">
+                        <a href="${escapeHtml(post.url)}" class="block px-3 py-2.5 transition hover:bg-\[#f3f0eb\]" role="option">
                             <p class="line-clamp-2 text-xs font-medium text-slate-700">${escapeHtml(post.excerpt)}</p>
                             <p class="mt-0.5 text-[10px] font-semibold text-slate-500">${escapeHtml(post.author)}</p>
                         </a>`;
@@ -333,7 +377,7 @@
 
             if (data.search_url) {
                 html += `
-                    <a href="${escapeHtml(data.search_url)}" class="mt-1 block border-t border-slate-200 bg-slate-50 px-4 py-2.5 text-center text-xs font-bold text-rose-600 transition hover:bg-rose-50">
+                    <a href="${escapeHtml(data.search_url)}" class="mt-1 block border-t border-slate-200 bg-slate-50 px-4 py-2.5 text-center text-xs font-bold text-bv-accent transition hover:bg-\[#f3f0eb\]">
                         Tüm sonuçları gör →
                     </a>`;
             }
@@ -393,3 +437,5 @@
     })();
 })();
 </script>
+
+@include('partials.flash')

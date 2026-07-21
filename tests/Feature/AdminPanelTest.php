@@ -62,6 +62,50 @@ class AdminPanelTest extends TestCase
         ]);
     }
 
+    public function test_admin_cannot_create_duplicate_book_title(): void
+    {
+        $category = Category::create(['name' => 'Roman']);
+        Book::factory()->create(['title' => 'Suç ve Ceza', 'category_id' => $category->id]);
+
+        $this->actingAs($this->admin())
+            ->from(route('admin.books.create'))
+            ->post(route('admin.books.store'), [
+                'title' => 'Suç ve Ceza',
+                'author' => 'Başka Yazar',
+                'category_id' => $category->id,
+                'image_url' => 'https://example.com/cover.jpg',
+                'description' => 'Bu en az on karakterlik bir aciklama.',
+                'page_count' => 220,
+            ])
+            ->assertRedirect(route('admin.books.create'))
+            ->assertSessionHasErrors(['title' => 'Bu kitap zaten eklenmiş.']);
+
+        $this->assertDatabaseCount('books', 1);
+    }
+
+    public function test_admin_cannot_rename_book_to_existing_title(): void
+    {
+        $category = Category::create(['name' => 'Roman']);
+        $existing = Book::factory()->create(['title' => '1984', 'category_id' => $category->id]);
+        $book = Book::factory()->create(['title' => 'Hayvan Çiftliği', 'category_id' => $category->id]);
+
+        $this->actingAs($this->admin())
+            ->from(route('admin.books.edit', $book))
+            ->put(route('admin.books.update', $book), [
+                'title' => '1984',
+                'author' => $book->author,
+                'category_id' => $category->id,
+                'image_url' => $book->image_url,
+                'description' => $book->description,
+                'page_count' => $book->page_count,
+            ])
+            ->assertRedirect(route('admin.books.edit', $book))
+            ->assertSessionHasErrors(['title' => 'Bu kitap zaten eklenmiş.']);
+
+        $this->assertDatabaseHas('books', ['id' => $book->id, 'title' => 'Hayvan Çiftliği']);
+        $this->assertDatabaseHas('books', ['id' => $existing->id, 'title' => '1984']);
+    }
+
     public function test_admin_can_delete_protected_book(): void
     {
         $book = Book::factory()->create(['is_protected' => true]);

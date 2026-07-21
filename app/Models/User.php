@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     public const VISIBILITY_PUBLIC = 'public';
 
@@ -30,6 +31,8 @@ class User extends Authenticatable
         'profile_photo_path',
         'is_admin',
         'account_visibility',
+        'reading_goal',
+        'reading_goal_year',
     ];
 
     /**
@@ -156,5 +159,54 @@ class User extends Authenticatable
     public function unfollow(User $user): void
     {
         $this->following()->detach($user->id);
+    }
+
+    public function booksReadInYear(?int $year = null): int
+    {
+        $year ??= now()->year;
+
+        return $this->books()
+            ->wherePivot('status', 'okundu')
+            ->whereYear('book_user.updated_at', $year)
+            ->count();
+    }
+
+    public function hasActiveReadingGoal(): bool
+    {
+        return $this->reading_goal
+            && $this->reading_goal_year === now()->year;
+    }
+
+    /**
+     * @return array{year: int, target: int|null, current: int, percentage: int, remaining: int|null, completed: bool}
+     */
+    public function readingGoalStats(): array
+    {
+        $year = now()->year;
+        $current = $this->booksReadInYear($year);
+        $target = $this->hasActiveReadingGoal() ? (int) $this->reading_goal : null;
+
+        if (! $target) {
+            return [
+                'year' => $year,
+                'target' => null,
+                'current' => $current,
+                'percentage' => 0,
+                'remaining' => null,
+                'completed' => false,
+            ];
+        }
+
+        $percentage = min(100, (int) round(($current / $target) * 100));
+        $remaining = max(0, $target - $current);
+
+        return [
+            'year' => $year,
+            'target' => $target,
+            'current' => $current,
+            'percentage' => $percentage,
+            'remaining' => $remaining,
+            'completed' => $current >= $target,
+        ];
     }
 }

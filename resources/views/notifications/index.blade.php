@@ -3,40 +3,48 @@
 <head>
     @include('partials.head', ['title' => 'Bildirimler — Bookverse'])
 </head>
-<body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-rose-200">
+<body class="bv-mesh min-h-screen antialiased selection:bg-[#e8dfd2]">
 
     @include('partials.site-nav')
 
-    <main class="mx-auto max-w-2xl space-y-6 px-4 py-8 sm:px-6">
-        <div class="flex items-center justify-between gap-4">
-            <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Bildirimler</h1>
+    <main class="bv-page space-y-6 py-10">
+        <div class="bv-animate-up flex items-end justify-between gap-4">
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Gelen Kutusu</p>
+                <h1 class="bv-display mt-1 text-4xl font-medium text-[#1c1c1c]">Bildirimler</h1>
+            </div>
         </div>
-
-        @if(session('success'))
-            <div class="bv-card rounded-2xl border border-emerald-200/60 bg-emerald-50/80 px-4 py-3 text-sm font-semibold text-emerald-700">{{ session('success') }}</div>
-        @endif
 
         <div class="space-y-2">
             @forelse($notifications as $notification)
-                <a href="{{ route('notifications.open', $notification) }}" data-notification-read="{{ route('notifications.read', $notification) }}" class="bv-card flex items-start gap-3 rounded-2xl p-4 transition hover:bg-rose-50/50 {{ $notification->isUnread() ? 'ring-1 ring-rose-200/80' : '' }}">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-rose-100 text-sm">
+                <a href="{{ route('notifications.open', $notification) }}"
+                   data-notification-read="{{ route('notifications.read', $notification) }}"
+                   class="bv-card flex items-start gap-4 p-4 transition hover:bg-[#f9f8f6] {{ $notification->isUnread() ? 'border-l-2 border-l-[#a67c52]' : '' }}">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] bg-[#f3f0eb] text-sm">
                         @if($notification->actor->profile_photo_path)
                             <img src="{{ asset('storage/' . $notification->actor->profile_photo_path) }}" alt="" class="h-full w-full object-cover">
                         @else
-                            {{ $notification->type === \App\Models\Notification::TYPE_POST_LIKE ? '❤️' : '👤' }}
+                            @php
+                                $icon = match($notification->type) {
+                                    \App\Models\Notification::TYPE_POST_LIKE => '❤️',
+                                    \App\Models\Notification::TYPE_POST_COMMENT => '💬',
+                                    default => '👤',
+                                };
+                            @endphp
+                            {{ $icon }}
                         @endif
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="text-sm font-semibold text-slate-800">{{ $notification->message() }}</p>
-                        <p class="mt-0.5 text-xs text-slate-400">{{ $notification->created_at->diffForHumans() }}</p>
+                        <p class="text-sm font-medium text-[#2a2a2a]">{{ $notification->message() }}</p>
+                        <p class="mt-0.5 text-xs text-[#9a948d]">{{ $notification->created_at->diffForHumans() }}</p>
                     </div>
                     @if($notification->isUnread())
-                        <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-rose-500"></span>
+                        <span class="mt-1.5 h-2 w-2 shrink-0 bg-[#a67c52]"></span>
                     @endif
                 </a>
             @empty
-                <div class="bv-card rounded-2xl p-10 text-center text-sm text-slate-400">
-                    Henüz bildirimin yok.
+                <div class="bv-card p-12 text-center">
+                    <p class="text-sm text-[#9a948d]">Henüz bildirimin yok.</p>
                 </div>
             @endforelse
         </div>

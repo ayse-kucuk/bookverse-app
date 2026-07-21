@@ -43,15 +43,7 @@ class BookController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'author' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'image_url' => ['required', 'url'],
-            'description' => ['required', 'string', 'min:10'],
-            'page_count' => ['required', 'integer', 'min:1'],
-            'is_protected' => ['sometimes', 'boolean'],
-        ]);
+        $data = $request->validate($this->bookRules());
 
         $data['is_protected'] = $request->boolean('is_protected', true);
 
@@ -70,15 +62,7 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book): RedirectResponse
     {
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'author' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'image_url' => ['required', 'url'],
-            'description' => ['required', 'string', 'min:10'],
-            'page_count' => ['required', 'integer', 'min:1'],
-            'is_protected' => ['sometimes', 'boolean'],
-        ]);
+        $data = $request->validate($this->bookRules($book));
 
         $data['is_protected'] = $request->boolean('is_protected');
 
@@ -96,5 +80,37 @@ class BookController extends Controller
         });
 
         return redirect()->route('admin.books.index')->with('success', 'Kitap silindi.');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function bookRules(?Book $book = null): array
+    {
+        return [
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                function (string $attribute, mixed $value, \Closure $fail) use ($book): void {
+                    $normalized = mb_strtolower(trim((string) $value));
+
+                    $exists = Book::query()
+                        ->whereRaw('LOWER(TRIM(title)) = ?', [$normalized])
+                        ->when($book, fn ($query) => $query->where('id', '!=', $book->id))
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('Bu kitap zaten eklenmiş.');
+                    }
+                },
+            ],
+            'author' => ['required', 'string', 'max:255'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'image_url' => ['required', 'url'],
+            'description' => ['required', 'string', 'min:10'],
+            'page_count' => ['required', 'integer', 'min:1'],
+            'is_protected' => ['sometimes', 'boolean'],
+        ];
     }
 }

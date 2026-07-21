@@ -21,7 +21,7 @@ class PostController extends Controller
 
         $post = Post::query()
             ->whereKey($post->id)
-            ->with(['user', 'book'])
+            ->with(['user', 'book', 'comments.user'])
             ->withLikeMeta($viewer)
             ->firstOrFail();
 

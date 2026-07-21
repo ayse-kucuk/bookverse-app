@@ -21,7 +21,7 @@ class FeedController extends Controller
             ->paginate(15);
 
         $books = Book::orderBy('title')->get(['id', 'title', 'author']);
-        $exploreBooks = Book::with('category')->latest()->take(4)->get();
+        $exploreBooks = Book::with('category')->latest()->take(3)->get();
 
         return view('feed', [
             'posts' => $posts,
