@@ -80,7 +80,7 @@ class ProfileTest extends TestCase
 
     public function test_profile_photo_can_be_uploaded(): void
     {
-        Storage::fake('public');
+        Storage::fake(User::profilePhotosDisk());
 
         $user = User::factory()->create();
         $file = UploadedFile::fake()->image('avatar.jpg');
@@ -101,7 +101,8 @@ class ProfileTest extends TestCase
         $user->refresh();
 
         $this->assertNotNull($user->profile_photo_path);
-        Storage::disk('public')->assertExists($user->profile_photo_path);
+        Storage::disk(User::profilePhotosDisk())->assertExists($user->profile_photo_path);
+        $this->assertNotNull($user->profilePhotoUrl());
     }
 
     public function test_user_can_delete_their_account(): void

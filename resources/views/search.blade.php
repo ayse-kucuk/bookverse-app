@@ -67,7 +67,7 @@
                                 <a href="{{ route('users.show', $user) }}" class="bv-card bv-card-interactive flex items-center gap-3 rounded-2xl p-4 transition">
                                     <div class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-\[#f3f0eb\] to-\[#f9f8f6\] text-lg ring-2 ring-\[#e8e4de\]">
                                         @if($user->profile_photo_path)
-                                            <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="" class="h-full w-full object-cover">
+                                            <img src="{{ $user->profilePhotoUrl() }}" alt="" class="h-full w-full object-cover">
                                         @else
                                             👤
                                         @endif

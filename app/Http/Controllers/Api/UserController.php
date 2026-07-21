@@ -40,6 +40,7 @@ class UserController extends Controller
                 'name' => $user->name,
                 'account_visibility' => $user->account_visibility,
                 'profile_photo_path' => $user->profile_photo_path,
+                'profile_photo_url' => $user->profilePhotoUrl(),
                 'followers_count' => $user->followers_count,
                 'following_count' => $user->following_count,
                 'posts_count' => $user->posts_count,

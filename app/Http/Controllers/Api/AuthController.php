@@ -141,6 +141,7 @@ class AuthController extends Controller
             'is_admin' => (bool) $user->is_admin,
             'account_visibility' => $user->account_visibility,
             'profile_photo_path' => $user->profile_photo_path,
+            'profile_photo_url' => $user->profilePhotoUrl(),
             'reading_goal' => $user->readingGoalStats(),
         ];
     }

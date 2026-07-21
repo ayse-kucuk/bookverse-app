@@ -22,7 +22,7 @@
                    class="bv-card flex items-start gap-4 p-4 transition hover:bg-[#f9f8f6] {{ $notification->isUnread() ? 'border-l-2 border-l-[#a67c52]' : '' }}">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] bg-[#f3f0eb] text-sm">
                         @if($notification->actor->profile_photo_path)
-                            <img src="{{ asset('storage/' . $notification->actor->profile_photo_path) }}" alt="" class="h-full w-full object-cover">
+                            <img src="{{ $notification->actor->profilePhotoUrl() }}" alt="" class="h-full w-full object-cover">
                         @else
                             @php
                                 $icon = match($notification->type) {

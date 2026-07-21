@@ -54,7 +54,7 @@
                         <div class="flex items-center gap-2">
                             <a href="{{ route('users.show', $comment->user) }}" class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-\[#f3f0eb\] to-\[#f9f8f6\] text-sm ring-1 ring-\[#e8e4de\]">
                                 @if($comment->user->profile_photo_path)
-                                    <img src="{{ asset('storage/' . $comment->user->profile_photo_path) }}" alt="{{ $comment->user->name }}" class="h-full w-full object-cover">
+                                    <img src="{{ $comment->user->profilePhotoUrl() }}" alt="{{ $comment->user->name }}" class="h-full w-full object-cover">
                                 @else
                                     👤
                                 @endif

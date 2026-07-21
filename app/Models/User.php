@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -175,6 +176,25 @@ class User extends Authenticatable
     {
         return $this->reading_goal
             && $this->reading_goal_year === now()->year;
+    }
+
+    public static function profilePhotosDisk(): string
+    {
+        return config('filesystems.profile_photos_disk', 'public');
+    }
+
+    public function profilePhotoUrl(): ?string
+    {
+        if (! $this->profile_photo_path) {
+            return null;
+        }
+
+        if (str_starts_with($this->profile_photo_path, 'http://')
+            || str_starts_with($this->profile_photo_path, 'https://')) {
+            return $this->profile_photo_path;
+        }
+
+        return Storage::disk(static::profilePhotosDisk())->url($this->profile_photo_path);
     }
 
     /**

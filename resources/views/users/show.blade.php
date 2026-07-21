@@ -14,7 +14,7 @@
             <div class="flex items-center gap-5">
                 <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de]">
                     @if($profileUser->profile_photo_path)
-                        <img src="{{ asset('storage/' . $profileUser->profile_photo_path) }}" alt="{{ $profileUser->name }}" class="h-full w-full object-cover">
+                        <img src="{{ $profileUser->profilePhotoUrl() }}" alt="{{ $profileUser->name }}" class="h-full w-full object-cover">
                     @else
                         <span class="flex h-full w-full items-center justify-center bg-[#f3f0eb] text-4xl">📖</span>
                     @endif

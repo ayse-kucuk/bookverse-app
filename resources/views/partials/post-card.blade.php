@@ -3,7 +3,7 @@
         <div class="flex items-center gap-3">
             <a href="{{ route('users.show', $post->user) }}" class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] transition duration-200 group-hover:border-[#c4a574]">
                 @if($post->user->profile_photo_path)
-                    <img src="{{ asset('storage/' . $post->user->profile_photo_path) }}" alt="{{ $post->user->name }}" class="h-full w-full object-cover">
+                    <img src="{{ $post->user->profilePhotoUrl() }}" alt="{{ $post->user->name }}" class="h-full w-full object-cover">
                 @else
                     <span class="flex h-full w-full items-center justify-center bg-[#f3f0eb] text-lg">👤</span>
                 @endif

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,11 +32,16 @@ class ProfileController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('profile_photo')) {
+            $disk = User::profilePhotosDisk();
+
             if ($user->profile_photo_path) {
-                Storage::disk('public')->delete($user->profile_photo_path);
+                Storage::disk($disk)->delete($user->profile_photo_path);
             }
 
-            $path = $request->file('profile_photo')->store('profile-photos', 'public');
+            $path = $request->file('profile_photo')->store('profile-photos', [
+                'disk' => $disk,
+                'visibility' => 'public',
+            ]);
             $data['profile_photo_path'] = $path;
         }
 

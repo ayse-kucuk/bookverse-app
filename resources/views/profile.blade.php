@@ -13,7 +13,7 @@
         <div class="bv-card bv-animate-up flex w-full items-center gap-5 p-7">
             @if($user->profile_photo_path)
                 <button type="button" onclick="openPhotoLightbox()" class="bv-photo-trigger flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de]" aria-label="Profil fotoğrafını büyüt">
-                    <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="{{ $user->name }}" class="h-full w-full object-cover">
+                    <img src="{{ $user->profilePhotoUrl() }}" alt="{{ $user->name }}" class="h-full w-full object-cover">
                 </button>
             @else
                 <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] bg-[#f3f0eb] text-4xl">
@@ -63,7 +63,7 @@
             <button type="button" onclick="closePhotoLightbox()" class="absolute right-4 top-4 z-20 border border-[#e8e4de] bg-white px-3 py-1.5 text-xs font-bold text-[#6b6560] shadow-lg transition hover:text-bv-accent sm:right-8 sm:top-8">
                 ✕ Kapat
             </button>
-            <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="{{ $user->name }}"
+            <img src="{{ $user->profilePhotoUrl() }}" alt="{{ $user->name }}"
                 class="bv-photo-lightbox-img relative z-10 max-h-[80vh] w-auto max-w-[min(90vw,28rem)] object-contain shadow-2xl sm:max-h-[85vh] sm:max-w-lg">
         </div>
     @endif

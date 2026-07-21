@@ -84,7 +84,7 @@
                     <details class="relative">
                         <summary class="list-none flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] transition hover:border-[#c4a574]">
                             @if(Auth::user()->profile_photo_path)
-                                <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" alt="{{ Auth::user()->name }}" class="h-full w-full object-cover">
+                                <img src="{{ Auth::user()->profilePhotoUrl() }}" alt="{{ Auth::user()->name }}" class="h-full w-full object-cover">
                             @else
                                 <span class="flex h-full w-full items-center justify-center bg-[#f3f0eb] text-xs text-[#6b6560]">👤</span>
                             @endif
