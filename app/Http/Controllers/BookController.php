@@ -24,10 +24,7 @@ class BookController extends Controller
         }
 
         if ($search = trim((string) $request->input('q', ''))) {
-            $query->where(function ($builder) use ($search) {
-                $builder->where('title', 'like', "%{$search}%")
-                    ->orWhere('author', 'like', "%{$search}%");
-            });
+            $query->matchingSearchTerm($search);
         }
 
         $sort = $request->input('sort', 'latest');

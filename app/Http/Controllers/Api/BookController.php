@@ -32,10 +32,7 @@ class BookController extends Controller
             ->withRatingStats();
 
         if ($search = trim((string) $request->input('q', ''))) {
-            $query->where(function ($builder) use ($search) {
-                $builder->where('title', 'like', "%{$search}%")
-                    ->orWhere('author', 'like', "%{$search}%");
-            });
+            $query->matchingSearchTerm($search);
         }
 
         if ($categoryId = $request->input('category')) {

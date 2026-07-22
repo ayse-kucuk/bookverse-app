@@ -58,6 +58,22 @@ class Book extends Model
             ]);
     }
 
+    public function scopeMatchingSearchTerm($query, string $term)
+    {
+        $term = mb_strtolower(trim($term));
+
+        if ($term === '') {
+            return $query;
+        }
+
+        $pattern = '%'.$term.'%';
+
+        return $query->where(function ($builder) use ($pattern) {
+            $builder->whereRaw('LOWER(title) LIKE ?', [$pattern])
+                ->orWhereRaw('LOWER(author) LIKE ?', [$pattern]);
+        });
+    }
+
     public function formattedAverageRating(): ?string
     {
         if (! $this->average_rating) {

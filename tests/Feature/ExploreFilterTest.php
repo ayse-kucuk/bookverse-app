@@ -26,6 +26,18 @@ class ExploreFilterTest extends TestCase
             ->assertDontSee('Bilim Kitabi');
     }
 
+    public function test_explore_search_is_case_insensitive(): void
+    {
+        $category = Category::create(['name' => 'Bilim Kurgu']);
+        Book::factory()->create(['title' => 'Dune', 'author' => 'Frank Herbert', 'category_id' => $category->id]);
+        Book::factory()->create(['title' => '1984', 'author' => 'George Orwell', 'category_id' => $category->id]);
+
+        $this->get(route('explore', ['q' => 'dune']))
+            ->assertOk()
+            ->assertSee('Dune')
+            ->assertDontSee('1984');
+    }
+
     public function test_user_profile_shows_shelves(): void
     {
         $user = User::factory()->create(['account_visibility' => User::VISIBILITY_PUBLIC]);

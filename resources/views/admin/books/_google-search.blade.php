@@ -135,7 +135,7 @@
 
         if (typeof showToast === 'function') {
             if (book.image_url) {
-                showToast('Kitap bilgileri Google Books\'tan alındı', 'success');
+                showToast('Kitap bilgileri alındı', 'success');
             } else {
                 showToast('Kapak bulunamadı — lütfen kapak URL\'si girin', 'info', 4500);
             }
@@ -185,8 +185,15 @@
 
             try {
                 const data = await fetchResults(query);
-                setStatus('');
-                renderResults(data.results ?? []);
+                const results = data.results ?? [];
+
+                if (results.length) {
+                    setStatus(data.message ?? (data.source === 'open_library' ? 'Open Library sonuçları' : ''), false);
+                } else {
+                    setStatus(data.message ?? 'Sonuç bulunamadı.', true);
+                }
+
+                renderResults(results);
             } catch (err) {
                 if (err.name === 'AbortError') return;
                 hideResults();

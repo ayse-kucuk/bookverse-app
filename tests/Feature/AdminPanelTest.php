@@ -152,6 +152,19 @@ class AdminPanelTest extends TestCase
         $this->assertTrue($admin->fresh()->is_admin);
     }
 
+    public function test_admin_book_search_is_case_insensitive(): void
+    {
+        $category = Category::create(['name' => 'Bilim Kurgu']);
+        Book::factory()->create(['title' => 'Dune', 'category_id' => $category->id]);
+        Book::factory()->create(['title' => '1984', 'category_id' => $category->id]);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.books.index', ['q' => 'dune']))
+            ->assertOk()
+            ->assertSee('Dune')
+            ->assertDontSee('1984');
+    }
+
     public function test_guest_cannot_search_google_books(): void
     {
         $this->getJson(route('admin.books.google-search', ['q' => 'dune']))
@@ -192,10 +205,39 @@ class AdminPanelTest extends TestCase
         $this->actingAs($this->admin())
             ->getJson(route('admin.books.google-search', ['q' => 'dune']))
             ->assertOk()
+            ->assertJsonPath('source', 'google_books')
             ->assertJsonPath('results.0.title', 'Dune')
             ->assertJsonPath('results.0.author', 'Frank Herbert')
             ->assertJsonPath('results.0.page_count', 688)
             ->assertJsonPath('results.0.published_year', 1965);
+    }
+
+    public function test_admin_google_books_search_falls_back_to_open_library(): void
+    {
+        \Illuminate\Support\Facades\Http::fake([
+            'www.googleapis.com/books/v1/volumes*' => \Illuminate\Support\Facades\Http::response([
+                'error' => ['code' => 429, 'message' => 'Quota exceeded'],
+            ], 429),
+            'openlibrary.org/search.json*' => \Illuminate\Support\Facades\Http::response([
+                'docs' => [
+                    [
+                        'key' => '/works/OL10263W',
+                        'title' => 'Küçük Prens',
+                        'author_name' => ['Antoine de Saint-Exupéry'],
+                        'first_publish_year' => 1943,
+                        'cover_i' => 10708272,
+                        'number_of_pages_median' => 96,
+                    ],
+                ],
+            ]),
+        ]);
+
+        $this->actingAs($this->admin())
+            ->getJson(route('admin.books.google-search', ['q' => 'kucuk prens']))
+            ->assertOk()
+            ->assertJsonPath('source', 'open_library')
+            ->assertJsonPath('results.0.title', 'Küçük Prens')
+            ->assertJsonPath('results.0.author', 'Antoine de Saint-Exupéry');
     }
 
     public function test_google_books_search_requires_minimum_query_length(): void

@@ -18,10 +18,7 @@ class BookController extends Controller
         $query = Book::query()->with('category')->withCount('comments');
 
         if ($search = trim((string) $request->input('q', ''))) {
-            $query->where(function ($builder) use ($search) {
-                $builder->where('title', 'like', "%{$search}%")
-                    ->orWhere('author', 'like', "%{$search}%");
-            });
+            $query->matchingSearchTerm($search);
         }
 
         if ($categoryId = $request->input('category')) {
@@ -49,9 +46,7 @@ class BookController extends Controller
             'q' => ['required', 'string', 'min:2', 'max:200'],
         ]);
 
-        return response()->json([
-            'results' => $googleBooks->search($validated['q']),
-        ]);
+        return response()->json($googleBooks->search($validated['q']));
     }
 
     public function store(Request $request): RedirectResponse
