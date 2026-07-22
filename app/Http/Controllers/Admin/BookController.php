@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Category;
+use App\Services\GoogleBooksService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -38,6 +40,17 @@ class BookController extends Controller
     {
         return view('admin.books.create', [
             'categories' => Category::orderBy('name')->get(),
+        ]);
+    }
+
+    public function searchGoogleBooks(Request $request, GoogleBooksService $googleBooks): JsonResponse
+    {
+        $validated = $request->validate([
+            'q' => ['required', 'string', 'min:2', 'max:200'],
+        ]);
+
+        return response()->json([
+            'results' => $googleBooks->search($validated['q']),
         ]);
     }
 

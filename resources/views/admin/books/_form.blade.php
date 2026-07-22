@@ -2,6 +2,8 @@
     $book = $book ?? null;
 @endphp
 
+@include('admin.books._google-search')
+
 <div>
     <label class="mb-1 block text-xs font-bold text-slate-600">Kitap adı</label>
     <input type="text" name="title" value="{{ old('title', $book?->title) }}" required class="bv-input w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm @error('title') border-rose-400 @enderror">

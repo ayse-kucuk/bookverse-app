@@ -151,4 +151,58 @@ class AdminPanelTest extends TestCase
 
         $this->assertTrue($admin->fresh()->is_admin);
     }
+
+    public function test_guest_cannot_search_google_books(): void
+    {
+        $this->getJson(route('admin.books.google-search', ['q' => 'dune']))
+            ->assertUnauthorized();
+    }
+
+    public function test_non_admin_cannot_search_google_books(): void
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+
+        $this->actingAs($user)
+            ->getJson(route('admin.books.google-search', ['q' => 'dune']))
+            ->assertForbidden();
+    }
+
+    public function test_admin_can_search_google_books(): void
+    {
+        \Illuminate\Support\Facades\Http::fake([
+            'www.googleapis.com/books/v1/volumes*' => \Illuminate\Support\Facades\Http::response([
+                'items' => [
+                    [
+                        'id' => 'abc123',
+                        'volumeInfo' => [
+                            'title' => 'Dune',
+                            'authors' => ['Frank Herbert'],
+                            'description' => 'Çöl gezegeni Arrakis üzerine epik bir bilim kurgu romanı.',
+                            'pageCount' => 688,
+                            'publishedDate' => '1965-08-01',
+                            'imageLinks' => [
+                                'thumbnail' => 'http://books.google.com/thumb.jpg',
+                            ],
+                        ],
+                    ],
+                ],
+            ]),
+        ]);
+
+        $this->actingAs($this->admin())
+            ->getJson(route('admin.books.google-search', ['q' => 'dune']))
+            ->assertOk()
+            ->assertJsonPath('results.0.title', 'Dune')
+            ->assertJsonPath('results.0.author', 'Frank Herbert')
+            ->assertJsonPath('results.0.page_count', 688)
+            ->assertJsonPath('results.0.published_year', 1965);
+    }
+
+    public function test_google_books_search_requires_minimum_query_length(): void
+    {
+        $this->actingAs($this->admin())
+            ->getJson(route('admin.books.google-search', ['q' => 'a']))
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['q']);
+    }
 }

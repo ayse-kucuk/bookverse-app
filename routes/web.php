@@ -68,6 +68,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/books', [AdminBookController::class, 'index'])->name('books.index');
+    Route::get('/books/google-search', [AdminBookController::class, 'searchGoogleBooks'])->name('books.google-search');
     Route::get('/books/create', [AdminBookController::class, 'create'])->name('books.create');
     Route::post('/books', [AdminBookController::class, 'store'])->name('books.store');
     Route::get('/books/{book}/edit', [AdminBookController::class, 'edit'])->name('books.edit');
