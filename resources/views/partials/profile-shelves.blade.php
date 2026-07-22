@@ -4,13 +4,13 @@
         'reading' => [
             'label' => 'Okuyorum',
             'books' => $reading,
-            'empty' => $isOwnProfile ? 'Şu an aktif olarak okunan kitap yok.' : 'Şu an okuduğu kitap yok.',
+            'empty' => $isOwnProfile ? 'Şu an okunan kitap yok.' : 'Şu an okuduğu kitap yok.',
             'fallback' => '📖',
         ],
         'will-read' => [
             'label' => 'Okuyacağım',
             'books' => $willRead,
-            'empty' => $isOwnProfile ? 'Kütüphaneye henüz gelecek kitap eklenmemiş.' : 'Okuma listesinde kitap yok.',
+            'empty' => $isOwnProfile ? 'Listede kitap yok.' : 'Okuma listesinde kitap yok.',
             'fallback' => '📌',
         ],
         'read' => [
@@ -20,81 +20,78 @@
             'fallback' => '✓',
         ],
     ];
-    $previewLimit = 4;
+    $previewLimit = 20;
 @endphp
 
-<div class="bv-stagger w-full space-y-4">
-    @foreach($shelves as $key => $shelf)
-        <section class="bv-card w-full p-5">
-            <div class="mb-4 flex items-center justify-between gap-3">
-                <div>
-                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Raf</p>
-                    <h2 class="bv-display mt-0.5 text-xl font-medium text-[#1c1c1c]">{{ $shelf['label'] }}</h2>
+<section class="bv-card bv-animate-up w-full p-4 sm:p-5">
+    <p class="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Kitaplık</p>
+
+    <div class="divide-y divide-[#f0ece6]">
+        @foreach($shelves as $key => $shelf)
+            <div class="py-3.5 first:pt-0 last:pb-0">
+                <div class="mb-2.5 flex items-center justify-between gap-2">
+                    <h2 class="text-sm font-semibold text-[#1c1c1c]">{{ $shelf['label'] }}</h2>
+                    @if($shelf['books']->isNotEmpty())
+                        <button type="button" onclick="openShelfPanel('{{ $key }}')" class="shrink-0 text-[10px] font-bold uppercase tracking-wider text-bv-accent transition hover:opacity-70">
+                            Tümü ({{ $shelf['books']->count() }})
+                        </button>
+                    @endif
                 </div>
-                @if($shelf['books']->isNotEmpty())
-                    <button type="button" onclick="openShelfPanel('{{ $key }}')" class="text-[10px] font-bold uppercase tracking-wider text-bv-accent transition hover:opacity-70">
-                        Tümü ({{ $shelf['books']->count() }}) →
-                    </button>
+
+                @if($shelf['books']->isEmpty())
+                    <p class="text-[11px] italic text-[#9a948d]">{{ $shelf['empty'] }}</p>
+                @else
+                    <div
+                        data-shelf-scroll
+                        class="flex cursor-grab gap-2.5 overflow-x-auto pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    >
+                        @foreach($shelf['books']->take($previewLimit) as $book)
+                            <a href="{{ route('books.show', $book) }}" class="group w-14 shrink-0 sm:w-16" title="{{ $book->title }}" draggable="false">
+                                <div class="aspect-[2/3] w-full overflow-hidden border border-[#e8e4de] bg-[#1c1c1c] transition duration-200 group-hover:border-[#c4a574]">
+                                    @if($book->image_url)
+                                        <img src="{{ $book->image_url }}" alt="{{ $book->title }}" class="pointer-events-none h-full w-full object-cover" draggable="false">
+                                    @else
+                                        <div class="flex h-full items-center justify-center text-xs text-white">{{ $shelf['fallback'] }}</div>
+                                    @endif
+                                </div>
+                                <p class="mt-1 line-clamp-2 text-[9px] leading-snug text-[#9a948d] transition group-hover:text-bv-accent sm:text-[10px]">{{ $book->title }}</p>
+                            </a>
+                        @endforeach
+                        @if($shelf['books']->count() > $previewLimit)
+                            <button type="button" onclick="openShelfPanel('{{ $key }}')" class="flex w-14 shrink-0 flex-col items-center justify-center self-start border border-dashed border-[#e8e4de] bg-[#f9f8f6] text-[9px] font-bold uppercase tracking-wide text-bv-accent transition hover:bg-[#f3f0eb] sm:w-16 sm:aspect-[2/3]">
+                                +{{ $shelf['books']->count() - $previewLimit }}
+                            </button>
+                        @endif
+                    </div>
                 @endif
             </div>
-
-            @if($shelf['books']->isEmpty())
-                <p class="border border-dashed border-[#e8e4de] bg-[#f9f8f6] px-4 py-4 text-center text-xs text-[#9a948d]">{{ $shelf['empty'] }}</p>
-            @else
-                <div class="grid grid-cols-4 gap-3 sm:gap-4">
-                    @foreach($shelf['books']->take($previewLimit) as $book)
-                        <a href="{{ route('books.show', $book) }}" class="group block" title="{{ $book->title }}">
-                            <div class="aspect-[2/3] w-full overflow-hidden border border-[#e8e4de] bg-[#1c1c1c] transition duration-300 group-hover:border-[#c4a574]">
-                                @if($book->image_url)
-                                    <img src="{{ $book->image_url }}" alt="{{ $book->title }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.04]">
-                                @else
-                                    <div class="flex h-full items-center justify-center text-lg text-white">{{ $shelf['fallback'] }}</div>
-                                @endif
-                            </div>
-                            <p class="mt-1.5 line-clamp-2 text-[11px] font-medium text-[#6b6560] transition group-hover:text-bv-accent">{{ $book->title }}</p>
-                        </a>
-                    @endforeach
-                </div>
-
-                @if($shelf['books']->count() > $previewLimit)
-                    <button type="button" onclick="openShelfPanel('{{ $key }}')" class="mt-4 w-full border border-dashed border-[#e8e4de] bg-[#f9f8f6] py-2.5 text-[10px] font-bold uppercase tracking-wider text-bv-accent transition hover:bg-[#f3f0eb]">
-                        +{{ $shelf['books']->count() - $previewLimit }} kitap daha
-                    </button>
-                @endif
-            @endif
-        </section>
-    @endforeach
-</div>
+        @endforeach
+    </div>
+</section>
 
 @foreach($shelves as $key => $shelf)
     <div id="shelf-panel-{{ $key }}" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-labelledby="shelf-title-{{ $key }}">
         <div class="absolute inset-0 bg-[#1c1c1c]/60 backdrop-blur-sm" onclick="closeShelfPanel()"></div>
-        <div class="absolute inset-x-4 top-20 bottom-6 mx-auto flex max-w-2xl flex-col overflow-hidden border border-[#e8e4de] bg-white shadow-2xl sm:inset-x-8">
-            <div class="flex shrink-0 items-center justify-between border-b border-[#e8e4de] bg-white px-5 py-4">
-                <div>
-                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Raf</p>
-                    <h2 id="shelf-title-{{ $key }}" class="bv-display text-xl font-medium text-[#1c1c1c]">{{ $shelf['label'] }}</h2>
-                </div>
-                <button type="button" onclick="closeShelfPanel()" class="border border-[#e8e4de] px-3 py-1.5 text-xs font-bold text-[#6b6560] transition hover:text-bv-accent">Kapat ✕</button>
+        <div class="absolute inset-x-4 top-20 bottom-6 mx-auto flex max-w-lg flex-col overflow-hidden border border-[#e8e4de] bg-white shadow-2xl sm:inset-x-8">
+            <div class="flex shrink-0 items-center justify-between border-b border-[#e8e4de] bg-white px-4 py-3">
+                <h2 id="shelf-title-{{ $key }}" class="text-sm font-semibold text-[#1c1c1c]">{{ $shelf['label'] }}</h2>
+                <button type="button" onclick="closeShelfPanel()" class="text-xs font-bold text-[#9a948d] transition hover:text-bv-accent">Kapat ✕</button>
             </div>
-            <div class="flex-1 overflow-y-auto px-5 py-5">
+            <div class="flex-1 overflow-y-auto px-4 py-4">
                 @if($shelf['books']->isEmpty())
-                    <p class="py-10 text-center text-sm italic text-[#9a948d]">{{ $shelf['empty'] }}</p>
+                    <p class="py-8 text-center text-sm italic text-[#9a948d]">{{ $shelf['empty'] }}</p>
                 @else
-                    <div class="grid grid-cols-3 gap-4 pb-4 sm:grid-cols-4">
+                    <div class="grid grid-cols-4 gap-3 pb-2 sm:grid-cols-5">
                         @foreach($shelf['books'] as $book)
-                            <a href="{{ route('books.show', $book) }}" class="group block space-y-1.5">
-                                <div class="aspect-[2/3] w-full overflow-hidden border border-[#e8e4de] bg-[#1c1c1c] transition duration-300 group-hover:border-[#c4a574]">
+                            <a href="{{ route('books.show', $book) }}" class="group block">
+                                <div class="aspect-[2/3] w-full overflow-hidden border border-[#e8e4de] bg-[#1c1c1c] transition group-hover:border-[#c4a574]">
                                     @if($book->image_url)
-                                        <img src="{{ $book->image_url }}" alt="{{ $book->title }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]">
+                                        <img src="{{ $book->image_url }}" alt="{{ $book->title }}" class="h-full w-full object-cover">
                                     @else
-                                        <div class="flex h-full flex-col items-center justify-center p-2 text-center text-white">
-                                            <span class="mb-1 block text-2xl">{{ $shelf['fallback'] }}</span>
-                                            <p class="line-clamp-2 px-1 text-[10px] font-bold">{{ $book->title }}</p>
-                                        </div>
+                                        <div class="flex h-full items-center justify-center text-sm text-white">{{ $shelf['fallback'] }}</div>
                                     @endif
                                 </div>
-                                <p class="line-clamp-2 text-xs font-medium text-[#6b6560] transition group-hover:text-bv-accent">{{ $book->title }}</p>
+                                <p class="mt-1 line-clamp-2 text-[10px] font-medium text-[#6b6560] group-hover:text-bv-accent">{{ $book->title }}</p>
                             </a>
                         @endforeach
                     </div>
@@ -128,4 +125,38 @@ function closeShelfPanel() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeShelfPanel(); });
+
+// Yatay sürükleyerek kaydırma
+document.querySelectorAll('[data-shelf-scroll]').forEach((row) => {
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let moved = false;
+
+    row.addEventListener('mousedown', (e) => {
+        isDown = true;
+        moved = false;
+        startX = e.pageX - row.offsetLeft;
+        scrollLeft = row.scrollLeft;
+    });
+
+    row.addEventListener('mouseleave', () => { isDown = false; });
+    row.addEventListener('mouseup', () => { isDown = false; });
+
+    row.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - row.offsetLeft;
+        const walk = (x - startX) * 1.2;
+        if (Math.abs(walk) > 4) moved = true;
+        row.scrollLeft = scrollLeft - walk;
+    });
+
+    row.addEventListener('click', (e) => {
+        if (moved) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, true);
+});
 </script>

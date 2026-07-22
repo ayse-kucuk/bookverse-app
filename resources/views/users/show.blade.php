@@ -7,20 +7,21 @@
 
     @include('partials.site-nav')
 
-    <main class="bv-page space-y-6 py-10">
+    <main class="bv-page space-y-5 py-10">
 
+        <div class="grid gap-5 lg:grid-cols-2 lg:items-start">
         {{-- Profil kartı --}}
-        <section class="bv-card bv-animate-up flex items-center justify-between gap-5 p-7">
-            <div class="flex items-center gap-5">
-                <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de]">
+        <section class="bv-card bv-animate-up flex h-full w-full items-center justify-between gap-5 p-5 sm:p-6">
+            <div class="flex items-center gap-5 sm:gap-6">
+                <div class="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#e8e4de] sm:h-32 sm:w-32">
                     @if($profileUser->profile_photo_path)
                         <img src="{{ $profileUser->profilePhotoUrl() }}" alt="{{ $profileUser->name }}" class="h-full w-full object-cover">
                     @else
-                        <span class="flex h-full w-full items-center justify-center bg-[#f3f0eb] text-4xl">📖</span>
+                        <span class="flex h-full w-full items-center justify-center bg-[#f3f0eb] text-5xl">📖</span>
                     @endif
                 </div>
                 <div>
-                    <h1 class="bv-display text-3xl font-medium text-[#1c1c1c]">{{ $profileUser->name }}</h1>
+                    <h1 class="bv-display text-2xl font-medium text-[#1c1c1c] sm:text-3xl">{{ $profileUser->name }}</h1>
                     @include('partials.profile-stats', ['profileUser' => $profileUser])
                 </div>
             </div>
@@ -50,6 +51,7 @@
         @if($profileUser->hasActiveReadingGoal())
             @include('partials.reading-goal', ['profileUser' => $profileUser, 'isOwnProfile' => false])
         @endif
+        </div>
 
         @include('partials.profile-shelves', [
             'reading' => $reading,

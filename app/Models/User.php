@@ -194,7 +194,17 @@ class User extends Authenticatable
             return $this->profile_photo_path;
         }
 
-        return Storage::disk(static::profilePhotosDisk())->url($this->profile_photo_path);
+        $disk = static::profilePhotosDisk();
+
+        // Local public disk: use asset() so Herd/local host works (APP_URL can be wrong).
+        if ($disk === 'public') {
+            $url = asset('storage/'.$this->profile_photo_path);
+        } else {
+            $url = Storage::disk($disk)->url($this->profile_photo_path);
+        }
+
+        // Bust browser cache after photo change.
+        return $url.(str_contains($url, '?') ? '&' : '?').'v='.$this->updated_at?->timestamp;
     }
 
     /**

@@ -7,29 +7,31 @@
 
     @include('partials.site-nav')
 
-    <main class="bv-page space-y-6 py-10">
+    <main class="bv-page space-y-5 py-10">
 
+        <div class="grid gap-5 lg:grid-cols-2 lg:items-start">
         {{-- Profil kartı --}}
-        <div class="bv-card bv-animate-up flex w-full items-center gap-5 p-7">
+        <section class="bv-card bv-animate-up flex h-full w-full items-center gap-6 p-5 sm:p-6">
             @if($user->profile_photo_path)
-                <button type="button" onclick="openPhotoLightbox()" class="bv-photo-trigger flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de]" aria-label="Profil fotoğrafını büyüt">
+                <button type="button" onclick="openPhotoLightbox()" class="bv-photo-trigger flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#e8e4de] sm:h-32 sm:w-32" aria-label="Profil fotoğrafını büyüt">
                     <img src="{{ $user->profilePhotoUrl() }}" alt="{{ $user->name }}" class="h-full w-full object-cover">
                 </button>
             @else
-                <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] bg-[#f3f0eb] text-4xl">
+                <div class="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#e8e4de] bg-[#f3f0eb] text-5xl sm:h-32 sm:w-32">
                     📖
                 </div>
             @endif
             <div class="min-w-0 flex-1">
-                <h1 class="bv-display text-3xl font-medium text-[#1c1c1c]">{{ $user->name }}</h1>
+                <h1 class="bv-display text-2xl font-medium text-[#1c1c1c] sm:text-3xl">{{ $user->name }}</h1>
                 @include('partials.profile-stats', ['user' => $user])
                 <div class="mt-3">
                     <a href="{{ route('account.settings') }}" class="text-[10px] font-bold uppercase tracking-wider text-[#9a948d] transition hover:text-bv-accent">Hesap Ayarları →</a>
                 </div>
             </div>
-        </div>
+        </section>
 
         @include('partials.reading-goal', ['user' => $user, 'isOwnProfile' => true])
+        </div>
 
         @include('partials.profile-shelves', [
             'reading' => $reading,

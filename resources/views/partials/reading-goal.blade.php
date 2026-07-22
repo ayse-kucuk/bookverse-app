@@ -6,11 +6,11 @@
 @endphp
 
 @if($profileUser)
-    <section class="bv-card w-full p-6">
-        <div class="mb-5 flex items-start justify-between gap-3">
+    <section class="bv-card h-full w-full p-5 sm:p-6">
+        <div class="mb-4 flex items-start justify-between gap-3">
             <div>
                 <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Okuma Hedefi</p>
-                <h2 class="bv-display mt-1 text-2xl font-medium text-[#1c1c1c]">{{ $year }}</h2>
+                <h2 class="mt-0.5 text-lg font-semibold text-[#1c1c1c]">{{ $year }}</h2>
             </div>
             @if($goal['completed'] ?? false)
                 <span class="border border-emerald-200 bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">Tamamlandı</span>
@@ -18,11 +18,11 @@
         </div>
 
         @if($goal['target'])
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <div class="flex items-end justify-between gap-2">
                     <div>
-                        <span class="bv-display text-5xl font-light text-[#1c1c1c]">{{ $goal['current'] }}</span>
-                        <span class="ml-1 text-lg text-[#9a948d]">/ {{ $goal['target'] }} kitap</span>
+                        <span class="bv-display text-3xl font-light text-[#1c1c1c] sm:text-4xl">{{ $goal['current'] }}</span>
+                        <span class="ml-1 text-sm text-[#9a948d]">/ {{ $goal['target'] }} kitap</span>
                     </div>
                     <span class="text-sm font-bold text-bv-accent">%{{ $goal['percentage'] }}</span>
                 </div>

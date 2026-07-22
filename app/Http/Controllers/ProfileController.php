@@ -29,20 +29,19 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-        $data = $request->validated();
+        $data = $request->safe()->except(['profile_photo']);
 
         if ($request->hasFile('profile_photo')) {
             $disk = User::profilePhotosDisk();
 
-            if ($user->profile_photo_path) {
+            if ($user->profile_photo_path
+                && ! str_starts_with($user->profile_photo_path, 'http://')
+                && ! str_starts_with($user->profile_photo_path, 'https://')) {
                 Storage::disk($disk)->delete($user->profile_photo_path);
             }
 
-            $path = $request->file('profile_photo')->store('profile-photos', [
-                'disk' => $disk,
-                'visibility' => 'public',
-            ]);
-            $data['profile_photo_path'] = $path;
+            $data['profile_photo_path'] = $request->file('profile_photo')
+                ->store('profile-photos', $disk);
         }
 
         $user->fill($data);
