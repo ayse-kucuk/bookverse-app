@@ -34,14 +34,40 @@ class ProfileController extends Controller
         if ($request->hasFile('profile_photo')) {
             $disk = User::profilePhotosDisk();
 
-            if ($user->profile_photo_path
-                && ! str_starts_with($user->profile_photo_path, 'http://')
-                && ! str_starts_with($user->profile_photo_path, 'https://')) {
-                Storage::disk($disk)->delete($user->profile_photo_path);
-            }
+            try {
+                if ($user->profile_photo_path
+                    && ! str_starts_with($user->profile_photo_path, 'http://')
+                    && ! str_starts_with($user->profile_photo_path, 'https://')) {
+                    Storage::disk($disk)->delete($user->profile_photo_path);
+                }
 
-            $data['profile_photo_path'] = $request->file('profile_photo')
-                ->store('profile-photos', $disk);
+                $path = $request->file('profile_photo')->store(
+                    'avatars',
+                    [
+                        'disk' => $disk,
+                        'visibility' => 'public',
+                    ]
+                );
+
+                // On cloud disks store a full public URL so images keep working
+                // even if the server filesystem is ephemeral (Render).
+                if ($disk !== 'public') {
+                    $base = rtrim((string) config("filesystems.disks.{$disk}.url"), '/');
+                    $data['profile_photo_path'] = $base !== ''
+                        ? $base.'/'.ltrim($path, '/')
+                        : Storage::disk($disk)->url($path);
+                } else {
+                    $data['profile_photo_path'] = $path;
+                }
+            } catch (\Throwable $e) {
+                report($e);
+
+                return Redirect::route('account.settings')
+                    ->withInput()
+                    ->withErrors([
+                        'profile_photo' => 'Profil fotoğrafı yüklenemedi. Canlı ortamda Supabase Storage ayarlarını kontrol et.',
+                    ]);
+            }
         }
 
         $user->fill($data);

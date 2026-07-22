@@ -180,7 +180,22 @@ class User extends Authenticatable
 
     public static function profilePhotosDisk(): string
     {
-        return config('filesystems.profile_photos_disk', 'public');
+        $configured = config('filesystems.profile_photos_disk', 'public');
+
+        // Explicit override from env.
+        if ($configured && $configured !== 'public') {
+            return $configured;
+        }
+
+        // Auto-use Supabase when S3 credentials are present (production).
+        if (config('filesystems.disks.supabase.key')
+            && config('filesystems.disks.supabase.secret')
+            && config('filesystems.disks.supabase.bucket')
+            && config('filesystems.disks.supabase.endpoint')) {
+            return 'supabase';
+        }
+
+        return 'public';
     }
 
     public function profilePhotoUrl(): ?string
@@ -191,20 +206,28 @@ class User extends Authenticatable
 
         if (str_starts_with($this->profile_photo_path, 'http://')
             || str_starts_with($this->profile_photo_path, 'https://')) {
-            return $this->profile_photo_path;
+            return $this->appendCacheBuster($this->profile_photo_path);
         }
 
         $disk = static::profilePhotosDisk();
 
-        // Local public disk: use asset() so Herd/local host works (APP_URL can be wrong).
         if ($disk === 'public') {
             $url = asset('storage/'.$this->profile_photo_path);
         } else {
-            $url = Storage::disk($disk)->url($this->profile_photo_path);
+            $base = rtrim((string) config("filesystems.disks.{$disk}.url"), '/');
+            $url = $base !== ''
+                ? $base.'/'.ltrim($this->profile_photo_path, '/')
+                : Storage::disk($disk)->url($this->profile_photo_path);
         }
 
-        // Bust browser cache after photo change.
-        return $url.(str_contains($url, '?') ? '&' : '?').'v='.$this->updated_at?->timestamp;
+        return $this->appendCacheBuster($url);
+    }
+
+    private function appendCacheBuster(string $url): string
+    {
+        $version = $this->updated_at?->timestamp ?? time();
+
+        return $url.(str_contains($url, '?') ? '&' : '?').'v='.$version;
     }
 
     /**

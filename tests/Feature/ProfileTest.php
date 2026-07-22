@@ -101,8 +101,12 @@ class ProfileTest extends TestCase
         $user->refresh();
 
         $this->assertNotNull($user->profile_photo_path);
-        Storage::disk(User::profilePhotosDisk())->assertExists($user->profile_photo_path);
         $this->assertNotNull($user->profilePhotoUrl());
+
+        // Local/public disk stores a relative path that exists on the fake disk.
+        if (! str_starts_with($user->profile_photo_path, 'http')) {
+            Storage::disk(User::profilePhotosDisk())->assertExists($user->profile_photo_path);
+        }
     }
 
     public function test_user_can_delete_their_account(): void
