@@ -42,7 +42,7 @@
 
             @include('partials.ads-left')
 
-            <main class="order-1 min-w-0 space-y-5 sm:space-y-6">
+            <main class="order-1 min-w-0 space-y-5 sm:space-y-6 xl:order-none">
                 @auth
                     <section class="bv-card bv-animate-up p-4 sm:p-6 sm:p-7">
                         <h1 class="bv-display mb-1 text-xl font-medium text-[#1c1c1c] sm:text-2xl">Ne paylaşmak istersin?</h1>
