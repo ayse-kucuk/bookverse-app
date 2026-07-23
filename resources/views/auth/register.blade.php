@@ -39,6 +39,24 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <!-- 2FA opt-in -->
+        <div class="mt-4 rounded-md border border-gray-200 bg-gray-50 p-3">
+            <label for="enable_two_factor" class="inline-flex items-start gap-2">
+                <input
+                    id="enable_two_factor"
+                    type="checkbox"
+                    name="enable_two_factor"
+                    value="1"
+                    class="mt-0.5 rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                    @checked(old('enable_two_factor'))
+                >
+                <span>
+                    <span class="block text-sm font-medium text-gray-800">{{ __('Çift aşamalı doğrulama (2FA) kurulsun') }}</span>
+                    <span class="mt-0.5 block text-xs text-gray-600">{{ __('Kayıttan sonra Authenticator uygulamasıyla kurulumu tamamlayabilirsin. İstersen şimdi atlayıp sonra da açabilirsin.') }}</span>
+                </span>
+            </label>
+        </div>
+
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                 {{ __('Zaten kayıtlı mısınız?') }}

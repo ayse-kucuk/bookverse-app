@@ -34,6 +34,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'enable_two_factor' => ['sometimes', 'boolean'],
         ]);
 
         $user = User::create([
@@ -45,6 +46,12 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        if ($request->boolean('enable_two_factor')) {
+            $request->session()->put('two_factor_onboarding', true);
+
+            return redirect()->route('two-factor.setup');
+        }
 
         return redirect('/');
     }

@@ -28,4 +28,36 @@ class RegistrationTest extends TestCase
         $this->assertAuthenticated();
         $response->assertRedirect(route('home', absolute: false));
     }
+
+    public function test_registration_with_two_factor_redirects_to_setup(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test2fa@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'enable_two_factor' => '1',
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('two-factor.setup'));
+        $this->assertTrue(session('two_factor_onboarding'));
+    }
+
+    public function test_user_can_skip_two_factor_setup_during_onboarding(): void
+    {
+        $this->post('/register', [
+            'name' => 'Skip User',
+            'email' => 'skip2fa@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'enable_two_factor' => '1',
+        ]);
+
+        $this->post(route('two-factor.setup.skip'))
+            ->assertRedirect('/');
+
+        $this->assertFalse(auth()->user()->fresh()->hasTwoFactorEnabled());
+        $this->assertFalse(session()->has('two_factor_onboarding'));
+    }
 }

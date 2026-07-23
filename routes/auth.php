@@ -61,6 +61,16 @@ Route::middleware('auth')->group(function () {
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
+    Route::get('two-factor/setup', [\App\Http\Controllers\Auth\TwoFactorSetupController::class, 'show'])
+        ->name('two-factor.setup');
+    Route::post('two-factor/setup', [\App\Http\Controllers\Auth\TwoFactorSetupController::class, 'confirm'])
+        ->middleware('throttle:6,1')
+        ->name('two-factor.setup.confirm');
+    Route::post('two-factor/setup/finish', [\App\Http\Controllers\Auth\TwoFactorSetupController::class, 'finish'])
+        ->name('two-factor.setup.finish');
+    Route::post('two-factor/setup/skip', [\App\Http\Controllers\Auth\TwoFactorSetupController::class, 'skip'])
+        ->name('two-factor.setup.skip');
+
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });
