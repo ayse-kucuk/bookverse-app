@@ -75,6 +75,8 @@
             </form>
         </div>
 
+        @include('partials.two-factor-settings')
+
     </main>
 
 </body>

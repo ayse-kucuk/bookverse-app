@@ -60,6 +60,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/account-settings', [ProfileController::class, 'edit'])->name('account.settings');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('/two-factor/setup', [\App\Http\Controllers\TwoFactorController::class, 'setup'])->name('two-factor.setup');
+    Route::post('/two-factor/confirm', [\App\Http\Controllers\TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
+    Route::post('/two-factor/disable', [\App\Http\Controllers\TwoFactorController::class, 'disable'])->name('two-factor.disable');
 });
 
 Route::get('/users/{user}', [UserProfileController::class, 'show'])->name('users.show');
