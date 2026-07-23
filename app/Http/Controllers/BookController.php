@@ -79,9 +79,10 @@ class BookController extends Controller
 
         $user = auth()->user();
         $existing = $user->books()->where('books.id', $id)->first();
+        $rating = (int) $request->rating;
 
         $pivotData = [
-            'rating' => (int) $request->rating,
+            'rating' => $rating,
             'is_protected' => $existing ? (bool) $existing->pivot->is_protected : false,
             'status' => $existing?->pivot->status ?? 'okuyacagim',
         ];
@@ -90,11 +91,18 @@ class BookController extends Controller
             $id => $pivotData,
         ]);
 
+        // Varsa incelemedeki yıldızı da senkron tut
+        Comment::query()
+            ->where('book_id', $id)
+            ->where('user_id', $user->id)
+            ->whereNotNull('rating')
+            ->update(['rating' => $rating]);
+
         if ($request->expectsJson()) {
             $book = Book::withRatingStats()->findOrFail($id);
 
             return response()->json([
-                'user_rating' => (int) $request->rating,
+                'user_rating' => $rating,
                 'average_rating' => $book->average_rating ? round((float) $book->average_rating, 1) : null,
                 'ratings_count' => (int) $book->ratings_count,
             ]);
@@ -113,34 +121,75 @@ class BookController extends Controller
             ->findOrFail($id);
 
         $userRating = null;
+        $userReview = null;
+
         if (auth()->check()) {
             $userRating = auth()->user()->books()
                 ->where('books.id', $id)
                 ->first()
                 ?->pivot
                 ?->rating;
+
+            $userReview = $book->comments->firstWhere('user_id', auth()->id());
         }
 
         return view('books', [
             'book' => $book,
             'userRating' => $userRating,
+            'userReview' => $userReview,
         ]);
     }
 
-    // Yorum Kaydetme Metodu
+    // Kitap incelemesi (yıldız + metin) — kullanıcı başına bir kayıt
     public function storeComment(Request $request, $id)
     {
-        $request->validate([
-            'content' => 'required|string|min:3|max:1000',
+        $validated = $request->validate([
+            'content' => ['required', 'string', 'min:10', 'max:2000'],
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
         ]);
 
-        Comment::create([
-            'user_id' => auth()->id(), 
-            'book_id' => $id,          
-            'content' => $request->content,
+        $user = auth()->user();
+        $rating = (int) $validated['rating'];
+
+        $comment = Comment::query()->updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'book_id' => $id,
+            ],
+            [
+                'content' => $validated['content'],
+                'rating' => $rating,
+            ]
+        );
+
+        $existing = $user->books()->where('books.id', $id)->first();
+
+        $user->books()->syncWithoutDetaching([
+            $id => [
+                'rating' => $rating,
+                'status' => $existing?->pivot->status ?? 'okuyacagim',
+                'is_protected' => $existing ? (bool) $existing->pivot->is_protected : false,
+            ],
         ]);
 
-        return redirect()->back()->with('success', 'Yorumunuz başarıyla eklendi!');
+        $message = $comment->wasRecentlyCreated
+            ? 'İncelemen yayınlandı!'
+            : 'İncelemen güncellendi!';
+
+        return redirect()->back()->with('success', $message);
+    }
+
+    public function destroyComment(Request $request, $id, Comment $comment): RedirectResponse
+    {
+        abort_unless($comment->book_id == $id, 404);
+        abort_unless(
+            (int) $comment->user_id === (int) auth()->id() || (bool) auth()->user()?->is_admin,
+            403
+        );
+
+        $comment->delete();
+
+        return redirect()->back()->with('success', 'İnceleme silindi.');
     }
 
     // Profil Sayfası Metodu

@@ -6,6 +6,7 @@ Sosyal okuma platformu — kitap keşfet, rafına ekle, düşüncelerini paylaş
 
 - **Akış** — Alıntı ve düşünce paylaşımları, beğeni, yorum
 - **Raflar** — Okuyorum / Okuyacağım / Okudum
+- **İncelemeler** — Kitap detayında yıldız + kısa inceleme (kullanıcı başına bir)
 - **Keşfet & Ara** — Kitap keşfi ve arama
 - **Profil & takip** — Kullanıcı profilleri, takip sistemi, yıllık okuma hedefi
 - **Bildirimler** — Beğeni, yorum ve takip bildirimleri
@@ -19,7 +20,7 @@ Sosyal okuma platformu — kitap keşfet, rafına ekle, düşüncelerini paylaş
 | Katman | Teknoloji |
 |--------|-----------|
 | Backend | Laravel 12, PHP 8.2+ |
-| Frontend | Blade, Tailwind CSS, Vite, Alpine.js |
+| Frontend | Blade, Tailwind CSS, Vite, Alpine.js (mobil uyumlu) |
 | Auth | Laravel Breeze, Sanctum, Google2FA |
 | Veritabanı | PostgreSQL (Supabase) / SQLite (lokal) |
 | Depolama | Supabase Storage / local public disk |

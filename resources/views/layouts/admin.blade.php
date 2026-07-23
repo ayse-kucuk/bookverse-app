@@ -6,24 +6,24 @@
 <body class="bv-mesh min-h-screen antialiased selection:bg-[#e8dfd2]">
     @include('partials.site-nav')
 
-    <div class="bv-page flex flex-col gap-6 py-8 lg:flex-row">
+    <div class="bv-page flex flex-col gap-5 py-6 sm:gap-6 sm:py-8 lg:flex-row">
         <aside class="w-full shrink-0 lg:w-56">
-            <div class="bv-card sticky top-24 rounded-2xl p-3">
+            <div class="bv-card rounded-2xl p-3 lg:sticky lg:top-24">
                 <p class="mb-2 px-3 pt-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Yönetim</p>
-                <nav class="space-y-0.5 text-sm font-semibold">
-                    <a href="{{ route('admin.dashboard') }}" class="block rounded-xl px-3 py-2.5 transition {{ request()->routeIs('admin.dashboard') ? 'bv-nav-active' : 'text-slate-600 hover:bg-\[#f3f0eb\] hover:text-bv-accent' }}">
+                <nav class="flex gap-1 overflow-x-auto pb-1 text-sm font-semibold [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex-col lg:space-y-0.5 lg:overflow-visible lg:pb-0">
+                    <a href="{{ route('admin.dashboard') }}" class="shrink-0 whitespace-nowrap rounded-xl px-3 py-2.5 transition {{ request()->routeIs('admin.dashboard') ? 'bv-nav-active' : 'text-slate-600 hover:bg-[#f3f0eb] hover:text-bv-accent' }}">
                         Genel bakış
                     </a>
-                    <a href="{{ route('admin.books.index') }}" class="block rounded-xl px-3 py-2.5 transition {{ request()->routeIs('admin.books.*') ? 'bv-nav-active' : 'text-slate-600 hover:bg-\[#f3f0eb\] hover:text-bv-accent' }}">
+                    <a href="{{ route('admin.books.index') }}" class="shrink-0 whitespace-nowrap rounded-xl px-3 py-2.5 transition {{ request()->routeIs('admin.books.*') ? 'bv-nav-active' : 'text-slate-600 hover:bg-[#f3f0eb] hover:text-bv-accent' }}">
                         Kitaplar
                     </a>
-                    <a href="{{ route('admin.categories.index') }}" class="block rounded-xl px-3 py-2.5 transition {{ request()->routeIs('admin.categories.*') ? 'bv-nav-active' : 'text-slate-600 hover:bg-\[#f3f0eb\] hover:text-bv-accent' }}">
+                    <a href="{{ route('admin.categories.index') }}" class="shrink-0 whitespace-nowrap rounded-xl px-3 py-2.5 transition {{ request()->routeIs('admin.categories.*') ? 'bv-nav-active' : 'text-slate-600 hover:bg-[#f3f0eb] hover:text-bv-accent' }}">
                         Kategoriler
                     </a>
-                    <a href="{{ route('admin.users.index') }}" class="block rounded-xl px-3 py-2.5 transition {{ request()->routeIs('admin.users.*') ? 'bv-nav-active' : 'text-slate-600 hover:bg-\[#f3f0eb\] hover:text-bv-accent' }}">
+                    <a href="{{ route('admin.users.index') }}" class="shrink-0 whitespace-nowrap rounded-xl px-3 py-2.5 transition {{ request()->routeIs('admin.users.*') ? 'bv-nav-active' : 'text-slate-600 hover:bg-[#f3f0eb] hover:text-bv-accent' }}">
                         Kullanıcılar
                     </a>
-                    <a href="{{ url('/api/documentation') }}" target="_blank" rel="noopener" class="block rounded-xl px-3 py-2.5 text-slate-600 transition hover:bg-\[#f3f0eb\] hover:text-bv-accent">
+                    <a href="{{ url('/api/documentation') }}" target="_blank" rel="noopener" class="shrink-0 whitespace-nowrap rounded-xl px-3 py-2.5 text-slate-600 transition hover:bg-[#f3f0eb] hover:text-bv-accent">
                         API Docs ↗
                     </a>
                 </nav>

@@ -7,7 +7,7 @@
 
     @include('partials.site-nav')
 
-    <header class="bv-page bv-animate-up pb-8 pt-12 text-center sm:pt-16">
+    <header class="bv-page bv-animate-up pb-6 pt-8 text-center sm:pb-8 sm:pt-16">
         <span class="bv-badge mb-4">Kitap Koleksiyonu</span>
         <h1 class="bv-hero-title">
             <span class="bv-gradient-text">Okuma Dünyası</span>

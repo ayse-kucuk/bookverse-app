@@ -7,14 +7,14 @@
 
     @include('partials.site-nav')
 
-    <main class="bv-page py-10">
+    <main class="bv-page py-6 sm:py-10">
 
-        <div class="mb-8 bv-animate-up">
+        <div class="mb-6 bv-animate-up sm:mb-8">
             <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Ayarlar</p>
-            <h1 class="bv-display mt-1 text-4xl font-medium text-[#1c1c1c]">Hesap Ayarları</h1>
+            <h1 class="bv-display mt-1 text-3xl font-medium text-[#1c1c1c] sm:text-4xl">Hesap Ayarları</h1>
         </div>
 
-        <div class="bv-card bv-animate-up p-7 sm:p-8">
+        <div class="bv-card bv-animate-up p-5 sm:p-7 sm:p-8">
             <div class="mb-8 flex items-center gap-5 border-b border-[#f0ece6] pb-7">
                 <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] bg-[#f3f0eb] text-3xl">
                     @if($user->profile_photo_path)

@@ -12,23 +12,23 @@
 
     <div
         id="ai-recommend-modal"
-        class="fixed inset-0 z-[250] hidden items-center justify-center bg-black/40 p-4"
+        class="fixed inset-0 z-[250] hidden items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4"
         role="dialog"
         aria-modal="true"
         aria-label="AI Kitap Önerileri"
     >
-        <div class="bv-surface-matte flex max-h-[min(92vh,880px)] w-full max-w-3xl flex-col overflow-hidden rounded-2xl shadow-xl">
-            <div class="flex shrink-0 items-center justify-between border-b border-[#e8e4de] px-5 py-4">
+        <div class="bv-surface-matte flex max-h-[min(92dvh,880px)] w-full max-w-3xl flex-col overflow-hidden rounded-t-2xl shadow-xl sm:rounded-2xl">
+            <div class="flex shrink-0 items-center justify-between border-b border-[#e8e4de] px-4 py-3 sm:px-5 sm:py-4">
                 <div>
                     <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Akıllı Kitap Asistanı</p>
-                    <h3 class="mt-1 text-lg font-bold text-[#1c1c1c]">Kişiselleştirilmiş öneriler</h3>
+                    <h3 class="mt-1 text-base font-bold text-[#1c1c1c] sm:text-lg">Kişiselleştirilmiş öneriler</h3>
                 </div>
-                <button type="button" class="text-[#9a948d] hover:text-[#1c1c1c]" data-ai-close aria-label="Kapat">
+                <button type="button" class="flex h-10 w-10 items-center justify-center text-[#9a948d] hover:text-[#1c1c1c]" data-ai-close aria-label="Kapat">
                     ✕
                 </button>
             </div>
 
-            <div class="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain p-5">
+            <div class="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain p-4 sm:p-5" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));">
                 <form id="ai-recommend-form" class="space-y-4" data-ai-endpoint="{{ route('ai.recommend') }}">
                     <div>
                         <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="ai-mood">Ruh hali</label>

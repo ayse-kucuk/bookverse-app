@@ -1,5 +1,5 @@
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>{{ $title ?? 'Bookverse' }}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,13 +51,52 @@
     /* Tam genişlik sayfa kabuğu — minimum kenar boşluğu */
     .bv-page {
         width: 100%;
-        padding-inline: 0.75rem;
+        max-width: 100%;
+        padding-inline: 0.875rem;
+        box-sizing: border-box;
     }
     @media (min-width: 640px) {
         .bv-page { padding-inline: 1rem; }
     }
     @media (min-width: 1280px) {
         .bv-page { padding-inline: 1.25rem; }
+    }
+
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    /* iOS'ta input zoom'unu engelle */
+    @media (max-width: 639px) {
+        input.bv-input,
+        select.bv-input,
+        textarea.bv-input,
+        input[type="search"],
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="url"],
+        input[type="number"],
+        select,
+        textarea {
+            font-size: 16px !important;
+        }
+    }
+
+    .bv-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .bv-touch-target {
+        min-height: 44px;
+        min-width: 44px;
     }
 
     .bv-card {
@@ -181,7 +220,12 @@
     .ring-bv { --tw-ring-color: var(--bv-accent-light); }
 
     @media (max-width: 639px) {
-        body { padding-bottom: 4.75rem; }
+        body {
+            padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+        }
+        .bv-hero-title {
+            font-size: clamp(2rem, 9vw, 2.75rem);
+        }
     }
 
     .bv-photo-lightbox { animation: bv-backdrop-in 0.3s ease both; }
@@ -254,9 +298,14 @@
     }
     @media (max-width: 639px) {
         #bv-toast-container {
-            bottom: 5.5rem; /* mobil nav'ın üstünde */
+            bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
             left: 1rem;
             right: 1rem;
+        }
+        .bv-toast {
+            min-width: 0;
+            max-width: none;
+            width: 100%;
         }
     }
     .bv-toast {

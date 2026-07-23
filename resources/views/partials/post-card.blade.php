@@ -1,19 +1,19 @@
-<article class="bv-card bv-card-interactive group p-5">
-    <div class="mb-4 flex items-start justify-between gap-3">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('users.show', $post->user) }}" class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] transition duration-200 group-hover:border-[#c4a574]">
+<article class="bv-card bv-card-interactive group p-4 sm:p-5">
+    <div class="mb-3 flex items-start justify-between gap-2 sm:mb-4 sm:gap-3">
+        <div class="flex min-w-0 items-center gap-3">
+            <a href="{{ route('users.show', $post->user) }}" class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] transition duration-200 group-hover:border-[#c4a574] sm:h-11 sm:w-11">
                 @if($post->user->profile_photo_path)
                     <img src="{{ $post->user->profilePhotoUrl() }}" alt="{{ $post->user->name }}" class="h-full w-full object-cover">
                 @else
                     <span class="flex h-full w-full items-center justify-center bg-[#f3f0eb] text-lg">👤</span>
                 @endif
             </a>
-            <div>
-                <a href="{{ route('users.show', $post->user) }}" class="text-sm font-semibold text-[#1c1c1c] transition hover:text-bv-accent">{{ $post->user->name }}</a>
+            <div class="min-w-0">
+                <a href="{{ route('users.show', $post->user) }}" class="block truncate text-sm font-semibold text-[#1c1c1c] transition hover:text-bv-accent">{{ $post->user->name }}</a>
                 <p class="text-xs text-[#9a948d]">{{ $post->created_at->diffForHumans() }}</p>
             </div>
         </div>
-        <span class="shrink-0 border border-[#e8e4de] bg-[#f9f8f6] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider {{ $post->isQuote() ? 'text-amber-800' : 'text-bv-accent' }}">
+        <span class="shrink-0 border border-[#e8e4de] bg-[#f9f8f6] px-2 py-1 text-[10px] font-bold uppercase tracking-wider {{ $post->isQuote() ? 'text-amber-800' : 'text-bv-accent' }}">
             {{ $post->isQuote() ? 'Alıntı' : 'Düşünce' }}
         </span>
     </div>

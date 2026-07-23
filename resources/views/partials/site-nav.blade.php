@@ -5,10 +5,10 @@
     </div>
 </div>
 
-<nav class="bv-animate-nav sticky top-0 z-50 border-b border-[#e8e4de] bg-[#f9f8f6]/90 backdrop-blur-md">
+<nav class="bv-animate-nav sticky top-0 z-50 border-b border-[#e8e4de] bg-[#f9f8f6]/90 backdrop-blur-md" style="padding-top: env(safe-area-inset-top, 0px);">
     <div class="bv-page">
-        <div class="flex items-center gap-4 py-4 sm:gap-6">
-            <a href="{{ route('home') }}" class="group flex shrink-0 items-center gap-3">
+        <div class="flex items-center gap-2 py-3 sm:gap-4 sm:py-4">
+            <a href="{{ route('home') }}" class="group flex shrink-0 items-center gap-2 sm:gap-3">
                 @include('partials.logo', ['size' => 'md'])
                 <span class="bv-display hidden text-xl font-semibold tracking-[0.22em] text-[#1c1c1c] sm:inline">
                     BOOKVERSE
@@ -34,24 +34,25 @@
                             value="{{ request('q') }}"
                             placeholder="Ara..."
                             autocomplete="off"
+                            enterkeyhint="search"
                             data-live-search-input
                             data-suggest-url="{{ route('search.suggest') }}"
-                            class="bv-input w-full border border-[#e8e4de] bg-white py-2 pl-9 pr-4 text-xs font-medium text-[#2a2a2a] transition placeholder:text-[#9a948d] sm:text-sm"
+                            class="bv-input w-full border border-[#e8e4de] bg-white py-2.5 pl-9 pr-3 text-sm font-medium text-[#2a2a2a] transition placeholder:text-[#9a948d]"
                         >
                     </div>
                 </form>
                 <div
                     data-live-search-dropdown
-                    class="bv-surface-matte absolute left-0 right-0 top-[calc(100%+0.5rem)] z-[100] hidden max-h-80 overflow-y-auto py-2"
+                    class="bv-surface-matte absolute left-0 right-0 top-[calc(100%+0.5rem)] z-[100] hidden max-h-[min(70vh,20rem)] overflow-y-auto py-2 sm:max-h-80"
                     role="listbox"
                     aria-label="Arama önerileri"
                 ></div>
             </div>
 
-            <div class="flex shrink-0 items-center gap-1 sm:gap-2">
+            <div class="flex shrink-0 items-center gap-0.5 sm:gap-2">
                 @auth
-                    <details class="relative" data-notification-dropdown>
-                        <summary class="list-none relative flex h-9 w-9 cursor-pointer items-center justify-center text-[#6b6560] transition hover:text-[#1c1c1c]" aria-label="Bildirimler" data-notification-bell data-unread-count="{{ $navUnreadCount ?? 0 }}">
+                    <details class="relative hidden sm:block" data-notification-dropdown>
+                        <summary class="list-none relative flex h-10 w-10 cursor-pointer items-center justify-center text-[#6b6560] transition hover:text-[#1c1c1c]" aria-label="Bildirimler" data-notification-bell data-unread-count="{{ $navUnreadCount ?? 0 }}">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
                             <span data-notification-badge class="{{ ($navUnreadCount ?? 0) > 0 ? '' : 'hidden' }} absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center bg-[#1c1c1c] px-1 text-[9px] font-bold text-white">{{ ($navUnreadCount ?? 0) > 9 ? '9+' : ($navUnreadCount ?? 0) }}</span>
                         </summary>
@@ -82,14 +83,14 @@
                     </details>
 
                     <details class="relative">
-                        <summary class="list-none flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] transition hover:border-[#c4a574]">
+                        <summary class="list-none flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-[#e8e4de] transition hover:border-[#c4a574]">
                             @if(Auth::user()->profile_photo_path)
                                 <img src="{{ Auth::user()->profilePhotoUrl() }}" alt="{{ Auth::user()->name }}" class="h-full w-full object-cover">
                             @else
                                 <span class="flex h-full w-full items-center justify-center bg-[#f3f0eb] text-xs text-[#6b6560]">👤</span>
                             @endif
                         </summary>
-                        <div class="bv-surface-matte absolute right-0 mt-3 w-48 overflow-hidden p-1.5">
+                        <div class="bv-surface-matte absolute right-0 z-[110] mt-3 w-48 overflow-hidden p-1.5">
                             <a href="{{ route('profile') }}" class="block px-3 py-2.5 text-xs font-medium text-[#6b6560] transition hover:bg-[#f3f0eb] hover:text-[#1c1c1c]">Profil</a>
                             @if(Auth::user()->is_admin)
                                 <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2.5 text-xs font-medium text-bv-accent transition hover:bg-[#f3f0eb]">Yönetim Paneli</a>
@@ -104,8 +105,8 @@
                 @endauth
 
                 @guest
-                    <a href="{{ route('login') }}" class="hidden px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#6b6560] transition hover:text-[#1c1c1c] md:inline">Giriş</a>
-                    <a href="{{ route('register') }}" class="bv-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider sm:text-xs">Kayıt</a>
+                    <a href="{{ route('login') }}" class="hidden px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#6b6560] transition hover:text-[#1c1c1c] sm:inline">Giriş</a>
+                    <a href="{{ route('register') }}" class="bv-btn px-3 py-2 text-[10px] font-bold uppercase tracking-wider sm:px-4 sm:text-xs">Kayıt</a>
                 @endguest
             </div>
         </div>

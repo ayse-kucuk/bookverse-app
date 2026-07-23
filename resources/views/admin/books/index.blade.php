@@ -27,7 +27,7 @@
     </form>
 
     <div class="bv-card overflow-hidden rounded-2xl">
-        <div class="overflow-x-auto">
+        <div class="bv-table-wrap">
             <table class="min-w-full text-left text-sm">
                 <thead class="border-b border-slate-100 bg-slate-50/80 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                     <tr>

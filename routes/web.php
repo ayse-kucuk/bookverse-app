@@ -29,6 +29,7 @@ Route::get('/ara/oneriler', [SearchController::class, 'suggest'])->name('search.
 
 Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
 Route::post('/books/{id}/comment', [BookController::class, 'storeComment'])->middleware('auth')->name('books.comment.store');
+Route::delete('/books/{id}/comment/{comment}', [BookController::class, 'destroyComment'])->middleware('auth')->name('books.comment.destroy');
 Route::post('/books/{id}/status', [BookController::class, 'updateStatus'])->middleware('auth')->name('books.status.update');
 Route::post('/books/{id}/rating', [BookController::class, 'updateRating'])->middleware('auth')->name('books.rating.update');
 

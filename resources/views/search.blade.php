@@ -7,9 +7,9 @@
 
     @include('partials.site-nav')
 
-    <main class="bv-page space-y-8 py-8">
+    <main class="bv-page space-y-6 py-6 sm:space-y-8 sm:py-8">
         <header class="bv-animate-up">
-            <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Arama</h1>
+            <h1 class="text-xl font-extrabold tracking-tight text-slate-800 sm:text-2xl">Arama</h1>
             @if(mb_strlen($query) >= 1)
                 <p class="mt-1 text-sm text-slate-500">
                     <span class="font-semibold text-bv-accent">"{{ $query }}"</span> için sonuçlar
@@ -19,9 +19,23 @@
             @endif
         </header>
 
+        <form action="{{ route('search') }}" method="GET" class="bv-card rounded-2xl p-4 sm:hidden">
+            <label for="mobile-search" class="sr-only">Ara</label>
+            <input
+                id="mobile-search"
+                type="search"
+                name="q"
+                value="{{ $query }}"
+                placeholder="Kitap, kullanıcı veya paylaşım..."
+                enterkeyhint="search"
+                class="bv-input w-full border border-[#e8e4de] bg-white px-4 py-3 text-sm"
+            >
+            <button type="submit" class="bv-btn mt-3 w-full rounded-xl py-2.5 text-xs font-bold uppercase tracking-wider text-white">Ara</button>
+        </form>
+
         @if(mb_strlen($query) < 1)
-            <div class="bv-card rounded-2xl p-10 text-center text-sm text-slate-400">
-                Navbar'daki arama kutusunu kullanarak kitap, kullanıcı veya paylaşım ara.
+            <div class="bv-card rounded-2xl p-8 text-center text-sm text-slate-400 sm:p-10">
+                Üstteki arama kutusunu veya bu sayfadaki formu kullanarak ara.
             </div>
         @else
             @php

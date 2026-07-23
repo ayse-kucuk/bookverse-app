@@ -37,16 +37,16 @@
         </section>
     @endguest
 
-    <div class="bv-page py-8 {{ auth()->guest() ? 'pt-0' : 'pt-4' }}">
-        <div class="grid items-start gap-6 xl:grid-cols-[220px_minmax(0,1fr)_280px] xl:gap-8">
+    <div class="bv-page py-6 sm:py-8 {{ auth()->guest() ? 'pt-0' : 'pt-3 sm:pt-4' }}">
+        <div class="grid items-start gap-5 xl:grid-cols-[220px_minmax(0,1fr)_280px] xl:gap-8">
 
             @include('partials.ads-left')
 
-            <main class="min-w-0 space-y-6">
+            <main class="order-1 min-w-0 space-y-5 sm:space-y-6">
                 @auth
-                    <section class="bv-card bv-animate-up p-6 sm:p-7">
-                        <h1 class="bv-display mb-1 text-2xl font-medium text-[#1c1c1c]">Ne paylaşmak istersin?</h1>
-                        <p class="mb-5 text-xs text-[#9a948d]">Düşüncelerini veya sevdiğin alıntıları toplulukla paylaş.</p>
+                    <section class="bv-card bv-animate-up p-4 sm:p-6 sm:p-7">
+                        <h1 class="bv-display mb-1 text-xl font-medium text-[#1c1c1c] sm:text-2xl">Ne paylaşmak istersin?</h1>
+                        <p class="mb-4 text-xs text-[#9a948d] sm:mb-5">Düşüncelerini veya sevdiğin alıntıları toplulukla paylaş.</p>
                         <form action="{{ route('posts.store') }}" method="POST" class="space-y-4">
                             @csrf
                             <div class="flex flex-wrap gap-2">
@@ -100,7 +100,7 @@
                 <div class="pt-2">{{ $posts->links() }}</div>
             </main>
 
-            <aside class="bv-animate-up-delay-2 mx-auto w-full max-w-xs space-y-4 xl:mx-0 xl:max-w-none lg:sticky lg:top-24">
+            <aside class="order-2 mx-auto w-full max-w-md space-y-4 xl:order-none xl:mx-0 xl:max-w-none xl:sticky xl:top-24">
                 <section class="bv-card p-4">
                     <div class="mb-3 flex items-center justify-between gap-2">
                         <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Kitap Önerileri</h2>
@@ -136,7 +136,9 @@
                     @endif
                 </section>
 
-                @include('partials.ads-right')
+                <div class="hidden sm:block">
+                    @include('partials.ads-right')
+                </div>
             </aside>
 
         </div>

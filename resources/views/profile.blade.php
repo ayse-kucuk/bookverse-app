@@ -7,17 +7,17 @@
 
     @include('partials.site-nav')
 
-    <main class="bv-page space-y-5 py-10">
+    <main class="bv-page space-y-5 py-6 sm:py-10">
 
         <div class="grid gap-5 lg:grid-cols-2 lg:items-start">
         {{-- Profil kartı --}}
-        <section class="bv-card bv-animate-up flex h-full w-full items-center gap-6 p-5 sm:p-6">
+        <section class="bv-card bv-animate-up flex h-full w-full flex-col items-center gap-4 p-4 text-center sm:flex-row sm:items-center sm:gap-6 sm:p-6 sm:text-left">
             @if($user->profile_photo_path)
-                <button type="button" onclick="openPhotoLightbox()" class="bv-photo-trigger flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#e8e4de] sm:h-32 sm:w-32" aria-label="Profil fotoğrafını büyüt">
+                <button type="button" onclick="openPhotoLightbox()" class="bv-photo-trigger flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#e8e4de] sm:h-32 sm:w-32" aria-label="Profil fotoğrafını büyüt">
                     <img src="{{ $user->profilePhotoUrl() }}" alt="{{ $user->name }}" class="h-full w-full object-cover">
                 </button>
             @else
-                <div class="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#e8e4de] bg-[#f3f0eb] text-5xl sm:h-32 sm:w-32">
+                <div class="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#e8e4de] bg-[#f3f0eb] text-4xl sm:h-32 sm:w-32 sm:text-5xl">
                     📖
                 </div>
             @endif

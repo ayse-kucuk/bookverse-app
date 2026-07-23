@@ -7,17 +7,17 @@
 
     @include('partials.site-nav')
 
-    <main class="bv-page space-y-5 py-10">
+    <main class="bv-page space-y-5 py-6 sm:py-10">
 
         <div class="grid gap-5 lg:grid-cols-2 lg:items-start">
         {{-- Profil kartı --}}
-        <section class="bv-card bv-animate-up flex h-full w-full items-center justify-between gap-5 p-5 sm:p-6">
-            <div class="flex items-center gap-5 sm:gap-6">
-                <div class="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#e8e4de] sm:h-32 sm:w-32">
+        <section class="bv-card bv-animate-up flex h-full w-full flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:p-6">
+            <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-center sm:gap-6 sm:text-left">
+                <div class="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[#e8e4de] sm:h-32 sm:w-32">
                     @if($profileUser->profile_photo_path)
                         <img src="{{ $profileUser->profilePhotoUrl() }}" alt="{{ $profileUser->name }}" class="h-full w-full object-cover">
                     @else
-                        <span class="flex h-full w-full items-center justify-center bg-[#f3f0eb] text-5xl">📖</span>
+                        <span class="flex h-full w-full items-center justify-center bg-[#f3f0eb] text-4xl sm:text-5xl">📖</span>
                     @endif
                 </div>
                 <div>
@@ -29,17 +29,17 @@
             @auth
                 @if($viewer->id !== $profileUser->id)
                     @if($isFollowing)
-                        <form action="{{ route('users.unfollow', $profileUser) }}" method="POST">
+                        <form action="{{ route('users.unfollow', $profileUser) }}" method="POST" class="w-full sm:w-auto">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="border border-[#e8e4de] bg-[#f9f8f6] px-5 py-2 text-xs font-bold uppercase tracking-wider text-[#6b6560] transition hover:border-[#c4a574] hover:text-[#1c1c1c]">
+                            <button type="submit" class="w-full border border-[#e8e4de] bg-[#f9f8f6] px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-[#6b6560] transition hover:border-[#c4a574] hover:text-[#1c1c1c] sm:w-auto">
                                 Takipten çık
                             </button>
                         </form>
                     @else
-                        <form action="{{ route('users.follow', $profileUser) }}" method="POST">
+                        <form action="{{ route('users.follow', $profileUser) }}" method="POST" class="w-full sm:w-auto">
                             @csrf
-                            <button type="submit" class="bv-btn px-5 py-2 text-xs font-bold uppercase tracking-wider">
+                            <button type="submit" class="bv-btn w-full px-5 py-2.5 text-xs font-bold uppercase tracking-wider sm:w-auto">
                                 Takip et
                             </button>
                         </form>

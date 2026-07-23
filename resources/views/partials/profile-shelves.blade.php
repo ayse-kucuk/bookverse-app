@@ -72,7 +72,7 @@
 @foreach($shelves as $key => $shelf)
     <div id="shelf-panel-{{ $key }}" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-labelledby="shelf-title-{{ $key }}">
         <div class="absolute inset-0 bg-[#1c1c1c]/60 backdrop-blur-sm" onclick="closeShelfPanel()"></div>
-        <div class="absolute inset-x-4 top-20 bottom-6 mx-auto flex max-w-lg flex-col overflow-hidden border border-[#e8e4de] bg-white shadow-2xl sm:inset-x-8">
+        <div class="absolute inset-x-3 top-16 bottom-20 mx-auto flex max-w-lg flex-col overflow-hidden border border-[#e8e4de] bg-white shadow-2xl sm:inset-x-8 sm:top-20 sm:bottom-6" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
             <div class="flex shrink-0 items-center justify-between border-b border-[#e8e4de] bg-white px-4 py-3">
                 <h2 id="shelf-title-{{ $key }}" class="text-sm font-semibold text-[#1c1c1c]">{{ $shelf['label'] }}</h2>
                 <button type="button" onclick="closeShelfPanel()" class="text-xs font-bold text-[#9a948d] transition hover:text-bv-accent">Kapat ✕</button>
