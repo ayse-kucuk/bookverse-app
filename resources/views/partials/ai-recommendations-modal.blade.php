@@ -262,7 +262,7 @@
 
                 setLoading(true);
                 hideMessage();
-                resultsEl.innerHTML = '<div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">Öneriler hazırlanıyor...</div>';
+                resultsEl.innerHTML = '<div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">Öneriler hazırlanıyor... Bu 10-20 sn sürebilir.</div>';
 
                 try {
                     const response = await fetch(endpoint, {

@@ -16,7 +16,7 @@ class AiRecommendationTest extends TestCase
     public function test_ai_recommend_returns_recommendations_json_structure(): void
     {
         config()->set('services.gemini.key', 'test-key');
-        config()->set('services.gemini.model', 'gemini-1.5-flash');
+        config()->set('services.gemini.model', 'gemini-flash-latest');
 
         $categoryA = Category::create(['name' => 'Fantastik']);
         $categoryB = Category::create(['name' => 'Bilim Kurgu']);
@@ -66,6 +66,7 @@ class AiRecommendationTest extends TestCase
                                     'text' => json_encode([
                                         'recommendations' => [
                                             [
+                                                'id' => $candidate1->id,
                                                 'title' => $candidate1->title,
                                                 'author' => $candidate1->author,
                                                 'genre' => $categoryA->name,
@@ -73,6 +74,7 @@ class AiRecommendationTest extends TestCase
                                                 'reason' => 'Zengin dünya kurgu ve gerilim dozu yüksek olduğu için sevebilirsin.',
                                             ],
                                             [
+                                                'id' => $candidate2->id,
                                                 'title' => $candidate2->title,
                                                 'author' => $candidate2->author,
                                                 'genre' => $categoryA->name,

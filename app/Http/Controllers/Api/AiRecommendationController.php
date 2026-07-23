@@ -26,30 +26,14 @@ class AiRecommendationController extends Controller
 
         $genreId = $validated['genre_id'] ?? null;
         $limit = (int) ($validated['limit'] ?? 5);
-
-        $categoryIds = [];
         $genreName = null;
+        $categoryIds = [];
 
+        // Sadece kullanıcı açıkça tür seçtiyse adayları o türe daralt.
+        // "Tümü" seçiliyse favori türlerle kısıtlama — AI bağlamdan yararlanır.
         if ($genreId) {
             $categoryIds = [$genreId];
             $genreName = Category::find($genreId)?->name;
-        } elseif ($user) {
-            // Tarihçeden favori türleri çıkar.
-            $categoryIds = Category::query()
-                ->select('categories.id')
-                ->join('books', 'categories.id', '=', 'books.category_id')
-                ->join('book_user', 'books.id', '=', 'book_user.book_id')
-                ->where('book_user.user_id', $user->id)
-                ->whereIn('book_user.status', ['okundu', 'okuyorum'])
-                ->groupBy('categories.id')
-                ->orderByRaw('COUNT(*) DESC')
-                ->limit(3)
-                ->pluck('categories.id')
-                ->all();
-
-            $genreName = $categoryIds
-                ? (string) Category::find($categoryIds[0])?->name
-                : null;
         }
 
         $candidateQuery = Book::query()
@@ -70,18 +54,40 @@ class AiRecommendationController extends Controller
         }
 
         $candidateBooks = $candidateQuery
-            ->latest()
-            ->take(25)
+            ->inRandomOrder()
+            ->take(30)
             ->get(['id', 'title', 'author', 'category_id', 'image_url']);
+
+        // Seçilen türde yeterli aday yoksa tüm kütüphaneye genişlet
+        if ($candidateBooks->count() < 3 && $categoryIds !== []) {
+            $fallbackQuery = Book::query()
+                ->with('category')
+                ->whereNotNull('title')
+                ->whereNotNull('category_id');
+
+            if ($user) {
+                $fallbackQuery->whereNotIn('id', function ($q) use ($user) {
+                    $q->select('book_id')
+                        ->from('book_user')
+                        ->where('user_id', $user->id);
+                });
+            }
+
+            $candidateBooks = $fallbackQuery
+                ->inRandomOrder()
+                ->take(30)
+                ->get(['id', 'title', 'author', 'category_id', 'image_url']);
+        }
 
         if ($candidateBooks->isEmpty()) {
             return response()->json([
                 'recommendations' => [],
-                'message' => 'Şu an öneri için uygun kitap bulunamadı.',
+                'message' => 'Şu an öneri için uygun kitap bulunamadı. Raftaki kitaplar hariç tutuluyor olabilir.',
             ]);
         }
 
         $candidateList = $candidateBooks->map(fn (Book $b) => [
+            'id' => (int) $b->id,
             'title' => (string) $b->title,
             'author' => (string) $b->author,
             'category' => (string) ($b->category?->name ?? 'Genel'),
@@ -94,28 +100,51 @@ class AiRecommendationController extends Controller
             'limit' => $limit,
         ], $candidateList);
 
-        $bookIndex = $candidateBooks->mapWithKeys(function (Book $b) {
-            $key = mb_strtolower(trim((string) $b->title)).'|'.mb_strtolower(trim((string) $b->author));
+        $byId = $candidateBooks->keyBy('id');
+        $byTitleAuthor = $candidateBooks->mapWithKeys(function (Book $b) {
+            $key = $this->normalizeKey($b->title, $b->author);
+
             return [$key => $b];
+        });
+        $byTitle = $candidateBooks->mapWithKeys(function (Book $b) {
+            return [$this->normalizeTitle($b->title) => $b];
         });
 
         $recommendations = [];
+        $usedIds = [];
 
         foreach (($aiResult['recommendations'] ?? []) as $rec) {
-            $title = (string) ($rec['title'] ?? '');
-            $author = (string) ($rec['author'] ?? '');
-            $key = mb_strtolower(trim($title)).'|'.mb_strtolower(trim($author));
-
-            $book = $bookIndex->get($key);
-            if (! $book) {
+            if (! is_array($rec)) {
                 continue;
             }
+
+            $book = null;
+            $recId = (int) ($rec['id'] ?? $rec['book_id'] ?? 0);
+
+            if ($recId > 0 && $byId->has($recId)) {
+                $book = $byId->get($recId);
+            }
+
+            if (! $book) {
+                $key = $this->normalizeKey((string) ($rec['title'] ?? ''), (string) ($rec['author'] ?? ''));
+                $book = $byTitleAuthor->get($key);
+            }
+
+            if (! $book) {
+                $book = $byTitle->get($this->normalizeTitle((string) ($rec['title'] ?? '')));
+            }
+
+            if (! $book || isset($usedIds[$book->id])) {
+                continue;
+            }
+
+            $usedIds[$book->id] = true;
 
             $recommendations[] = [
                 'title' => $book->title,
                 'author' => $book->author,
                 'genre' => $book->category?->name ?? 'Genel',
-                'matchScore' => (int) ($rec['matchScore'] ?? 0),
+                'matchScore' => (int) ($rec['matchScore'] ?? $rec['match_score'] ?? 0),
                 'reason' => (string) ($rec['reason'] ?? ''),
                 'book_id' => $book->id,
                 'image_url' => $book->image_url,
@@ -123,10 +152,44 @@ class AiRecommendationController extends Controller
             ];
         }
 
+        // AI kitap döndü ama eşleşme bozulduysa yedek listeyi kullan
+        if ($recommendations === [] && ($aiResult['recommendations'] ?? []) !== []) {
+            foreach (array_slice($candidateList, 0, $limit) as $index => $candidate) {
+                $book = $byId->get($candidate['id'] ?? 0);
+                if (! $book) {
+                    continue;
+                }
+
+                $recommendations[] = [
+                    'title' => $book->title,
+                    'author' => $book->author,
+                    'genre' => $book->category?->name ?? 'Genel',
+                    'matchScore' => 90 - ($index * 4),
+                    'reason' => 'AI önerisi eşleştirilemedi; kütüphaneden en uygun adaylar gösteriliyor.',
+                    'book_id' => $book->id,
+                    'image_url' => $book->image_url,
+                    'book_url' => route('books.show', $book->id),
+                ];
+            }
+        }
+
         return response()->json([
             'recommendations' => array_values($recommendations),
             'message' => $aiResult['message'] ?? null,
+            'source' => $aiResult['source'] ?? null,
         ]);
     }
-}
 
+    private function normalizeKey(string $title, string $author): string
+    {
+        return $this->normalizeTitle($title).'|'.$this->normalizeTitle($author);
+    }
+
+    private function normalizeTitle(string $value): string
+    {
+        $value = mb_strtolower(trim($value), 'UTF-8');
+        $value = preg_replace('/\s+/u', ' ', $value) ?? $value;
+
+        return $value;
+    }
+}
