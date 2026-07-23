@@ -63,6 +63,7 @@
                 description: form.querySelector('[name="description"]'),
                 pageCount: form.querySelector('[name="page_count"]'),
                 imageUrl: form.querySelector('[name="image_url"]'),
+                categoryId: form.querySelector('[name="category_id"]'),
             };
         }
 
@@ -109,6 +110,9 @@
                     : '<span class="text-xs text-slate-400">📖</span>';
 
                 const year = book.published_year ? `<span class="text-slate-400"> · ${book.published_year}</span>` : '';
+                const category = book.category
+                    ? `<span class="mt-0.5 inline-block rounded-full bg-[#f3f0eb] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-bv-accent">${escapeHtml(book.category)}</span>`
+                    : '';
 
                 return `
                     <button
@@ -121,6 +125,7 @@
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-sm font-bold text-slate-800">${escapeHtml(book.title)}</p>
                             <p class="truncate text-xs text-slate-500">${escapeHtml(book.author)}${year}</p>
+                            ${category}
                         </div>
                     </button>
                 `;
@@ -138,13 +143,27 @@
             if (fields.pageCount) fields.pageCount.value = book.page_count ?? '';
             if (fields.imageUrl) fields.imageUrl.value = book.image_url ?? '';
 
+            let categoryStatus = '';
+            if (fields.categoryId) {
+                if (book.category_id) {
+                    fields.categoryId.value = String(book.category_id);
+                    categoryStatus = ` Kategori: ${book.category}.`;
+                } else {
+                    fields.categoryId.value = '';
+                    const hint = Array.isArray(book.category_labels) && book.category_labels.length
+                        ? ` (kaynak: ${book.category_labels[0]})`
+                        : '';
+                    categoryStatus = ` Kategori eşleşmedi${hint} — lütfen seç.`;
+                }
+            }
+
             hideResults();
             input.value = book.title ?? '';
-            setStatus('Form dolduruldu. Kategoriyi seçip kaydedebilirsin.');
+            setStatus(`Form dolduruldu.${categoryStatus}`);
 
             if (typeof showToast === 'function') {
                 if (book.image_url) {
-                    showToast('Kitap bilgileri alındı', 'success');
+                    showToast(book.category_id ? 'Kitap ve kategori alındı' : 'Kitap bilgileri alındı', 'success');
                 } else {
                     showToast('Kapak bulunamadı — lütfen kapak URL\'si girin', 'info', 4500);
                 }

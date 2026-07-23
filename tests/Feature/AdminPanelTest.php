@@ -182,6 +182,8 @@ class AdminPanelTest extends TestCase
 
     public function test_admin_can_search_google_books(): void
     {
+        $sciFi = Category::create(['name' => 'Bilim Kurgu']);
+
         \Illuminate\Support\Facades\Http::fake([
             'www.googleapis.com/books/v1/volumes*' => \Illuminate\Support\Facades\Http::response([
                 'items' => [
@@ -193,6 +195,7 @@ class AdminPanelTest extends TestCase
                             'description' => 'Çöl gezegeni Arrakis üzerine epik bir bilim kurgu romanı.',
                             'pageCount' => 688,
                             'publishedDate' => '1965-08-01',
+                            'categories' => ['Science Fiction'],
                             'imageLinks' => [
                                 'thumbnail' => 'http://books.google.com/thumb.jpg',
                             ],
@@ -209,7 +212,9 @@ class AdminPanelTest extends TestCase
             ->assertJsonPath('results.0.title', 'Dune')
             ->assertJsonPath('results.0.author', 'Frank Herbert')
             ->assertJsonPath('results.0.page_count', 688)
-            ->assertJsonPath('results.0.published_year', 1965);
+            ->assertJsonPath('results.0.published_year', 1965)
+            ->assertJsonPath('results.0.category_id', $sciFi->id)
+            ->assertJsonPath('results.0.category', 'Bilim Kurgu');
     }
 
     public function test_admin_google_books_search_falls_back_to_open_library(): void
