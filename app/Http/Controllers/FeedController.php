@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -22,11 +23,13 @@ class FeedController extends Controller
 
         $books = Book::orderBy('title')->get(['id', 'title', 'author']);
         $exploreBooks = Book::with('category')->latest()->take(3)->get();
+        $categories = Category::orderBy('name')->get();
 
         return view('feed', [
             'posts' => $posts,
             'books' => $books,
             'exploreBooks' => $exploreBooks,
+            'categories' => $categories,
         ]);
     }
 }

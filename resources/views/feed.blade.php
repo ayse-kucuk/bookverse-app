@@ -107,6 +107,8 @@
                         <a href="{{ route('explore') }}" class="text-[10px] font-bold uppercase tracking-wider text-bv-accent transition hover:opacity-80">Tümü →</a>
                     </div>
 
+                    @include('partials.ai-recommendations-modal')
+
                     @if($exploreBooks->isEmpty())
                         <p class="text-xs italic text-[#9a948d]">Henüz kitap yok.</p>
                     @else

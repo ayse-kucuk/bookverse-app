@@ -15,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReadingGoalController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\Api\AiRecommendationController;
 use Illuminate\Support\Facades\Route;
 
 // Ana sayfa: sosyal akış
@@ -90,3 +91,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
 });
+
+// AI öneri endpoint’i (web session ile çalışsın diye web routes içinde tanımlı)
+Route::post('/api/ai/recommend', [AiRecommendationController::class, 'recommend'])
+    ->middleware('auth')
+    ->name('ai.recommend');
