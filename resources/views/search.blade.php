@@ -33,7 +33,45 @@
             <button type="submit" class="bv-btn mt-3 w-full rounded-xl py-2.5 text-xs font-bold uppercase tracking-wider text-white">{{ __('ui.search.button') }}</button>
         </form>
 
-        @if(mb_strlen($query) < 1)
+        {{-- Filters --}}
+        <form method="GET" action="{{ route('search') }}" class="bv-card rounded-2xl p-4">
+            <input type="hidden" name="q" value="{{ $query }}">
+            <div class="flex flex-wrap gap-3 sm:items-end">
+                <div class="min-w-[10rem] flex-1">
+                    <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400">{{ __('ui.explore.category') }}</label>
+                    <select name="category" class="bv-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
+                        <option value="">{{ __('ui.explore.all') }}</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}" @selected($curCategory == $cat->id)>{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="w-36">
+                    <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400">{{ __('ui.search.min_rating') }}</label>
+                    <select name="min_rating" class="bv-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
+                        <option value="">{{ __('ui.explore.all') }}</option>
+                        @foreach([1,2,3,4,5] as $r)
+                            <option value="{{ $r }}" @selected($curMinRating == $r)>{{ $r }}★+</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="w-36">
+                    <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400">{{ __('ui.explore.sort') }}</label>
+                    <select name="sort" class="bv-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
+                        <option value="relevance" @selected(($curSort ?? 'relevance') === 'relevance')>{{ __('ui.search.sort_relevance') }}</option>
+                        <option value="rating" @selected(($curSort ?? '') === 'rating')>{{ __('ui.explore.sort_rating') }}</option>
+                        <option value="title" @selected(($curSort ?? '') === 'title')>{{ __('ui.explore.sort_title') }}</option>
+                        <option value="latest" @selected(($curSort ?? '') === 'latest')>{{ __('ui.explore.sort_latest') }}</option>
+                    </select>
+                </div>
+                <button type="submit" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-[#f3f0eb] hover:text-bv-accent">{{ __('ui.common.filter') }}</button>
+                @if($query || $curCategory || $curMinRating)
+                    <a href="{{ route('search') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-400 hover:text-bv-accent">✕</a>
+                @endif
+            </div>
+        </form>
+
+        @if(mb_strlen($query) < 1 && !$curCategory && !$curMinRating)
             <div class="bv-card rounded-2xl p-8 text-center text-sm text-slate-400 sm:p-10">
                 {{ __('ui.search.empty_query') }}
             </div>

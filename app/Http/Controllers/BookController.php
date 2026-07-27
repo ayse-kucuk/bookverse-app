@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
@@ -19,30 +20,35 @@ class BookController extends Controller
             ->withCount('comments')
             ->withRatingStats();
 
-        if ($categoryId = $request->input('category')) {
+        $categoryId = $request->input('category');
+        $search     = trim((string) $request->input('q', ''));
+        $sort       = $request->input('sort', 'latest');
+
+        if ($categoryId) {
             $query->where('category_id', $categoryId);
         }
 
-        if ($search = trim((string) $request->input('q', ''))) {
+        if ($search) {
             $query->matchingSearchTerm($search);
         }
 
-        $sort = $request->input('sort', 'latest');
         match ($sort) {
-            'title' => $query->orderBy('title'),
+            'title'  => $query->orderBy('title'),
             'rating' => $query->orderByDesc('average_rating')->orderByDesc('ratings_count'),
-            default => $query->latest(),
+            default  => $query->latest(),
         };
 
         $books = $query->paginate(12)->withQueryString();
-        $categories = Category::orderBy('name')->get();
+
+        // Category list: cache for 10 minutes (rarely changes)
+        $categories = Cache::remember('categories_all', 600, fn () => Category::orderBy('name')->get());
 
         return view('welcome', [
-            'books' => $books,
-            'categories' => $categories,
+            'books'           => $books,
+            'categories'      => $categories,
             'currentCategory' => $categoryId ?? null,
-            'currentSort' => $sort,
-            'searchQuery' => $search,
+            'currentSort'     => $sort,
+            'searchQuery'     => $search,
         ]);
     }
 

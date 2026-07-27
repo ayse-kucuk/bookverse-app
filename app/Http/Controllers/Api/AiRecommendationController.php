@@ -9,31 +9,42 @@ use App\Models\User;
 use App\Services\AiRecommendationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AiRecommendationController extends Controller
 {
     public function recommend(Request $request, AiRecommendationService $ai): JsonResponse
     {
         $validated = $request->validate([
-            'mood' => ['nullable', 'string', 'max:80'],
+            'mood'     => ['nullable', 'string', 'max:80'],
             'genre_id' => ['nullable', 'integer', 'exists:categories,id'],
-            'free_text' => ['nullable', 'string', 'max:600'],
-            'limit' => ['nullable', 'integer', 'min:1', 'max:10'],
+            'free_text'=> ['nullable', 'string', 'max:600'],
+            'limit'    => ['nullable', 'integer', 'min:1', 'max:10'],
         ]);
 
         /** @var User|null $user */
         $user = $request->user();
 
-        $genreId = $validated['genre_id'] ?? null;
-        $limit = (int) ($validated['limit'] ?? 5);
-        $genreName = null;
+        $genreId     = $validated['genre_id'] ?? null;
+        $limit       = (int) ($validated['limit'] ?? 5);
+        $genreName   = null;
         $categoryIds = [];
 
-        // Sadece kullanıcı açıkça tür seçtiyse adayları o türe daralt.
-        // "Tümü" seçiliyse favori türlerle kısıtlama — AI bağlamdan yararlanır.
         if ($genreId) {
             $categoryIds = [$genreId];
-            $genreName = Category::find($genreId)?->name;
+            $genreName   = Cache::remember("category_name_{$genreId}", 600, fn () => Category::find($genreId)?->name);
+        }
+
+        // Build a deterministic cache key based on inputs
+        $userId       = $user?->id ?? 0;
+        $cacheKey     = 'ai_rec_' . md5(json_encode([$userId, $genreId, $validated['mood'] ?? '', $validated['free_text'] ?? '', $limit]));
+        $cacheTtl     = 600; // 10 minutes
+
+        // Don't cache when free_text is provided (too personalised)
+        $useCache = empty($validated['free_text']);
+
+        if ($useCache && Cache::has($cacheKey)) {
+            return response()->json(Cache::get($cacheKey));
         }
 
         $candidateQuery = Book::query()
@@ -173,11 +184,17 @@ class AiRecommendationController extends Controller
             }
         }
 
-        return response()->json([
+        $payload = [
             'recommendations' => array_values($recommendations),
-            'message' => $aiResult['message'] ?? null,
-            'source' => $aiResult['source'] ?? null,
-        ]);
+            'message'         => $aiResult['message'] ?? null,
+            'source'          => $aiResult['source'] ?? null,
+        ];
+
+        if ($useCache) {
+            Cache::put($cacheKey, $payload, $cacheTtl);
+        }
+
+        return response()->json($payload);
     }
 
     private function normalizeKey(string $title, string $author): string
