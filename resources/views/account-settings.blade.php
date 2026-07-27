@@ -75,6 +75,8 @@
             </form>
         </div>
 
+        @include('partials.update-password-settings')
+
         @include('partials.two-factor-settings')
 
     </main>

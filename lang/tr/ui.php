@@ -158,6 +158,14 @@ return [
         'visibility_followers' => 'Yalnızca takipçilerim',
         'visibility_hint' => 'Takipçilere özel hesaplarda profilin ve paylaşımların yalnızca takipçilerin görür.',
         'view_profile' => 'Profili görüntüle →',
+        'security' => 'Güvenlik',
+        'password_title' => 'Şifre Değiştir',
+        'password_lead' => 'Hesabını korumak için güçlü ve benzersiz bir şifre kullan.',
+        'current_password' => 'Mevcut şifre',
+        'new_password' => 'Yeni şifre',
+        'confirm_password' => 'Yeni şifre (tekrar)',
+        'password_save' => 'Şifreyi güncelle',
+        'password_updated' => 'Şifren güncellendi.',
     ],
 
     'goal' => [

@@ -158,6 +158,14 @@ return [
         'visibility_followers' => 'Followers only',
         'visibility_hint' => 'On private accounts, only your followers can see your profile and posts.',
         'view_profile' => 'View profile →',
+        'security' => 'Security',
+        'password_title' => 'Change password',
+        'password_lead' => 'Use a strong, unique password to keep your account secure.',
+        'current_password' => 'Current password',
+        'new_password' => 'New password',
+        'confirm_password' => 'Confirm new password',
+        'password_save' => 'Update password',
+        'password_updated' => 'Password updated.',
     ],
 
     'goal' => [

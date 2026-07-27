@@ -144,4 +144,31 @@ class ProfileTest extends TestCase
 
         $this->assertNotNull($user->fresh());
     }
+
+    public function test_account_settings_shows_password_change_form(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('account.settings'))
+            ->assertOk()
+            ->assertSee(__('ui.settings.password_title'))
+            ->assertSee('name="current_password"', false);
+    }
+
+    public function test_user_can_update_password_from_account_settings(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->from(route('account.settings'))
+            ->put(route('password.update'), [
+                'current_password' => 'password',
+                'password' => 'new-secure-password',
+                'password_confirmation' => 'new-secure-password',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('account.settings'))
+            ->assertSessionHas('status', 'password-updated');
+    }
 }
