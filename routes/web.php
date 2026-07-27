@@ -14,10 +14,15 @@ use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReadingGoalController;
+use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\Api\AiRecommendationController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // Ana sayfa: sosyal akış
 Route::get('/', [FeedController::class, 'index'])->name('home');
@@ -32,11 +37,15 @@ Route::get('/kesfet', [BookController::class, 'index'])->name('explore');
 Route::get('/ara', [SearchController::class, 'index'])->name('search');
 Route::get('/ara/oneriler', [SearchController::class, 'suggest'])->name('search.suggest');
 
-Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
+Route::get('/books/{id}', [BookController::class, 'showLegacy'])
+    ->whereNumber('id')
+    ->name('books.show.legacy');
+Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
 Route::post('/books/{id}/comment', [BookController::class, 'storeComment'])->middleware('auth')->name('books.comment.store');
 Route::delete('/books/{id}/comment/{comment}', [BookController::class, 'destroyComment'])->middleware('auth')->name('books.comment.destroy');
 Route::post('/books/{id}/status', [BookController::class, 'updateStatus'])->middleware('auth')->name('books.status.update');
 Route::post('/books/{id}/rating', [BookController::class, 'updateRating'])->middleware('auth')->name('books.rating.update');
+
 
 Route::get('/dashboard', function () {
     return redirect()->route('home');

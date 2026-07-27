@@ -69,9 +69,13 @@ Herd kullanıyorsan `php artisan serve` yerine siteyi doğrudan Herd üzerinden 
 | `PROFILE_PHOTOS_DISK` | `public` (lokal) veya `supabase` (canlı) |
 | `AWS_*` | Supabase S3 uyumlu profil fotoğrafı ayarları |
 
-## API dokümantasyonu
+## SEO
 
-Swagger UI (ortamda aktifse): `/api/documentation`
+- Meta description + Open Graph / Twitter Card (`partials/head`)
+- Kitap sayfalarında JSON-LD (`Book` schema)
+- Slug URL: `/books/kitap-adi-yazar` (eski `/books/{id}` 301 yönlendirilir)
+- `/sitemap.xml` ve `/robots.txt` (admin / özel sayfalar engelli)
+
 
 ## Lisans
 

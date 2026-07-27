@@ -19,6 +19,9 @@ return [
         'login' => 'Log in',
         'register' => 'Sign up',
         'language' => 'Language',
+        'theme' => 'Theme',
+        'theme_light' => 'Light mode',
+        'theme_dark' => 'Dark mode',
     ],
 
     'mobile' => [
@@ -231,6 +234,9 @@ return [
         'close' => 'Close',
         'error' => 'Could not get AI recommendations. Try again.',
         'connection_error' => 'Connection error. Refresh the page and try again.',
+        'invalid_request' => 'Only book- and reading-related requests are allowed in this field.',
+        'invalid_request_hint' => 'Briefly describe what kind of book you want. Picking a mood or genre is enough too.',
+        'invalid_request_example' => 'Example: "I want gripping sci-fi set in space" or "Can you suggest a short melancholic novel?"',
     ],
 
     'auth' => [
@@ -347,5 +353,13 @@ return [
         'explore' => 'Explore →',
         'slot' => 'Ad slot',
         'slot_text' => 'This space is available',
+    ],
+
+    'seo' => [
+        'default_description' => 'Bookverse — discover books, build shelves, and share thoughts. A social reading community.',
+        'explore_description' => 'Browse books from classics to modern titles. Filter, rate, and review.',
+        'feed_description' => 'The reading community feed: quotes, thoughts, and book picks.',
+        'search_description' => 'Search books, users, and posts on Bookverse.',
+        'book_description' => ':title by :author. Review, rate, and add it to your shelf on Bookverse.',
     ],
 ];

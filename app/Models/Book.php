@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use App\Models\BookUser;
 
 class Book extends Model
@@ -12,35 +13,78 @@ class Book extends Model
 
     protected static function booted(): void
     {
-        static::creating(function ($book) {
-        // Eğer is_protected değeri atanmamışsa true yap, atanmışsa dokunma
-        if (!isset($book->is_protected)) {
-            $book->is_protected = true;
-        }
-    });
+        static::creating(function (Book $book) {
+            if (! isset($book->is_protected)) {
+                $book->is_protected = true;
+            }
 
-    static::deleting(function ($book) {
-        return !$book->is_protected;
-    });
+            if (blank($book->slug)) {
+                $book->slug = static::generateUniqueSlug($book->title, $book->author);
+            }
+        });
+
+        static::created(function (Book $book) {
+            if (blank($book->slug)) {
+                $book->forceFill([
+                    'slug' => static::generateUniqueSlug($book->title, $book->author, $book->id),
+                ])->saveQuietly();
+            }
+        });
+
+        static::updating(function (Book $book) {
+            if ($book->isDirty(['title', 'author']) && blank($book->slug)) {
+                $book->slug = static::generateUniqueSlug($book->title, $book->author, $book->id);
+            }
+
+            if ($book->isDirty(['title', 'author']) && ! $book->isDirty('slug')) {
+                $book->slug = static::generateUniqueSlug($book->title, $book->author, $book->id);
+            }
+        });
+
+        static::deleting(function (Book $book) {
+            return ! $book->is_protected;
+        });
     }
 
-    // İlişki Tanımı: Bir kitap sadece bir kategoriye ait olabilir
+    public static function generateUniqueSlug(string $title, string $author = '', ?int $ignoreId = null): string
+    {
+        $base = Str::slug(trim($title.' '.$author));
+        if ($base === '') {
+            $base = 'kitap';
+        }
+
+        $slug = $base;
+        $i = 2;
+
+        while (
+            static::query()
+                ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+                ->where('slug', $slug)
+                ->exists()
+        ) {
+            $slug = $base.'-'.$i;
+            $i++;
+        }
+
+        return $slug;
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
-    // İlişki: Bir kitap birden fazla kullanıcının kütüphanesinde yer alabilir (Many-to-Many)
-    // Bir kitabın birden çok yorumu olabilir ilişkisi
-   public function comments()
-  {
-    return $this->hasMany(Comment::class);
-  }
-  public function users()
-  {
-    return $this->belongsToMany(User::class, 'book_user')
-                ->withPivot(['status', 'rating', 'is_protected'])
-                ->withTimestamps();
-   }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'book_user')
+            ->withPivot(['status', 'rating', 'is_protected'])
+            ->withTimestamps();
+    }
 
     public function scopeWithRatingStats($query)
     {
@@ -83,15 +127,38 @@ class Book extends Model
         return number_format((float) $this->average_rating, 1);
     }
 
-    // Toplu veri yükleme izni olan sütunlar (category_id'yi buraya ekledik)
+    public function seoDescription(): string
+    {
+        $text = trim((string) $this->description);
+
+        if ($text !== '') {
+            return Str::limit(strip_tags($text), 160);
+        }
+
+        return __('ui.seo.book_description', [
+            'title' => $this->title,
+            'author' => $this->author,
+        ]);
+    }
+
+    public function publicUrl(): string
+    {
+        if (filled($this->slug)) {
+            return route('books.show', $this->slug);
+        }
+
+        return route('books.show.legacy', $this->id);
+    }
+
     protected $fillable = [
-        'category_id', 
+        'category_id',
         'title',
+        'slug',
         'author',
         'image_url',
         'description',
         'page_count',
         'cover_image',
-        'is_protected'
+        'is_protected',
     ];
 }

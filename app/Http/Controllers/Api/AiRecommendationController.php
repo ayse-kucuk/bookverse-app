@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\User;
+use App\Services\AiBookRequestValidator;
 use App\Services\AiRecommendationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
 
 class AiRecommendationController extends Controller
 {
-    public function recommend(Request $request, AiRecommendationService $ai): JsonResponse
+    public function recommend(Request $request, AiRecommendationService $ai, AiBookRequestValidator $validator): JsonResponse
     {
         $validated = $request->validate([
             'mood'     => ['nullable', 'string', 'max:80'],
@@ -33,6 +34,22 @@ class AiRecommendationController extends Controller
         if ($genreId) {
             $categoryIds = [$genreId];
             $genreName   = Cache::remember("category_name_{$genreId}", 600, fn () => Category::find($genreId)?->name);
+        }
+
+        $validation = $validator->validate(
+            $validated['mood'] ?? null,
+            $genreName,
+            $validated['free_text'] ?? null,
+        );
+
+        if (! $validation['valid']) {
+            return response()->json([
+                'recommendations' => [],
+                'message' => $validation['message'],
+                'hint' => __('ui.ai.invalid_request_hint'),
+                'example' => __('ui.ai.invalid_request_example'),
+                'source' => 'validation',
+            ], 422);
         }
 
         // Build a deterministic cache key based on inputs
@@ -159,7 +176,7 @@ class AiRecommendationController extends Controller
                 'reason' => (string) ($rec['reason'] ?? ''),
                 'book_id' => $book->id,
                 'image_url' => $book->image_url,
-                'book_url' => route('books.show', $book->id),
+                'book_url' => $book->publicUrl(),
             ];
         }
 
@@ -179,7 +196,7 @@ class AiRecommendationController extends Controller
                     'reason' => 'AI önerisi eşleştirilemedi; kütüphaneden en uygun adaylar gösteriliyor.',
                     'book_id' => $book->id,
                     'image_url' => $book->image_url,
-                    'book_url' => route('books.show', $book->id),
+                    'book_url' => $book->publicUrl(),
                 ];
             }
         }

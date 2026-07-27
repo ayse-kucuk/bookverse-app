@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    @include('partials.head', ['title' => 'Bookverse — ' . __('ui.nav.explore')])
+    @include('partials.head', [
+        'title' => 'Bookverse — ' . __('ui.nav.explore'),
+        'description' => __('ui.seo.explore_description'),
+        'canonical' => route('explore'),
+    ])
 </head>
 <body class="bv-mesh min-h-screen antialiased selection:bg-[#e8dfd2]">
 

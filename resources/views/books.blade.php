@@ -1,7 +1,39 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    @include('partials.head', ['title' => $book->title . ' — Bookverse'])
+    @include('partials.head', [
+        'title' => $book->title.' — Bookverse',
+        'description' => $book->seoDescription(),
+        'image' => $book->image_url ?: asset('favicon.ico'),
+        'canonical' => route('books.show', $book),
+        'ogType' => 'book',
+    ])
+    <script type="application/ld+json">
+        @php
+            $bookSchema = array_filter([
+                '@context' => 'https://schema.org',
+                '@type' => 'Book',
+                'name' => $book->title,
+                'author' => [
+                    '@type' => 'Person',
+                    'name' => $book->author,
+                ],
+                'description' => $book->seoDescription(),
+                'image' => $book->image_url,
+                'url' => route('books.show', $book),
+                'numberOfPages' => $book->page_count,
+                'genre' => $book->category?->name,
+                'aggregateRating' => $book->ratings_count > 0 ? [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => (float) $book->average_rating,
+                    'ratingCount' => (int) $book->ratings_count,
+                    'bestRating' => 5,
+                    'worstRating' => 1,
+                ] : null,
+            ], fn ($value) => $value !== null && $value !== '');
+        @endphp
+        {!! json_encode($bookSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    </script>
 </head>
 <body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-\[#e8dfd2\]">
 

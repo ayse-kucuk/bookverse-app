@@ -1,7 +1,46 @@
+@php
+    $pageTitle = $title ?? config('app.name', 'Bookverse');
+    $pageDescription = $description ?? __('ui.seo.default_description');
+    $pageImage = $image ?? asset('favicon.ico');
+    $canonicalUrl = $canonical ?? url()->current();
+    $ogType = $ogType ?? 'website';
+    $robots = $robots ?? 'index,follow';
+@endphp
+<script>
+(function () {
+    try {
+        var theme = localStorage.getItem('bv-theme');
+        if (theme === 'dark' || theme === 'light') {
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+    } catch (e) {}
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<title>{{ $title ?? 'Bookverse' }}</title>
+<title>{{ $pageTitle }}</title>
+<meta name="description" content="{{ \Illuminate\Support\Str::limit(strip_tags($pageDescription), 160) }}">
+<meta name="robots" content="{{ $robots }}">
+<link rel="canonical" href="{{ $canonicalUrl }}">
+
+{{-- Open Graph --}}
+<meta property="og:site_name" content="Bookverse">
+<meta property="og:type" content="{{ $ogType }}">
+<meta property="og:title" content="{{ $pageTitle }}">
+<meta property="og:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($pageDescription), 160) }}">
+<meta property="og:url" content="{{ $canonicalUrl }}">
+<meta property="og:image" content="{{ $pageImage }}">
+<meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
+<meta property="og:locale:alternate" content="{{ app()->getLocale() === 'tr' ? 'en' : 'tr' }}">
+
+{{-- Twitter Card --}}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $pageTitle }}">
+<meta name="twitter:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($pageDescription), 160) }}">
+<meta name="twitter:image" content="{{ $pageImage }}">
+
+<link rel="alternate" hreflang="x-default" href="{{ $canonicalUrl }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
@@ -357,4 +396,158 @@
     @media (prefers-reduced-motion: reduce) {
         .bv-toast, .bv-toast.bv-toast-out { animation: none !important; }
     }
+
+    /* ── Tema seçici ── */
+    .bv-theme-switcher [data-theme-set] {
+        opacity: 0.55;
+        filter: grayscale(0.35);
+    }
+    .bv-theme-switcher [data-theme-set].is-active {
+        opacity: 1;
+        filter: none;
+        background: var(--bv-charcoal);
+        box-shadow: 0 1px 4px rgba(28, 28, 28, 0.15);
+    }
+    html[data-theme="dark"] .bv-theme-switcher [data-theme-set].is-active {
+        background: var(--bv-accent);
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ── Karanlık mod ── */
+    html[data-theme="dark"] {
+        color-scheme: dark;
+        --bv-bg: #121110;
+        --bv-bg-warm: #1a1816;
+        --bv-surface: #1f1d1b;
+        --bv-charcoal: #e8e4de;
+        --bv-text: #e8e4de;
+        --bv-text-muted: #9a948d;
+        --bv-border: #2e2b28;
+        --bv-border-soft: #262422;
+        --bv-accent: #c4a574;
+        --bv-accent-dark: #d4b896;
+        --bv-accent-light: #a67c52;
+        --bv-accent-muted: rgba(196, 165, 116, 0.12);
+        --bv-accent-muted-strong: rgba(196, 165, 116, 0.2);
+    }
+
+    html[data-theme="dark"] .bv-mesh {
+        background-image:
+            radial-gradient(ellipse 70% 50% at 0% 0%, rgba(196, 165, 116, 0.06), transparent 55%),
+            radial-gradient(ellipse 50% 40% at 100% 10%, rgba(166, 124, 82, 0.05), transparent 50%);
+    }
+
+    html[data-theme="dark"] .bv-card {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 32px -12px rgba(0, 0, 0, 0.35);
+    }
+
+    html[data-theme="dark"] .bv-surface-matte {
+        box-shadow: 0 20px 50px -16px rgba(0, 0, 0, 0.45);
+    }
+
+    html[data-theme="dark"] .bv-btn {
+        background: #e8e4de;
+        color: #121110;
+        box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.4);
+    }
+    html[data-theme="dark"] .bv-btn:hover {
+        background: #f3f0eb;
+        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.35);
+    }
+
+    html[data-theme="dark"] .bv-topbar {
+        background: #0d0c0b;
+    }
+
+    html[data-theme="dark"] .bv-toast {
+        background: #2a2826;
+    }
+
+    html[data-theme="dark"] nav.sticky,
+    html[data-theme="dark"] nav.fixed {
+        background-color: color-mix(in srgb, var(--bv-bg) 92%, transparent) !important;
+        border-color: var(--bv-border) !important;
+    }
+
+    html[data-theme="dark"] .bv-theme-switcher,
+    html[data-theme="dark"] .bv-lang-switcher {
+        border-color: var(--bv-border);
+        background: var(--bv-surface);
+    }
+
+    html[data-theme="dark"] .bv-lang-switcher a.is-active {
+        background: var(--bv-accent);
+        color: #121110;
+    }
+
+    html[data-theme="dark"] .bg-white { background-color: var(--bv-surface) !important; }
+    html[data-theme="dark"] .bg-\[\#f9f8f6\] { background-color: var(--bv-bg) !important; }
+    html[data-theme="dark"] .bg-\[\#f3f0eb\] { background-color: var(--bv-bg-warm) !important; }
+    html[data-theme="dark"] .bg-\[\#f9f8f6\]\/80 { background-color: color-mix(in srgb, var(--bv-bg) 80%, transparent) !important; }
+    html[data-theme="dark"] .border-\[\#e8e4de\] { border-color: var(--bv-border) !important; }
+    html[data-theme="dark"] .border-\[\#f0ece6\] { border-color: var(--bv-border-soft) !important; }
+    html[data-theme="dark"] .border-slate-100 { border-color: var(--bv-border) !important; }
+    html[data-theme="dark"] .text-\[\#2a2a2a\] { color: var(--bv-text) !important; }
+    html[data-theme="dark"] .text-\[\#6b6560\] { color: var(--bv-text-muted) !important; }
+    html[data-theme="dark"] .text-\[\#9a948d\] { color: #7a746d !important; }
+    html[data-theme="dark"] .text-\[\#1c1c1c\] { color: var(--bv-charcoal) !important; }
+    html[data-theme="dark"] .text-slate-800 { color: var(--bv-text) !important; }
+    html[data-theme="dark"] .text-slate-600 { color: var(--bv-text-muted) !important; }
+    html[data-theme="dark"] .text-slate-400 { color: #7a746d !important; }
+    html[data-theme="dark"] .hover\:bg-\[\#f3f0eb\]:hover { background-color: var(--bv-bg-warm) !important; }
+    html[data-theme="dark"] .hover\:text-\[\#1c1c1c\]:hover { color: var(--bv-charcoal) !important; }
+    html[data-theme="dark"] .selection\:bg-\[\#e8dfd2\]::selection,
+    html[data-theme="dark"] .selection\:bg-\[\#e8dfd2\] *::selection {
+        background-color: rgba(196, 165, 116, 0.35);
+    }
+
+    html[data-theme="dark"] .bv-input,
+    html[data-theme="dark"] input.bv-input,
+    html[data-theme="dark"] select.bv-input,
+    html[data-theme="dark"] textarea.bv-input {
+        background-color: var(--bv-surface);
+        color: var(--bv-text);
+        border-color: var(--bv-border);
+    }
+
+    html[data-theme="dark"] .bg-red-50\/80 { background-color: rgba(127, 29, 29, 0.25) !important; }
+    html[data-theme="dark"] .border-red-200\/60 { border-color: rgba(248, 113, 113, 0.35) !important; }
+    html[data-theme="dark"] .text-red-700 { color: #fca5a5 !important; }
 </style>
+<script>
+(function () {
+  var KEY = 'bv-theme';
+
+  function getTheme() {
+    var theme = document.documentElement.getAttribute('data-theme');
+    return theme === 'dark' ? 'dark' : 'light';
+  }
+
+  function updateSwitcherUI() {
+    var theme = getTheme();
+    document.querySelectorAll('[data-theme-set]').forEach(function (btn) {
+      var active = btn.getAttribute('data-theme-set') === theme;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  function setTheme(theme) {
+    if (theme !== 'light' && theme !== 'dark') return;
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem(KEY, theme); } catch (e) {}
+    updateSwitcherUI();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    updateSwitcherUI();
+    document.querySelectorAll('[data-theme-set]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        setTheme(btn.getAttribute('data-theme-set'));
+      });
+    });
+  });
+
+  window.BookverseTheme = { get: getTheme, set: setTheme };
+})();
+</script>

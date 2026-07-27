@@ -125,6 +125,9 @@
             const noResultsLabel = @json(__('ui.ai.no_results'));
             const errorLabel = @json(__('ui.ai.error'));
             const connectionErrorLabel = @json(__('ui.ai.connection_error'));
+            const invalidRequestLabel = @json(__('ui.ai.invalid_request'));
+            const invalidRequestHintLabel = @json(__('ui.ai.invalid_request_hint'));
+            const invalidRequestExampleLabel = @json(__('ui.ai.invalid_request_example'));
             const addLibraryLabel = @json(__('ui.ai.add_library'));
             const seeDetailsLabel = @json(__('ui.ai.see_details'));
 
@@ -160,6 +163,46 @@
                     .replace(/>/g, '&gt;')
                     .replace(/"/g, '&quot;')
                     .replace(/'/g, '&#39;');
+            }
+
+            function renderValidationError(message, hint, example) {
+                showMessage(message || invalidRequestLabel, 'error');
+                resultsEl.innerHTML = `
+                    <div class="rounded-2xl border border-amber-200 bg-amber-50/80 p-5 text-left text-xs leading-relaxed text-[#6b6560]">
+                        <p class="font-bold text-amber-800">${escapeHtml(message || invalidRequestLabel)}</p>
+                        ${hint ? `<p class="mt-2">${escapeHtml(hint)}</p>` : ''}
+                        ${example ? `<p class="mt-2 font-semibold text-[#1c1c1c]">${escapeHtml(example)}</p>` : ''}
+                    </div>
+                `;
+            }
+
+            function looksOffTopicLocally(text) {
+                const value = String(text || '').trim().toLowerCase();
+                if (!value) return false;
+
+                const offTopic = [
+                    /\b(merhaba|selam|nasılsın|naber|hello|hi there)\b/u,
+                    /\b(pizza|yemek tarifi|tarif ver|recipe)\b/u,
+                    /\b(futbol|basketbol|maç skoru)\b/u,
+                    /\b(matematik|ödev|homework)\b/u,
+                    /\b(python kod|javascript|kod yaz)\b/u,
+                    /\b(hava durumu|weather)\b/u,
+                    /\b(burç|horoscope)\b/u,
+                    /\b(şaka|fıkra|joke)\b/u,
+                    /\b(bitcoin|kripto|borsa)\b/u,
+                    /\b(film öner|dizi öner|netflix|şarkı öner)\b/u,
+                ];
+
+                const bookish = [
+                    /\b(kitap|roman|hikaye|yazar|oku|okuma|bilimkurgu|fantastik|polisiye|macera|öner|tavsiye|arıyorum|istiyorum)\b/u,
+                    /\b(book|novel|author|read|recommend|sci-fi|fantasy)\b/u,
+                ];
+
+                if (bookish.some((pattern) => pattern.test(value))) {
+                    return false;
+                }
+
+                return offTopic.some((pattern) => pattern.test(value));
             }
 
             function renderCards(items) {
@@ -267,6 +310,15 @@
                 }
 
                 const payload = collectPayload();
+                const mood = document.getElementById('ai-mood')?.value || '';
+                const genre = document.getElementById('ai-genre')?.value || '';
+                const freeText = document.getElementById('ai-free-text')?.value || '';
+
+                if (freeText.trim() && !mood && !genre && looksOffTopicLocally(freeText)) {
+                    setLoading(false);
+                    renderValidationError(invalidRequestLabel, invalidRequestHintLabel, invalidRequestExampleLabel);
+                    return;
+                }
 
                 setLoading(true);
                 hideMessage();
@@ -285,6 +337,11 @@
                     });
 
                     const data = await response.json().catch(() => ({}));
+
+                    if (response.status === 422 && data.source === 'validation') {
+                        renderValidationError(data.message, data.hint, data.example);
+                        return;
+                    }
 
                     if (!response.ok) {
                         throw new Error(data.message || 'request_failed');

@@ -116,5 +116,31 @@ class AiRecommendationTest extends TestCase
 
         $this->assertCount(2, $response->json('recommendations'));
     }
+
+    public function test_off_topic_free_text_returns_validation_message_without_calling_ai(): void
+    {
+        config()->set('services.gemini.key', 'test-key');
+
+        $category = Category::create(['name' => 'Fantastik']);
+        $user = User::factory()->create();
+
+        Book::factory()->create([
+            'category_id' => $category->id,
+            'is_protected' => true,
+        ]);
+
+        Http::fake();
+
+        $response = $this->actingAs($user)->postJson(route('ai.recommend'), [
+            'free_text' => 'merhaba pizza tarifi ver',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('source', 'validation')
+            ->assertJsonPath('recommendations', [])
+            ->assertJsonStructure(['message', 'hint', 'example']);
+
+        Http::assertNothingSent();
+    }
 }
 

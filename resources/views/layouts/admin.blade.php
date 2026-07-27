@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    @include('partials.head', ['title' => ($title ?? 'Admin') . ' — Bookverse'])
+    @include('partials.head', ['title' => ($title ?? 'Admin') . ' — Bookverse', 'robots' => 'noindex,nofollow'])
 </head>
 <body class="bv-mesh min-h-screen antialiased selection:bg-[#e8dfd2]">
     @include('partials.site-nav')

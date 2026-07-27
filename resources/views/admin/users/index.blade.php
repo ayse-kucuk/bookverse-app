@@ -52,7 +52,7 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('users.show', $user) }}" class="text-xs font-bold text-slate-400 hover:text-slate-700">{{ __('ui.profile.settings') !== 'Hesap Ayarları →' ? __('ui.common.view') : __('ui.common.view') }}</a>
+                                    <a href="{{ route('users.show', $user) }}" class="text-xs font-bold text-slate-400 hover:text-slate-700">{{ __('ui.common.view') }}</a>
                                     <form action="{{ route('admin.users.toggle-admin', $user) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="text-xs font-bold text-bv-accent hover:text-bv-accent">

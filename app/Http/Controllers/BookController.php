@@ -118,20 +118,21 @@ class BookController extends Controller
     }
 
     // Kitap Detay Sayfası
-    public function show($id)
+    public function show(Book $book)
     {
-        $book = Book::with(['category', 'comments' => function ($query) {
-            $query->with('user')->latest();
-        }])
+        $book = Book::query()
+            ->with(['category', 'comments' => function ($query) {
+                $query->with('user')->latest();
+            }])
             ->withRatingStats()
-            ->findOrFail($id);
+            ->findOrFail($book->id);
 
         $userRating = null;
         $userReview = null;
 
         if (auth()->check()) {
             $userRating = auth()->user()->books()
-                ->where('books.id', $id)
+                ->where('books.id', $book->id)
                 ->first()
                 ?->pivot
                 ?->rating;
@@ -144,6 +145,13 @@ class BookController extends Controller
             'userRating' => $userRating,
             'userReview' => $userReview,
         ]);
+    }
+
+    public function showLegacy(int $id)
+    {
+        $book = Book::query()->findOrFail($id);
+
+        return redirect()->to(route('books.show', $book), 301);
     }
 
     // Kitap incelemesi (yıldız + metin) — kullanıcı başına bir kayıt

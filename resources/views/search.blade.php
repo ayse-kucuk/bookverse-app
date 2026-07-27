@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    @include('partials.head', ['title' => __('ui.search.page_title')])
+    @include('partials.head', [
+        'title' => __('ui.search.page_title'),
+        'description' => __('ui.seo.search_description'),
+        'canonical' => route('search', array_filter([
+            'q' => $query ?: null,
+            'category' => $curCategory ?: null,
+            'min_rating' => $curMinRating ?: null,
+            'sort' => ($curSort ?? 'relevance') !== 'relevance' ? $curSort : null,
+        ])),
+    ])
 </head>
 <body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-\[#e8dfd2\]">
 

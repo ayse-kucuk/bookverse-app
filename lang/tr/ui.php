@@ -19,6 +19,9 @@ return [
         'login' => 'Giriş',
         'register' => 'Kayıt',
         'language' => 'Dil',
+        'theme' => 'Tema',
+        'theme_light' => 'Açık mod',
+        'theme_dark' => 'Koyu mod',
     ],
 
     'mobile' => [
@@ -231,6 +234,9 @@ return [
         'close' => 'Kapat',
         'error' => 'AI önerisi alınamadı. Tekrar dene.',
         'connection_error' => 'Bağlantı hatası. Sayfayı yenileyip tekrar deneyin.',
+        'invalid_request' => 'Bu alana yalnızca kitap ve okuma ile ilgili istekler yazılabilir.',
+        'invalid_request_hint' => 'Lütfen ne tür bir kitap aradığını kısaca anlat. Ruh hali veya tür seçmek de yeterli olabilir.',
+        'invalid_request_example' => 'Örnek: "Uzayda geçen sürükleyici bilimkurgu arıyorum" veya "Kısa ve melankolik bir roman önerir misin?"',
     ],
 
     'auth' => [
@@ -347,5 +353,13 @@ return [
         'explore' => 'Keşfet →',
         'slot' => 'Reklam Alanı',
         'slot_text' => 'Bu alan kiralanabilir',
+    ],
+
+    'seo' => [
+        'default_description' => 'Bookverse — kitap keşfet, rafına ekle, düşüncelerini paylaş. Sosyal okuma topluluğu.',
+        'explore_description' => 'Klasiklerden modern eserlere kitapları keşfet. Filtrele, puanla, inceleme yaz.',
+        'feed_description' => 'Okuma topluluğunun akışı: alıntılar, düşünceler ve kitap önerileri.',
+        'search_description' => 'Bookverse içinde kitap, kullanıcı ve paylaşım ara.',
+        'book_description' => ':title — :author. Bookverse\'te incele, puanla ve rafına ekle.',
     ],
 ];

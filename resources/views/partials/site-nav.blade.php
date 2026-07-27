@@ -50,7 +50,8 @@
             </div>
 
             <div class="flex shrink-0 items-center gap-1 sm:gap-2">
-                <div class="hidden sm:block">
+                <div class="hidden sm:flex sm:items-center sm:gap-1.5">
+                    @include('partials.theme-switcher')
                     @include('partials.language-switcher')
                 </div>
 
@@ -95,8 +96,15 @@
                             @endif
                         </summary>
                         <div class="bv-surface-matte absolute right-0 z-[110] mt-3 w-48 overflow-hidden p-1.5">
-                            <div class="border-b border-[#f0ece6] px-2 py-2 sm:hidden">
-                                @include('partials.language-switcher')
+                            <div class="space-y-2 border-b border-[#f0ece6] px-2 py-2 sm:hidden">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#9a948d]">{{ __('ui.nav.theme') }}</span>
+                                    @include('partials.theme-switcher')
+                                </div>
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#9a948d]">{{ __('ui.nav.language') }}</span>
+                                    @include('partials.language-switcher')
+                                </div>
                             </div>
                             <a href="{{ route('profile') }}" class="block px-3 py-2.5 text-xs font-medium text-[#6b6560] transition hover:bg-[#f3f0eb] hover:text-[#1c1c1c]">{{ __('ui.nav.profile') }}</a>
                             @if(Auth::user()->is_admin)
@@ -112,7 +120,8 @@
                 @endauth
 
                 @guest
-                    <div class="sm:hidden">
+                    <div class="flex items-center gap-1 sm:hidden">
+                        @include('partials.theme-switcher')
                         @include('partials.language-switcher')
                     </div>
                     <a href="{{ route('login') }}" class="hidden px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#6b6560] transition hover:text-[#1c1c1c] sm:inline">{{ __('ui.nav.login') }}</a>
