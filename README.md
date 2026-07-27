@@ -26,11 +26,10 @@ Sosyal okuma platformu — kitap keşfet, rafına ekle, düşüncelerini paylaş
 
 `php artisan migrate --seed` sonrası kullanılabilir:
 
-| E-posta | Şifre | Rol |
-|---------|-------|-----|
+| E-posta | Şifre | Açıklama |
+|---------|-------|----------|
 | `demo@bookverse.app` | `password` | Demo okuyucu (akış, raflar, incelemeler) |
-| `ayse@example.com` | `password123` | Normal kullanıcı |
-| `ayseekucuk33@gmail.com` | `password123` | Admin |
+| `ayse@example.com` | `password123` | Örnek kullanıcı |
 
 ## Teknolojiler
 
