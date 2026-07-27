@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    @include('partials.head', ['title' => 'Bookverse — Akış'])
+    @include('partials.head', ['title' => 'Bookverse — ' . __('ui.nav.feed')])
 </head>
 <body class="bv-mesh min-h-screen antialiased selection:bg-[#e8dfd2]">
 
@@ -11,17 +11,17 @@
         <section class="bv-animate-up mx-auto max-w-6xl px-4 pb-10 pt-12 sm:px-6 sm:pt-16">
             <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
                 <div class="space-y-6">
-                    <span class="bv-badge">📖 Okuma Topluluğu</span>
+                    <span class="bv-badge">📖 {{ __('ui.feed.badge') }}</span>
                     <h1 class="bv-hero-title">
-                        Okumanın<br>
-                        <span class="bv-gradient-text">Yeni Tanımı</span>
+                        {{ __('ui.feed.hero_title') }}<br>
+                        <span class="bv-gradient-text">{{ __('ui.feed.hero_highlight') }}</span>
                     </h1>
                     <p class="max-w-md text-sm leading-relaxed text-[#6b6560]">
-                        Kitaplarını keşfet, raflarına ekle, düşüncelerini paylaş. Sade ve huzurlu bir okuma deneyimi.
+                        {{ __('ui.feed.hero_text') }}
                     </p>
                     <div class="flex flex-wrap gap-3">
-                        <a href="{{ route('register') }}" class="bv-btn inline-flex px-6 py-3 text-xs font-bold uppercase tracking-wider">Hemen Başla</a>
-                        <a href="{{ route('explore') }}" class="bv-btn-outline inline-flex px-6 py-3 text-xs font-bold uppercase tracking-wider">Kitapları Keşfet</a>
+                        <a href="{{ route('register') }}" class="bv-btn inline-flex px-6 py-3 text-xs font-bold uppercase tracking-wider">{{ __('ui.feed.start') }}</a>
+                        <a href="{{ route('explore') }}" class="bv-btn-outline inline-flex px-6 py-3 text-xs font-bold uppercase tracking-wider">{{ __('ui.feed.explore_books') }}</a>
                     </div>
                 </div>
                 <div class="relative hidden lg:flex lg:justify-center">
@@ -45,25 +45,25 @@
             <main class="order-1 min-w-0 space-y-5 sm:space-y-6 xl:order-none">
                 @auth
                     <section class="bv-card bv-animate-up p-4 sm:p-6 sm:p-7">
-                        <h1 class="bv-display mb-1 text-xl font-medium text-[#1c1c1c] sm:text-2xl">Ne paylaşmak istersin?</h1>
-                        <p class="mb-4 text-xs text-[#9a948d] sm:mb-5">Düşüncelerini veya sevdiğin alıntıları toplulukla paylaş.</p>
+                        <h1 class="bv-display mb-1 text-xl font-medium text-[#1c1c1c] sm:text-2xl">{{ __('ui.feed.share_title') }}</h1>
+                        <p class="mb-4 text-xs text-[#9a948d] sm:mb-5">{{ __('ui.feed.share_subtitle') }}</p>
                         <form action="{{ route('posts.store') }}" method="POST" class="space-y-4">
                             @csrf
                             <div class="flex flex-wrap gap-2">
                                 <label class="inline-flex cursor-pointer items-center gap-2 border border-[#e8e4de] bg-[#f9f8f6] px-3 py-1.5 text-xs font-semibold text-[#6b6560] transition has-[:checked]:border-[#a67c52] has-[:checked]:bg-[#f3f0eb] has-[:checked]:text-[#1c1c1c]">
-                                    <input type="radio" name="type" value="thought" checked class="accent-[#a67c52]"> Düşünce
+                                    <input type="radio" name="type" value="thought" checked class="accent-[#a67c52]"> {{ __('ui.feed.thought') }}
                                 </label>
                                 <label class="inline-flex cursor-pointer items-center gap-2 border border-[#e8e4de] bg-[#f9f8f6] px-3 py-1.5 text-xs font-semibold text-[#6b6560] transition has-[:checked]:border-[#a67c52] has-[:checked]:bg-[#f3f0eb] has-[:checked]:text-[#1c1c1c]">
-                                    <input type="radio" name="type" value="quote" class="accent-[#a67c52]"> Kitap alıntısı
+                                    <input type="radio" name="type" value="quote" class="accent-[#a67c52]"> {{ __('ui.feed.quote') }}
                                 </label>
                             </div>
-                            <textarea name="content" rows="4" required placeholder="Okuduğun kitap hakkında düşünceni veya sevdiğin bir alıntıyı paylaş..." class="bv-input w-full resize-none border border-[#e8e4de] bg-white px-4 py-3 text-sm transition">{{ old('content') }}</textarea>
+                            <textarea name="content" rows="4" required placeholder="{{ __('ui.feed.content_placeholder') }}" class="bv-input w-full resize-none border border-[#e8e4de] bg-white px-4 py-3 text-sm transition">{{ old('content') }}</textarea>
                             @error('content')<p class="text-xs text-red-700">{{ $message }}</p>@enderror
 
                             <div>
-                                <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]">İlgili kitap (alıntı için zorunlu)</label>
+                                <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]">{{ __('ui.feed.related_book') }}</label>
                                 <select name="book_id" class="bv-input w-full border border-[#e8e4de] bg-white px-4 py-2.5 text-sm transition">
-                                    <option value="">Kitap seç...</option>
+                                    <option value="">{{ __('ui.feed.select_book') }}</option>
                                     @foreach($books as $book)
                                         <option value="{{ $book->id }}" @selected(old('book_id') == $book->id)>{{ $book->title }} — {{ $book->author }}</option>
                                     @endforeach
@@ -71,26 +71,26 @@
                                 @error('book_id')<p class="text-xs text-red-700">{{ $message }}</p>@enderror
                             </div>
 
-                            <button type="submit" class="bv-btn px-6 py-2.5 text-xs font-bold uppercase tracking-wider">Paylaş</button>
+                            <button type="submit" class="bv-btn px-6 py-2.5 text-xs font-bold uppercase tracking-wider">{{ __('ui.feed.publish') }}</button>
                         </form>
                     </section>
                 @else
                     <section class="bv-card bv-animate-up border-dashed p-8 text-center">
-                        <p class="text-sm text-[#6b6560]">Paylaşımları görmek ve kendi düşüncelerini yazmak için <a href="{{ route('login') }}" class="font-semibold text-bv-accent underline decoration-[#c4a574] underline-offset-2">giriş yap</a>.</p>
+                        <p class="text-sm text-[#6b6560]">{!! __('ui.feed.login_to_share', ['login' => '<a href="'.route('login').'" class="font-semibold text-bv-accent underline decoration-[#c4a574] underline-offset-2">'.e(__('ui.feed.login_link')).'</a>']) !!}</p>
                     </section>
                 @endauth
 
                 <section class="space-y-4">
-                    <h2 class="bv-animate-up-delay-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Akış</h2>
+                    <h2 class="bv-animate-up-delay-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">{{ __('ui.feed.stream') }}</h2>
                     <div class="bv-stagger space-y-4">
                         @forelse($posts as $post)
                             @include('partials.post-card', ['post' => $post])
                         @empty
                             <div class="bv-card p-10 text-center text-sm text-[#9a948d]">
                                 @auth
-                                    Henüz paylaşım yok. İlk paylaşımı sen yap veya <a href="{{ route('explore') }}" class="font-semibold text-bv-accent underline decoration-[#c4a574] underline-offset-2">Keşfet</a> sayfasından kitaplara göz at.
+                                    {!! __('ui.feed.empty_auth', ['explore' => '<a href="'.route('explore').'" class="font-semibold text-bv-accent underline decoration-[#c4a574] underline-offset-2">'.e(__('ui.feed.explore_link')).'</a>']) !!}
                                 @else
-                                    Henüz paylaşım yok. <a href="{{ route('register') }}" class="font-semibold text-bv-accent underline decoration-[#c4a574] underline-offset-2">Kayıt ol</a> ve akışa katıl.
+                                    {!! __('ui.feed.empty_guest', ['register' => '<a href="'.route('register').'" class="font-semibold text-bv-accent underline decoration-[#c4a574] underline-offset-2">'.e(__('ui.feed.register_link')).'</a>']) !!}
                                 @endauth
                             </div>
                         @endforelse
@@ -103,14 +103,14 @@
             <aside class="order-2 mx-auto w-full max-w-md space-y-4 xl:order-none xl:mx-0 xl:max-w-none xl:sticky xl:top-24">
                 <section class="bv-card p-4">
                     <div class="mb-3 flex items-center justify-between gap-2">
-                        <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Kitap Önerileri</h2>
-                        <a href="{{ route('explore') }}" class="text-[10px] font-bold uppercase tracking-wider text-bv-accent transition hover:opacity-80">Tümü →</a>
+                        <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">{{ __('ui.feed.recommendations') }}</h2>
+                        <a href="{{ route('explore') }}" class="text-[10px] font-bold uppercase tracking-wider text-bv-accent transition hover:opacity-80">{{ __('ui.feed.all') }}</a>
                     </div>
 
                     @include('partials.ai-recommendations-modal')
 
                     @if($exploreBooks->isEmpty())
-                        <p class="text-xs italic text-[#9a948d]">Henüz kitap yok.</p>
+                        <p class="text-xs italic text-[#9a948d]">{{ __('ui.feed.no_books') }}</p>
                     @else
                         <div class="space-y-1">
                             @foreach($exploreBooks->take(3) as $book)
@@ -131,7 +131,7 @@
                         </div>
 
                         <a href="{{ route('explore') }}" class="mt-3 block w-full border border-dashed border-[#e8e4de] bg-[#f9f8f6] py-2 text-center text-[10px] font-bold uppercase tracking-wider text-bv-accent transition duration-200 hover:bg-[#f3f0eb]">
-                            Daha fazla
+                            {{ __('ui.feed.more') }}
                         </a>
                     @endif
                 </section>

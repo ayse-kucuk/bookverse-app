@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    @include('partials.head', ['title' => 'Bildirimler — Bookverse'])
+    @include('partials.head', ['title' => __('ui.notifications.page_title')])
 </head>
 <body class="bv-mesh min-h-screen antialiased selection:bg-[#e8dfd2]">
 
@@ -10,8 +10,8 @@
     <main class="bv-page space-y-6 py-10">
         <div class="bv-animate-up flex items-end justify-between gap-4">
             <div>
-                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Gelen Kutusu</p>
-                <h1 class="bv-display mt-1 text-4xl font-medium text-[#1c1c1c]">Bildirimler</h1>
+                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">{{ __('ui.notifications.inbox') }}</p>
+                <h1 class="bv-display mt-1 text-4xl font-medium text-[#1c1c1c]">{{ __('ui.notifications.title') }}</h1>
             </div>
         </div>
 
@@ -44,7 +44,7 @@
                 </a>
             @empty
                 <div class="bv-card p-12 text-center">
-                    <p class="text-sm text-[#9a948d]">Henüz bildirimin yok.</p>
+                    <p class="text-sm text-[#9a948d]">{{ __('ui.notifications.empty') }}</p>
                 </div>
             @endforelse
         </div>

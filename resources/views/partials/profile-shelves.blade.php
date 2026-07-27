@@ -2,21 +2,21 @@
     $isOwnProfile = $isOwnProfile ?? true;
     $shelves = [
         'reading' => [
-            'label' => 'Okuyorum',
+            'label' => __('ui.profile.reading'),
             'books' => $reading,
-            'empty' => $isOwnProfile ? 'Şu an okunan kitap yok.' : 'Şu an okuduğu kitap yok.',
+            'empty' => $isOwnProfile ? __('ui.profile.empty_reading') : __('ui.profile.empty_reading'),
             'fallback' => '📖',
         ],
         'will-read' => [
-            'label' => 'Okuyacağım',
+            'label' => __('ui.profile.will_read'),
             'books' => $willRead,
-            'empty' => $isOwnProfile ? 'Listede kitap yok.' : 'Okuma listesinde kitap yok.',
+            'empty' => $isOwnProfile ? __('ui.profile.empty_will_read') : __('ui.profile.empty_will_read'),
             'fallback' => '📌',
         ],
         'read' => [
-            'label' => 'Okundu',
+            'label' => __('ui.profile.read'),
             'books' => $read,
-            'empty' => $isOwnProfile ? 'Henüz biten kitap yok.' : 'Henüz bitirdiği kitap yok.',
+            'empty' => $isOwnProfile ? __('ui.profile.empty_read') : __('ui.profile.empty_read'),
             'fallback' => '✓',
         ],
     ];
@@ -24,7 +24,7 @@
 @endphp
 
 <section class="bv-card bv-animate-up w-full p-4 sm:p-5">
-    <p class="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Kitaplık</p>
+    <p class="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">{{ __('ui.profile.library') }}</p>
 
     <div class="divide-y divide-[#f0ece6]">
         @foreach($shelves as $key => $shelf)

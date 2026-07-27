@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    @include('partials.head', ['title' => 'Hesap Ayarları — Bookverse'])
+    @include('partials.head', ['title' => __('ui.settings.page_title')])
 </head>
 <body class="bv-mesh min-h-screen antialiased selection:bg-[#e8dfd2]">
 
@@ -10,8 +10,8 @@
     <main class="bv-page py-6 sm:py-10">
 
         <div class="mb-6 bv-animate-up sm:mb-8">
-            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Ayarlar</p>
-            <h1 class="bv-display mt-1 text-3xl font-medium text-[#1c1c1c] sm:text-4xl">Hesap Ayarları</h1>
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">{{ __('ui.settings.eyebrow') }}</p>
+            <h1 class="bv-display mt-1 text-3xl font-medium text-[#1c1c1c] sm:text-4xl">{{ __('ui.settings.title') }}</h1>
         </div>
 
         <div class="bv-card bv-animate-up p-5 sm:p-7 sm:p-8">
@@ -34,43 +34,43 @@
                 @method('PATCH')
 
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="name">Ad Soyad</label>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="name">{{ __('ui.settings.name') }}</label>
                     <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" required
                         class="bv-input w-full border border-[#e8e4de] bg-white px-4 py-3 text-sm transition">
                     @error('name')<p class="mt-1 text-xs text-bv-accent">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="email">E-posta</label>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="email">{{ __('ui.settings.email') }}</label>
                     <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}" required
                         class="bv-input w-full border border-[#e8e4de] bg-white px-4 py-3 text-sm transition">
                     @error('email')<p class="mt-1 text-xs text-bv-accent">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="profile_photo">Profil Fotoğrafı</label>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="profile_photo">{{ __('ui.settings.photo') }}</label>
                     <input id="profile_photo" name="profile_photo" type="file" accept="image/*"
                         class="w-full border border-[#e8e4de] bg-white px-4 py-3 text-sm file:mr-4 file:cursor-pointer file:border-0 file:bg-[#f3f0eb] file:px-4 file:py-2 file:text-xs file:font-bold file:uppercase file:tracking-wider file:text-[#6b6560] hover:file:bg-[#e8e4de]">
-                    <p class="mt-1 text-xs text-[#9a948d]">JPG, PNG veya WebP. En fazla 2 MB.</p>
+                    <p class="mt-1 text-xs text-[#9a948d]">{{ __('ui.settings.photo_hint') }}</p>
                     @error('profile_photo')<p class="mt-1 text-xs text-bv-accent">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
-                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="account_visibility">Hesap Gizliliği</label>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="account_visibility">{{ __('ui.settings.visibility') }}</label>
                     <select id="account_visibility" name="account_visibility"
                         class="bv-input w-full border border-[#e8e4de] bg-white px-4 py-3 text-sm transition">
-                        <option value="public" @selected(old('account_visibility', $user->account_visibility ?? 'public') === 'public')>Herkese açık</option>
-                        <option value="followers_only" @selected(old('account_visibility', $user->account_visibility) === 'followers_only')>Yalnızca takipçilerim</option>
+                        <option value="public" @selected(old('account_visibility', $user->account_visibility ?? 'public') === 'public')>{{ __('ui.settings.visibility_public') }}</option>
+                        <option value="followers_only" @selected(old('account_visibility', $user->account_visibility) === 'followers_only')>{{ __('ui.settings.visibility_followers') }}</option>
                     </select>
-                    <p class="mt-1 text-xs text-[#9a948d]">Takipçilere özel hesaplarda profilin ve paylaşımların yalnızca takipçilerin görür.</p>
+                    <p class="mt-1 text-xs text-[#9a948d]">{{ __('ui.settings.visibility_hint') }}</p>
                     @error('account_visibility')<p class="mt-1 text-xs text-bv-accent">{{ $message }}</p>@enderror
                 </div>
 
                 <div class="flex items-center gap-4 border-t border-[#f0ece6] pt-5">
                     <button type="submit" class="bv-btn px-7 py-3 text-xs font-bold uppercase tracking-wider">
-                        Kaydet
+                        {{ __('ui.common.save') }}
                     </button>
-                    <a href="{{ route('profile') }}" class="text-xs font-semibold text-[#9a948d] transition hover:text-[#1c1c1c]">Profili görüntüle →</a>
+                    <a href="{{ route('profile') }}" class="text-xs font-semibold text-[#9a948d] transition hover:text-[#1c1c1c]">{{ __('ui.settings.view_profile') }}</a>
                 </div>
             </form>
         </div>

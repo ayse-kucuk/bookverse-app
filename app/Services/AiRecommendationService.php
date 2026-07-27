@@ -18,12 +18,12 @@ class AiRecommendationService
      */
     public function recommend(?User $user, array $params, array $candidateBooks): array
     {
-        $apiKey = (string) config('services.gemini.key', '');
+        $apiKey = trim((string) config('services.gemini.key', ''));
 
         if ($apiKey === '') {
             return [
                 'recommendations' => [],
-                'message' => 'GEMINI_API_KEY eksik.',
+                'message' => 'GEMINI_API_KEY tanımlı değil. Lokal için .env dosyasına, canlı (Render) için Environment Variables bölümüne ekle.',
                 'source' => 'error',
             ];
         }

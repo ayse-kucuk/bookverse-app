@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     @include('partials.head', ['title' => $profileUser->name . ' — Bookverse'])
 </head>
@@ -33,14 +33,14 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="w-full border border-[#e8e4de] bg-[#f9f8f6] px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-[#6b6560] transition hover:border-[#c4a574] hover:text-[#1c1c1c] sm:w-auto">
-                                Takipten çık
+                                {{ __('ui.profile.unfollow') }}
                             </button>
                         </form>
                     @else
                         <form action="{{ route('users.follow', $profileUser) }}" method="POST" class="w-full sm:w-auto">
                             @csrf
                             <button type="submit" class="bv-btn w-full px-5 py-2.5 text-xs font-bold uppercase tracking-wider sm:w-auto">
-                                Takip et
+                                {{ __('ui.profile.follow') }}
                             </button>
                         </form>
                     @endif
@@ -61,12 +61,12 @@
         ])
 
         <section class="space-y-4">
-            <h2 class="bv-animate-up-delay-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Paylaşımlar</h2>
+            <h2 class="bv-animate-up-delay-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">{{ __('ui.profile.posts') }}</h2>
             <div class="bv-stagger space-y-4">
                 @forelse($posts as $post)
                     @include('partials.post-card', ['post' => $post])
                 @empty
-                    <div class="bv-card p-8 text-center text-sm text-[#9a948d]">Henüz paylaşım yok.</div>
+                    <div class="bv-card p-8 text-center text-sm text-[#9a948d]">{{ __('ui.profile.no_posts_other') }}</div>
                 @endforelse
             </div>
             <div>{{ $posts->links() }}</div>

@@ -1,0 +1,22 @@
+{
+    "Email": "Email",
+    "Password": "Password",
+    "Name": "Name",
+    "Confirm Password": "Confirm Password",
+    "Beni hatırla": "Remember me",
+    "Şifrenizi mi unuttunuz?": "Forgot your password?",
+    "Giriş yap": "Log in",
+    "Kayıt ol": "Sign up",
+    "Kayıt Ol": "Sign up",
+    "Already registered?": "Already registered?",
+    "Forgot your password? Thanks! We will email you a password reset link.": "Forgot your password? Thanks! We will email you a password reset link.",
+    "Email Password Reset Link": "Email Password Reset Link",
+    "Reset Password": "Reset Password",
+    "Confirm": "Confirm",
+    "Log Out": "Log Out",
+    "Şifrenizi mi unuttunuz? Şifrenizi sıfırlamak için lütfen email adresinizi giriniz. Sıfırlama linki email adresinize gönderilecektir.": "Forgot your password? Enter your email and we will send you a reset link.",
+    "Şifrenizi sıfırla": "Reset password",
+    "Girişe dön": "Back to login",
+    "Kayıt olduğunuz için teşekkür ederiz! Başlamak için lütfen email adresinizi doğrulamak için gönderilen linki tıklayınız. Eğer email adresinizi almadıysanız, tekrar gönderebiliriz.": "Thanks for signing up! Please click the link we emailed you to verify your address. If you did not receive it, we can send another.",
+    "Kayıttan sonra Authenticator uygulamasıyla kurulumu tamamlayabilirsin. İstersen şimdi atlayıp sonra da açabilirsin.": "After signing up you can finish setup with an authenticator app. You can skip for now and enable it later."
+}

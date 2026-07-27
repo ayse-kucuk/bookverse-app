@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\FollowController;
@@ -20,6 +21,10 @@ use Illuminate\Support\Facades\Route;
 
 // Ana sayfa: sosyal akış
 Route::get('/', [FeedController::class, 'index'])->name('home');
+
+Route::get('/locale/{locale}', [LocaleController::class, 'switch'])
+    ->whereIn('locale', ['tr', 'en'])
+    ->name('locale.switch');
 
 // Kitap keşfet sayfası
 Route::get('/kesfet', [BookController::class, 'index'])->name('explore');

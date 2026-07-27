@@ -14,7 +14,7 @@
             </div>
         </div>
         <span class="shrink-0 border border-[#e8e4de] bg-[#f9f8f6] px-2 py-1 text-[10px] font-bold uppercase tracking-wider {{ $post->isQuote() ? 'text-amber-800' : 'text-bv-accent' }}">
-            {{ $post->isQuote() ? 'Alıntı' : 'Düşünce' }}
+            {{ $post->isQuote() ? __('ui.common.quote') : __('ui.common.thought') }}
         </span>
     </div>
 
@@ -45,7 +45,7 @@
                 class="bv-like-btn flex items-center gap-1.5 px-2 py-1 text-xs font-semibold transition duration-200 {{ $post->liked_by_viewer ? 'text-bv-accent' : 'text-[#9a948d] hover:bg-[#f3f0eb] hover:text-[#1c1c1c]' }}"
             >
                 <span class="bv-like-icon text-base leading-none">{{ $post->liked_by_viewer ? '❤️' : '🤍' }}</span>
-                <span>Beğen</span>
+                <span>{{ __('ui.common.like') }}</span>
                 <span class="bv-like-count font-bold {{ ($post->likes_count ?? 0) > 0 ? '' : 'hidden' }}">{{ $post->likes_count ?? 0 }}</span>
             </button>
         @else
@@ -57,7 +57,7 @@
 
         <a href="{{ route('posts.show', $post) }}#comments" class="flex items-center gap-1.5 px-2 py-1 text-xs font-semibold text-[#9a948d] transition duration-200 hover:bg-[#f3f0eb] hover:text-[#1c1c1c]">
             <span class="text-base leading-none">💬</span>
-            <span>Yorum</span>
+            <span>{{ __('ui.common.comment') }}</span>
             <span class="font-bold {{ ($post->comments_count ?? 0) > 0 ? '' : 'hidden' }}">{{ $post->comments_count ?? 0 }}</span>
         </a>
         </div>
@@ -67,7 +67,7 @@
                 <form action="{{ route('posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Paylaşımı silmek istiyor musun?')">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="text-xs font-semibold text-[#9a948d] transition hover:text-red-700">Sil</button>
+                    <button type="submit" class="text-xs font-semibold text-[#9a948d] transition hover:text-red-700">{{ __('ui.common.delete') }}</button>
                 </form>
             @endif
         @endauth

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    @include('partials.head', ['title' => 'Arama — Bookverse'])
+    @include('partials.head', ['title' => __('ui.search.page_title')])
 </head>
 <body class="bv-mesh min-h-screen text-slate-800 antialiased selection:bg-\[#e8dfd2\]">
 
@@ -9,33 +9,33 @@
 
     <main class="bv-page space-y-6 py-6 sm:space-y-8 sm:py-8">
         <header class="bv-animate-up">
-            <h1 class="text-xl font-extrabold tracking-tight text-slate-800 sm:text-2xl">Arama</h1>
+            <h1 class="text-xl font-extrabold tracking-tight text-slate-800 sm:text-2xl">{{ __('ui.search.title') }}</h1>
             @if(mb_strlen($query) >= 1)
                 <p class="mt-1 text-sm text-slate-500">
-                    <span class="font-semibold text-bv-accent">"{{ $query }}"</span> için sonuçlar
+                    {{ __('ui.search.results_for', ['query' => $query]) }}
                 </p>
             @else
-                <p class="mt-1 text-sm text-slate-400">Kitap, kullanıcı veya paylaşım ara.</p>
+                <p class="mt-1 text-sm text-slate-400">{{ __('ui.search.hint') }}</p>
             @endif
         </header>
 
         <form action="{{ route('search') }}" method="GET" class="bv-card rounded-2xl p-4 sm:hidden">
-            <label for="mobile-search" class="sr-only">Ara</label>
+            <label for="mobile-search" class="sr-only">{{ __('ui.search.button') }}</label>
             <input
                 id="mobile-search"
                 type="search"
                 name="q"
                 value="{{ $query }}"
-                placeholder="Kitap, kullanıcı veya paylaşım..."
+                placeholder="{{ __('ui.search.placeholder') }}"
                 enterkeyhint="search"
                 class="bv-input w-full border border-[#e8e4de] bg-white px-4 py-3 text-sm"
             >
-            <button type="submit" class="bv-btn mt-3 w-full rounded-xl py-2.5 text-xs font-bold uppercase tracking-wider text-white">Ara</button>
+            <button type="submit" class="bv-btn mt-3 w-full rounded-xl py-2.5 text-xs font-bold uppercase tracking-wider text-white">{{ __('ui.search.button') }}</button>
         </form>
 
         @if(mb_strlen($query) < 1)
             <div class="bv-card rounded-2xl p-8 text-center text-sm text-slate-400 sm:p-10">
-                Üstteki arama kutusunu veya bu sayfadaki formu kullanarak ara.
+                {{ __('ui.search.empty_query') }}
             </div>
         @else
             @php
@@ -44,12 +44,12 @@
 
             @if($total === 0)
                 <div class="bv-card rounded-2xl p-10 text-center text-sm text-slate-400">
-                    Sonuç bulunamadı. Farklı bir kelime dene.
+                    {{ __('ui.search.no_results') }}
                 </div>
             @else
                 @if($books->isNotEmpty())
                     <section class="bv-animate-up-delay-1 space-y-3">
-                        <h2 class="text-sm font-extrabold uppercase tracking-widest text-slate-400">Kitaplar ({{ $books->count() }})</h2>
+                        <h2 class="text-sm font-extrabold uppercase tracking-widest text-slate-400">{{ __('ui.search.books') }} ({{ $books->count() }})</h2>
                         <div class="bv-stagger space-y-2">
                             @foreach($books as $book)
                                 <a href="{{ route('books.show', $book) }}" class="bv-card bv-card-interactive flex items-center gap-4 rounded-2xl p-4 transition">
@@ -75,7 +75,7 @@
 
                 @if($users->isNotEmpty())
                     <section class="bv-animate-up-delay-2 space-y-3">
-                        <h2 class="text-sm font-extrabold uppercase tracking-widest text-slate-400">Kullanıcılar ({{ $users->count() }})</h2>
+                        <h2 class="text-sm font-extrabold uppercase tracking-widest text-slate-400">{{ __('ui.search.users') }} ({{ $users->count() }})</h2>
                         <div class="bv-stagger space-y-2">
                             @foreach($users as $user)
                                 <a href="{{ route('users.show', $user) }}" class="bv-card bv-card-interactive flex items-center gap-3 rounded-2xl p-4 transition">
@@ -88,7 +88,7 @@
                                     </div>
                                     <div>
                                         <p class="font-bold text-slate-800">{{ $user->name }}</p>
-                                        <p class="text-xs text-slate-400">{{ $user->isPublic() ? 'Herkese açık' : 'Takipçilere özel' }}</p>
+                                        <p class="text-xs text-slate-400">{{ $user->isPublic() ? __('ui.search.visibility_public') : __('ui.search.visibility_followers') }}</p>
                                     </div>
                                 </a>
                             @endforeach
@@ -98,7 +98,7 @@
 
                 @if($posts->isNotEmpty())
                     <section class="space-y-3">
-                        <h2 class="text-sm font-extrabold uppercase tracking-widest text-slate-400">Paylaşımlar ({{ $posts->count() }})</h2>
+                        <h2 class="text-sm font-extrabold uppercase tracking-widest text-slate-400">{{ __('ui.search.posts') }} ({{ $posts->count() }})</h2>
                         <div class="bv-stagger space-y-4">
                             @foreach($posts as $post)
                                 @include('partials.post-card', ['post' => $post])

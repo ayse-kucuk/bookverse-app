@@ -14,6 +14,7 @@ Sosyal okuma platformu — kitap keşfet, rafına ekle, düşüncelerini paylaş
 - **2FA** — Google Authenticator ile çift aşamalı doğrulama
 - **Admin paneli** — Kitap, kategori, kullanıcı ve yorum yönetimi; Google Books ile kitap arama
 - **API** — Sanctum ile REST API + Swagger dokümantasyonu
+- **Çoklu dil** — Türkçe / English (navbar’da TR | EN)
 
 ## Teknolojiler
 
@@ -44,6 +45,8 @@ php artisan key:generate
 APP_NAME=Bookverse
 DB_CONNECTION=pgsql   # veya sqlite
 GOOGLE_BOOKS_API_KEY=
+APP_LOCALE=tr
+APP_FALLBACK_LOCALE=tr
 GEMINI_API_KEY=
 GEMINI_MODEL=gemini-flash-latest
 ```
@@ -61,7 +64,7 @@ Herd kullanıyorsan `php artisan serve` yerine siteyi doğrudan Herd üzerinden 
 | Değişken | Açıklama |
 |----------|---------|
 | `GOOGLE_BOOKS_API_KEY` | Admin kitap arama / import |
-| `GEMINI_API_KEY` | AI kitap önerileri |
+| `GEMINI_API_KEY` | AI kitap önerileri (**Render’da da tanımlanmalı**) |
 | `GEMINI_MODEL` | Varsayılan: `gemini-flash-latest` |
 | `PROFILE_PHOTOS_DISK` | `public` (lokal) veya `supabase` (canlı) |
 | `AWS_*` | Supabase S3 uyumlu profil fotoğrafı ayarları |

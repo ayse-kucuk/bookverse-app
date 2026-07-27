@@ -4,13 +4,13 @@
     $isOwnProfile = $isOwnProfile ?? true;
 @endphp
 
-@foreach(['followers' => ['title' => 'Takipçiler', 'items' => $followers], 'following' => ['title' => 'Takip Edilenler', 'items' => $following]] as $type => $panel)
+@foreach(['followers' => ['title' => __('ui.profile.followers'), 'items' => $followers], 'following' => ['title' => __('ui.profile.following'), 'items' => $following]] as $type => $panel)
     <div id="follow-panel-{{ $type }}" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-labelledby="follow-title-{{ $type }}">
         <div class="absolute inset-0 bg-[#1c1c1c]/60 backdrop-blur-sm" onclick="closeFollowPanel()"></div>
         <div class="absolute inset-x-4 top-24 bottom-8 mx-auto flex max-w-md flex-col overflow-hidden border border-[#e8e4de] bg-white shadow-2xl sm:inset-x-8">
             <div class="flex shrink-0 items-center justify-between border-b border-[#e8e4de] px-5 py-4">
                 <h2 id="follow-title-{{ $type }}" class="bv-display text-xl font-medium text-[#1c1c1c]">{{ $panel['title'] }}</h2>
-                <button type="button" onclick="closeFollowPanel()" class="border border-[#e8e4de] px-3 py-1.5 text-xs font-bold text-[#6b6560] transition hover:text-bv-accent">Kapat ✕</button>
+                <button type="button" onclick="closeFollowPanel()" class="border border-[#e8e4de] px-3 py-1.5 text-xs font-bold text-[#6b6560] transition hover:text-bv-accent">{{ __('ui.ai.close') }} ✕</button>
             </div>
             <div class="flex-1 overflow-y-auto px-3 py-3">
                 @forelse($panel['items'] as $person)
@@ -27,8 +27,8 @@
                 @empty
                     @php
                         $emptyMsg = $type === 'followers'
-                            ? ($isOwnProfile ? 'Henüz takipçin yok.' : 'Henüz takipçisi yok.')
-                            : ($isOwnProfile ? 'Henüz kimseyi takip etmiyorsun.' : 'Henüz kimseyi takip etmiyor.');
+                            ? ($isOwnProfile ? __('ui.profile.empty_followers_own') : __('ui.profile.empty_followers_other'))
+                            : ($isOwnProfile ? __('ui.profile.empty_following_own') : __('ui.profile.empty_following_other'));
                     @endphp
                     <p class="py-10 text-center text-sm italic text-[#9a948d]">{{ $emptyMsg }}</p>
                 @endforelse

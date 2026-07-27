@@ -223,9 +223,9 @@ class BookController extends Controller
     private function statusLabel(string $status): string
     {
         return match ($status) {
-            'okuyorum' => 'Okuyorum',
-            'okundu' => 'Okundu',
-            default => 'Okuyacağım',
+            'okuyorum' => __('ui.book.status_reading'),
+            'okundu' => __('ui.book.status_read'),
+            default => __('ui.book.status_will_read'),
         };
     }
 }

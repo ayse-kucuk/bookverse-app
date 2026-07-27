@@ -1,7 +1,7 @@
 <div class="bv-topbar bv-animate-nav hidden sm:block">
     <div class="bv-page flex items-center justify-between py-2">
-        <p class="font-medium">Okuma topluluğuna hoş geldin</p>
-        <p class="font-medium">Keşfet · Oku · Paylaş</p>
+        <p class="font-medium">{{ __('ui.nav.welcome') }}</p>
+        <p class="font-medium">{{ __('ui.nav.tagline') }}</p>
     </div>
 </div>
 
@@ -16,13 +16,13 @@
             </a>
 
             <div class="hidden flex-1 items-center justify-center gap-8 lg:flex">
-                <a href="{{ route('home') }}" class="bv-nav-link {{ request()->routeIs('home') ? 'is-active' : '' }}">Akış</a>
-                <a href="{{ route('explore') }}" class="bv-nav-link {{ request()->routeIs('explore') ? 'is-active' : '' }}">Keşfet</a>
+                <a href="{{ route('home') }}" class="bv-nav-link {{ request()->routeIs('home') ? 'is-active' : '' }}">{{ __('ui.nav.feed') }}</a>
+                <a href="{{ route('explore') }}" class="bv-nav-link {{ request()->routeIs('explore') ? 'is-active' : '' }}">{{ __('ui.nav.explore') }}</a>
             </div>
 
             <div class="relative min-w-0 flex-1 lg:max-w-xs" data-live-search-wrap>
                 <form action="{{ route('search') }}" method="GET" class="min-w-0" data-live-search-form>
-                    <label for="nav-search" class="sr-only">Ara</label>
+                    <label for="nav-search" class="sr-only">{{ __('ui.nav.search') }}</label>
                     <div class="relative">
                         <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9a948d]">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.2-5.2M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"/></svg>
@@ -32,7 +32,7 @@
                             type="search"
                             name="q"
                             value="{{ request('q') }}"
-                            placeholder="Ara..."
+                            placeholder="{{ __('ui.nav.search_placeholder') }}"
                             autocomplete="off"
                             enterkeyhint="search"
                             data-live-search-input
@@ -45,22 +45,26 @@
                     data-live-search-dropdown
                     class="bv-surface-matte absolute left-0 right-0 top-[calc(100%+0.5rem)] z-[100] hidden max-h-[min(70vh,20rem)] overflow-y-auto py-2 sm:max-h-80"
                     role="listbox"
-                    aria-label="Arama önerileri"
+                    aria-label="{{ __('ui.nav.search') }}"
                 ></div>
             </div>
 
-            <div class="flex shrink-0 items-center gap-0.5 sm:gap-2">
+            <div class="flex shrink-0 items-center gap-1 sm:gap-2">
+                <div class="hidden sm:block">
+                    @include('partials.language-switcher')
+                </div>
+
                 @auth
                     <details class="relative hidden sm:block" data-notification-dropdown>
-                        <summary class="list-none relative flex h-10 w-10 cursor-pointer items-center justify-center text-[#6b6560] transition hover:text-[#1c1c1c]" aria-label="Bildirimler" data-notification-bell data-unread-count="{{ $navUnreadCount ?? 0 }}">
+                        <summary class="list-none relative flex h-10 w-10 cursor-pointer items-center justify-center text-[#6b6560] transition hover:text-[#1c1c1c]" aria-label="{{ __('ui.nav.notifications') }}" data-notification-bell data-unread-count="{{ $navUnreadCount ?? 0 }}">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
                             <span data-notification-badge class="{{ ($navUnreadCount ?? 0) > 0 ? '' : 'hidden' }} absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center bg-[#1c1c1c] px-1 text-[9px] font-bold text-white">{{ ($navUnreadCount ?? 0) > 9 ? '9+' : ($navUnreadCount ?? 0) }}</span>
                         </summary>
                         <div class="bv-surface-matte absolute right-0 z-[110] mt-3 w-72 overflow-hidden sm:w-80">
                             <div class="flex items-center justify-between border-b border-[#e8e4de] px-4 py-3">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6b6560]">Bildirimler</p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6b6560]">{{ __('ui.nav.notifications') }}</p>
                                 @if(($navUnreadCount ?? 0) > 0)
-                                    <button type="button" data-notification-read-all="{{ route('notifications.read-all') }}" class="text-[10px] font-bold text-bv-accent hover:opacity-80">Tümünü oku</button>
+                                    <button type="button" data-notification-read-all="{{ route('notifications.read-all') }}" class="text-[10px] font-bold text-bv-accent hover:opacity-80">{{ __('ui.nav.read_all') }}</button>
                                 @endif
                             </div>
                             <div class="max-h-72 overflow-y-auto" data-notification-list>
@@ -73,11 +77,11 @@
                                         </div>
                                     </a>
                                 @empty
-                                    <p class="px-4 py-6 text-center text-xs text-[#9a948d]">Bildirim yok</p>
+                                    <p class="px-4 py-6 text-center text-xs text-[#9a948d]">{{ __('ui.nav.no_notifications') }}</p>
                                 @endforelse
                             </div>
                             <a href="{{ route('notifications.index') }}" data-notification-see-all="{{ route('notifications.read-all') }}" class="block border-t border-[#e8e4de] bg-[#f9f8f6] py-2.5 text-center text-xs font-bold text-bv-accent transition hover:bg-[#f3f0eb]">
-                                Tüm bildirimleri gör
+                                {{ __('ui.nav.see_all_notifications') }}
                             </a>
                         </div>
                     </details>
@@ -91,22 +95,28 @@
                             @endif
                         </summary>
                         <div class="bv-surface-matte absolute right-0 z-[110] mt-3 w-48 overflow-hidden p-1.5">
-                            <a href="{{ route('profile') }}" class="block px-3 py-2.5 text-xs font-medium text-[#6b6560] transition hover:bg-[#f3f0eb] hover:text-[#1c1c1c]">Profil</a>
+                            <div class="border-b border-[#f0ece6] px-2 py-2 sm:hidden">
+                                @include('partials.language-switcher')
+                            </div>
+                            <a href="{{ route('profile') }}" class="block px-3 py-2.5 text-xs font-medium text-[#6b6560] transition hover:bg-[#f3f0eb] hover:text-[#1c1c1c]">{{ __('ui.nav.profile') }}</a>
                             @if(Auth::user()->is_admin)
-                                <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2.5 text-xs font-medium text-bv-accent transition hover:bg-[#f3f0eb]">Yönetim Paneli</a>
+                                <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2.5 text-xs font-medium text-bv-accent transition hover:bg-[#f3f0eb]">{{ __('ui.nav.admin') }}</a>
                             @endif
-                            <a href="{{ route('account.settings') }}" class="block px-3 py-2.5 text-xs font-medium text-[#6b6560] transition hover:bg-[#f3f0eb] hover:text-[#1c1c1c]">Hesap Ayarları</a>
+                            <a href="{{ route('account.settings') }}" class="block px-3 py-2.5 text-xs font-medium text-[#6b6560] transition hover:bg-[#f3f0eb] hover:text-[#1c1c1c]">{{ __('ui.nav.settings') }}</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="mt-0.5 w-full cursor-pointer border-t border-[#f0ece6] px-3 py-2.5 text-left text-xs font-medium text-[#9a948d] transition hover:bg-[#f3f0eb] hover:text-[#1c1c1c]">Çıkış Yap</button>
+                                <button type="submit" class="mt-0.5 w-full cursor-pointer border-t border-[#f0ece6] px-3 py-2.5 text-left text-xs font-medium text-[#9a948d] transition hover:bg-[#f3f0eb] hover:text-[#1c1c1c]">{{ __('ui.nav.logout') }}</button>
                             </form>
                         </div>
                     </details>
                 @endauth
 
                 @guest
-                    <a href="{{ route('login') }}" class="hidden px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#6b6560] transition hover:text-[#1c1c1c] sm:inline">Giriş</a>
-                    <a href="{{ route('register') }}" class="bv-btn px-3 py-2 text-[10px] font-bold uppercase tracking-wider sm:px-4 sm:text-xs">Kayıt</a>
+                    <div class="sm:hidden">
+                        @include('partials.language-switcher')
+                    </div>
+                    <a href="{{ route('login') }}" class="hidden px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#6b6560] transition hover:text-[#1c1c1c] sm:inline">{{ __('ui.nav.login') }}</a>
+                    <a href="{{ route('register') }}" class="bv-btn px-3 py-2 text-[10px] font-bold uppercase tracking-wider sm:px-4 sm:text-xs">{{ __('ui.nav.register') }}</a>
                 @endguest
             </div>
         </div>

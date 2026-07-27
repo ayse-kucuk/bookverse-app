@@ -1,5 +1,5 @@
 <aside class="sticky top-24 hidden space-y-4 xl:block">
-    <p class="text-center text-[10px] font-bold uppercase tracking-widest text-[#9a948d]">Reklam</p>
+    <p class="text-center text-[10px] font-bold uppercase tracking-widest text-[#9a948d]">{{ __('ui.ads.label') }}</p>
 
     <div class="bv-card overflow-hidden border border-[#e8e4de] bg-white p-5 text-center shadow-sm">
         <div class="mb-2 text-[11px] font-bold uppercase tracking-wider text-amber-700">Hukuki Danışmanlık</div>

@@ -63,10 +63,10 @@ class Notification extends Model
     public function message(): string
     {
         return match ($this->type) {
-            self::TYPE_FOLLOW => $this->actor->name.' seni takip etti',
-            self::TYPE_POST_LIKE => $this->actor->name.' paylaşımını beğendi',
-            self::TYPE_POST_COMMENT => $this->actor->name.' paylaşımına yorum yaptı',
-            default => 'Yeni bir bildirimin var',
+            self::TYPE_FOLLOW => __('ui.notifications.followed', ['name' => $this->actor->name]),
+            self::TYPE_POST_LIKE => __('ui.notifications.liked', ['name' => $this->actor->name]),
+            self::TYPE_POST_COMMENT => __('ui.notifications.commented', ['name' => $this->actor->name]),
+            default => __('ui.nav.notifications'),
         };
     }
 

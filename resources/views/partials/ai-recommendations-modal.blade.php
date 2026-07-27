@@ -1,12 +1,12 @@
 @auth
     <div class="mb-4 flex items-center justify-between gap-3">
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">AI</p>
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">{{ __('ui.feed.ai') }}</p>
         <button
             type="button"
             class="bv-btn inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white"
             data-ai-open
         >
-            🤖 AI ile öneriler
+            🤖 {{ __('ui.feed.ai_button') }}
         </button>
     </div>
 
@@ -15,15 +15,15 @@
         class="fixed inset-0 z-[250] hidden items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4"
         role="dialog"
         aria-modal="true"
-        aria-label="AI Kitap Önerileri"
+        aria-label="{{ __('ui.ai.title') }}"
     >
         <div class="bv-surface-matte flex max-h-[min(92dvh,880px)] w-full max-w-3xl flex-col overflow-hidden rounded-t-2xl shadow-xl sm:rounded-2xl">
             <div class="flex shrink-0 items-center justify-between border-b border-[#e8e4de] px-4 py-3 sm:px-5 sm:py-4">
                 <div>
-                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">Akıllı Kitap Asistanı</p>
-                    <h3 class="mt-1 text-base font-bold text-[#1c1c1c] sm:text-lg">Kişiselleştirilmiş öneriler</h3>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a948d]">{{ __('ui.ai.title') }}</p>
+                    <h3 class="mt-1 text-base font-bold text-[#1c1c1c] sm:text-lg">{{ __('ui.ai.subtitle') }}</h3>
                 </div>
-                <button type="button" class="flex h-10 w-10 items-center justify-center text-[#9a948d] hover:text-[#1c1c1c]" data-ai-close aria-label="Kapat">
+                <button type="button" class="flex h-10 w-10 items-center justify-center text-[#9a948d] hover:text-[#1c1c1c]" data-ai-close aria-label="{{ __('ui.ai.close') }}">
                     ✕
                 </button>
             </div>
@@ -31,20 +31,20 @@
             <div class="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain p-4 sm:p-5" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));">
                 <form id="ai-recommend-form" class="space-y-4" data-ai-endpoint="{{ route('ai.recommend') }}">
                     <div>
-                        <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="ai-mood">Ruh hali</label>
+                        <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="ai-mood">{{ __('ui.ai.mood') }}</label>
                         <select id="ai-mood" name="mood" class="bv-input w-full rounded-xl border border-[#e8e4de] bg-white px-4 py-2.5 text-sm">
-                            <option value="">Seç...</option>
-                            <option value="Sürükleyici">Sürükleyici</option>
-                            <option value="Karanlık">Karanlık</option>
-                            <option value="İlham Verici">İlham Verici</option>
-                            <option value="Melankolik">Melankolik</option>
+                            <option value="">{{ __('ui.ai.mood_select') }}</option>
+                            <option value="Sürükleyici">{{ __('ui.ai.mood_gripping') }}</option>
+                            <option value="Karanlık">{{ __('ui.ai.mood_dark') }}</option>
+                            <option value="İlham Verici">{{ __('ui.ai.mood_inspiring') }}</option>
+                            <option value="Melankolik">{{ __('ui.ai.mood_melancholic') }}</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="ai-genre">Tür</label>
+                        <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="ai-genre">{{ __('ui.ai.genre') }}</label>
                         <select id="ai-genre" name="genre_id" class="bv-input w-full rounded-xl border border-[#e8e4de] bg-white px-4 py-2.5 text-sm">
-                            <option value="">Tümü</option>
+                            <option value="">{{ __('ui.ai.all') }}</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach
@@ -52,22 +52,22 @@
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="ai-free-text">Serbest istek</label>
+                        <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="ai-free-text">{{ __('ui.ai.free_text') }}</label>
                         <textarea
                             id="ai-free-text"
                             name="free_text"
                             rows="3"
-                            placeholder="Örn: Uzayda geçen aksiyon dolu bilimkurgu arıyorum"
+                            placeholder="{{ __('ui.ai.free_text_placeholder') }}"
                             class="bv-input w-full rounded-xl border border-[#e8e4de] bg-white px-4 py-2.5 text-sm resize-none"
                         ></textarea>
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="ai-shelf-status">Rafa eklerken</label>
+                        <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#9a948d]" for="ai-shelf-status">{{ __('ui.ai.shelf_status') }}</label>
                         <select id="ai-shelf-status" name="status" class="bv-input w-full rounded-xl border border-[#e8e4de] bg-white px-4 py-2.5 text-sm">
-                            <option value="okuyacagim">Okuyacağım</option>
-                            <option value="okuyorum">Okuyorum</option>
-                            <option value="okundu">Okundu</option>
+                            <option value="okuyacagim">{{ __('ui.book.status_will_read') }}</option>
+                            <option value="okuyorum">{{ __('ui.book.status_reading') }}</option>
+                            <option value="okundu">{{ __('ui.book.status_read') }}</option>
                         </select>
                     </div>
 
@@ -75,23 +75,23 @@
 
                     <div class="flex items-center justify-between gap-3">
                         <button type="button" class="bv-btn-outline rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-[#9a948d] hover:bg-[#f3f0eb]" data-ai-clear>
-                            Temizle
+                            {{ __('ui.ai.clear') }}
                         </button>
 
                         <button type="submit" id="ai-submit-btn" class="bv-btn rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white disabled:cursor-wait disabled:opacity-70">
-                            Önerileri Getir
+                            {{ __('ui.ai.get') }}
                         </button>
                     </div>
                 </form>
 
                 <div class="space-y-3 border-t border-[#e8e4de] pt-5">
                     <div class="flex items-center justify-between">
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-[#9a948d]">Sonuçlar</p>
-                        <div id="ai-loading" class="hidden text-xs font-semibold text-bv-accent">İşleniyor...</div>
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-[#9a948d]">{{ __('ui.ai.results') }}</p>
+                        <div id="ai-loading" class="hidden text-xs font-semibold text-bv-accent">{{ __('ui.ai.loading') }}</div>
                     </div>
                     <div id="ai-results" class="space-y-3">
                         <div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">
-                            Formu doldurup “Önerileri Getir”e bas. Boş bırakmak da olur.
+                            {{ __('ui.ai.hint') }}
                         </div>
                     </div>
                 </div>
@@ -118,13 +118,21 @@
             const submitBtn = document.getElementById('ai-submit-btn');
             const endpoint = form?.dataset.aiEndpoint;
             const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
-            const submitDefaultLabel = submitBtn?.textContent?.trim() || 'Önerileri Getir';
+            const submitDefaultLabel = submitBtn?.textContent?.trim() || @json(__('ui.ai.get'));
+            const loadingLabel = @json(__('ui.ai.loading'));
+            const preparingLabel = @json(__('ui.ai.preparing'));
+            const hintLabel = @json(__('ui.ai.hint'));
+            const noResultsLabel = @json(__('ui.ai.no_results'));
+            const errorLabel = @json(__('ui.ai.error'));
+            const connectionErrorLabel = @json(__('ui.ai.connection_error'));
+            const addLibraryLabel = @json(__('ui.ai.add_library'));
+            const seeDetailsLabel = @json(__('ui.ai.see_details'));
 
             function setLoading(loading) {
                 loadingEl.classList.toggle('hidden', !loading);
                 if (submitBtn) {
                     submitBtn.disabled = loading;
-                    submitBtn.textContent = loading ? 'İşleniyor...' : submitDefaultLabel;
+                    submitBtn.textContent = loading ? loadingLabel : submitDefaultLabel;
                 }
             }
 
@@ -141,7 +149,7 @@
             }
 
             function resetUI() {
-                resultsEl.innerHTML = '<div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">Formu doldurup “Önerileri Getir”e bas. Boş bırakmak da olur.</div>';
+                resultsEl.innerHTML = `<div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">${hintLabel}</div>`;
                 hideMessage();
             }
 
@@ -156,7 +164,7 @@
 
             function renderCards(items) {
                 if (!items || !items.length) {
-                    resultsEl.innerHTML = '<div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">Sonuç yok. Türü değiştirip tekrar dene.</div>';
+                    resultsEl.innerHTML = `<div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">${noResultsLabel}</div>`;
                     return;
                 }
 
@@ -191,9 +199,9 @@
                                     <p class="mt-2 text-xs leading-relaxed text-[#6b6560]">${reason}</p>
                                     <div class="mt-3 flex flex-wrap items-center gap-2">
                                         <button type="button" class="bv-btn px-4 py-2 text-[11px] font-bold uppercase tracking-wider" data-ai-add data-book-id="${bookId}">
-                                            Kütüphaneme Ekle
+                                            ${addLibraryLabel}
                                         </button>
-                                        <a href="${bookUrl}" class="bv-btn-outline px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-[#9a948d] hover:bg-[#f3f0eb]">Detayları Gör</a>
+                                        <a href="${bookUrl}" class="bv-btn-outline px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-[#9a948d] hover:bg-[#f3f0eb]">${seeDetailsLabel}</a>
                                     </div>
                                 </div>
                             </div>
@@ -262,7 +270,7 @@
 
                 setLoading(true);
                 hideMessage();
-                resultsEl.innerHTML = '<div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">Öneriler hazırlanıyor... Bu 10-20 sn sürebilir.</div>';
+                resultsEl.innerHTML = `<div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">${preparingLabel}</div>`;
 
                 try {
                     const response = await fetch(endpoint, {
@@ -289,8 +297,8 @@
                         showMessage(data.message, items.length ? 'accent' : 'error');
                     }
                 } catch (e) {
-                    showMessage('AI önerisi alınamadı. Tekrar dene.', 'error');
-                    resultsEl.innerHTML = '<div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">Bağlantı hatası. Sayfayı yenileyip tekrar deneyin.</div>';
+                    showMessage(errorLabel, 'error');
+                    resultsEl.innerHTML = `<div class="rounded-2xl border border-dashed border-[#e8e4de] p-5 text-center text-xs font-semibold text-[#9a948d]">${connectionErrorLabel}</div>`;
                 } finally {
                     setLoading(false);
                 }

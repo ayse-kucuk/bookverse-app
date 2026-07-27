@@ -14,20 +14,20 @@ class FollowController extends Controller
         $follower = $request->user();
 
         if ($follower->id === $user->id) {
-            return back()->with('error', 'Kendini takip edemezsin.');
+            return back()->with('error', __('ui.profile.cannot_follow_self'));
         }
 
         $follower->follow($user);
 
         Notification::recordFollow($user, $follower);
 
-        return back()->with('success', $user->name . ' takip edildi.');
+        return back()->with('success', __('ui.profile.followed', ['name' => $user->name]));
     }
 
     public function destroy(Request $request, User $user): RedirectResponse
     {
         $request->user()->unfollow($user);
 
-        return back()->with('success', $user->name . ' takipten çıkarıldı.');
+        return back()->with('success', __('ui.profile.unfollowed', ['name' => $user->name]));
     }
 }

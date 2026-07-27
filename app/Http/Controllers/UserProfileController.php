@@ -13,7 +13,7 @@ class UserProfileController extends Controller
         $viewer = $request->user();
 
         if (! $user->canBeViewedBy($viewer)) {
-            abort(403, 'Bu profil yalnızca takipçilere açık.');
+            abort(403, __('ui.profile.private'));
         }
 
         $user->loadCount(['followers', 'following']);
