@@ -361,5 +361,59 @@ return [
         'feed_description' => 'Okuma topluluğunun akışı: alıntılar, düşünceler ve kitap önerileri.',
         'search_description' => 'Bookverse içinde kitap, kullanıcı ve paylaşım ara.',
         'book_description' => ':title — :author. Bookverse\'te incele, puanla ve rafına ekle.',
+        'about_description' => 'Bookverse hakkında: sosyal okuma platformu, özellikler ve teknolojiler.',
+        'privacy_description' => 'Bookverse gizlilik politikası ve veri kullanımı hakkında bilgi.',
+    ],
+
+    'footer' => [
+        'tagline' => 'Kitap keşfet · Oku · Paylaş',
+        'about' => 'Hakkında',
+        'privacy' => 'Gizlilik',
+        'api_docs' => 'API Dokümantasyonu',
+        'github' => 'GitHub',
+        'rights' => 'Tüm hakları saklıdır.',
+    ],
+
+    'pages' => [
+        'about_title' => 'Bookverse Hakkında',
+        'about_lead' => 'Bookverse, okuyucuların kitap keşfettiği, raflarını yönettiği ve düşüncelerini paylaştığı sosyal bir okuma platformudur.',
+        'about_features_title' => 'Neler yapabilirsin?',
+        'about_features' => [
+            'Akışta alıntı ve düşünce paylaş, beğen ve yorum yap',
+            'Kitapları keşfet, ara ve raflarına ekle (Okuyorum / Okuyacağım / Okudum)',
+            'Yıldız ve inceleme yaz, diğer okuyucuları takip et',
+            'Gemini destekli AI ile kişiselleştirilmiş kitap önerileri al',
+            'Türkçe ve İngilizce arayüz, açık/koyu tema',
+        ],
+        'about_tech_title' => 'Teknoloji',
+        'about_tech' => 'Laravel 12, Blade, Tailwind CSS, PostgreSQL, Google Books API, Gemini AI ve Sanctum REST API ile geliştirilmiştir.',
+        'privacy_title' => 'Gizlilik Politikası',
+        'privacy_updated' => 'Son güncelleme: :date',
+        'privacy_intro' => 'Bookverse olarak kişisel verilerinizi korumayı önemsiyoruz. Bu sayfa, platformumuzda hangi verilerin toplandığını ve nasıl kullanıldığını özetler.',
+        'privacy_sections' => [
+            [
+                'title' => 'Toplanan veriler',
+                'body' => 'Kayıt sırasında ad, e-posta ve şifre; profil fotoğrafı ve hesap tercihleri (görünürlük, okuma hedefi) saklanır. Paylaşımlarınız, raflarınız ve incelemeleriniz hesabınıza bağlıdır.',
+            ],
+            [
+                'title' => 'Verilerin kullanımı',
+                'body' => 'Veriler yalnızca platform hizmetlerini sunmak, güvenliği sağlamak ve deneyimi iyileştirmek için kullanılır. AI önerileri için girdiğiniz metin Google Gemini API\'sine iletilir.',
+            ],
+            [
+                'title' => 'Çerezler ve oturum',
+                'body' => 'Oturum yönetimi ve dil/tema tercihleri için tarayıcı çerezleri ve localStorage kullanılır.',
+            ],
+            [
+                'title' => 'İletişim',
+                'body' => 'Gizlilik ile ilgili sorularınız için GitHub deposu üzerinden issue açabilirsiniz.',
+            ],
+        ],
+    ],
+
+    'errors' => [
+        '404_title' => 'Sayfa bulunamadı',
+        '404_message' => 'Aradığın sayfa silinmiş, taşınmış veya hiç var olmamış olabilir.',
+        '404_home' => 'Ana sayfaya dön',
+        '404_explore' => 'Kitapları keşfet',
     ],
 ];

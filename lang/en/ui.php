@@ -361,5 +361,59 @@ return [
         'feed_description' => 'The reading community feed: quotes, thoughts, and book picks.',
         'search_description' => 'Search books, users, and posts on Bookverse.',
         'book_description' => ':title by :author. Review, rate, and add it to your shelf on Bookverse.',
+        'about_description' => 'About Bookverse: social reading platform, features, and tech stack.',
+        'privacy_description' => 'Bookverse privacy policy and how we handle your data.',
+    ],
+
+    'footer' => [
+        'tagline' => 'Discover · Read · Share',
+        'about' => 'About',
+        'privacy' => 'Privacy',
+        'api_docs' => 'API Docs',
+        'github' => 'GitHub',
+        'rights' => 'All rights reserved.',
+    ],
+
+    'pages' => [
+        'about_title' => 'About Bookverse',
+        'about_lead' => 'Bookverse is a social reading platform where readers discover books, manage shelves, and share their thoughts.',
+        'about_features_title' => 'What can you do?',
+        'about_features' => [
+            'Share quotes and thoughts on the feed, like and comment',
+            'Explore and search books, add them to shelves (Reading / Want to read / Read)',
+            'Rate and review books, follow other readers',
+            'Get personalized book recommendations powered by Gemini AI',
+            'Turkish and English UI, light and dark theme',
+        ],
+        'about_tech_title' => 'Technology',
+        'about_tech' => 'Built with Laravel 12, Blade, Tailwind CSS, PostgreSQL, Google Books API, Gemini AI, and a Sanctum REST API.',
+        'privacy_title' => 'Privacy Policy',
+        'privacy_updated' => 'Last updated: :date',
+        'privacy_intro' => 'At Bookverse we care about protecting your personal data. This page summarizes what we collect and how we use it.',
+        'privacy_sections' => [
+            [
+                'title' => 'Data we collect',
+                'body' => 'When you register we store your name, email, and password. Profile photo and account preferences (visibility, reading goal) are saved. Your posts, shelves, and reviews are linked to your account.',
+            ],
+            [
+                'title' => 'How we use data',
+                'body' => 'Data is used only to provide platform services, maintain security, and improve the experience. Text you submit for AI recommendations is sent to the Google Gemini API.',
+            ],
+            [
+                'title' => 'Cookies and session',
+                'body' => 'Browser cookies and localStorage are used for session management and language/theme preferences.',
+            ],
+            [
+                'title' => 'Contact',
+                'body' => 'For privacy questions, open an issue on our GitHub repository.',
+            ],
+        ],
+    ],
+
+    'errors' => [
+        '404_title' => 'Page not found',
+        '404_message' => 'The page you are looking for may have been removed, moved, or never existed.',
+        '404_home' => 'Back to home',
+        '404_explore' => 'Explore books',
     ],
 ];

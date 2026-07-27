@@ -78,5 +78,7 @@
         'following' => $following,
         'isOwnProfile' => auth()->id() === $profileUser->id,
     ])
+
+    @include('partials.site-footer')
 </body>
 </html>

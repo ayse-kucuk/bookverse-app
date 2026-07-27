@@ -13,5 +13,6 @@
         @include('partials.post-comments', ['post' => $post])
     </main>
 
+    @include('partials.site-footer')
 </body>
 </html>

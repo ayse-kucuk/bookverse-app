@@ -2,19 +2,35 @@
 
 Sosyal okuma platformu — kitap keşfet, rafına ekle, düşüncelerini paylaş, arkadaşlarını takip et. Goodreads tarzı bir deneyim; AI destekli kişiselleştirilmiş kitap önerileri ile.
 
+**Canlı demo:** [bookverse-app.onrender.com](https://bookverse-app.onrender.com)  
+**Repo:** [github.com/ayse-kucuk/bookverse-app](https://github.com/ayse-kucuk/bookverse-app)
+
 ## Özellikler
 
 - **Akış** — Alıntı ve düşünce paylaşımları, beğeni, yorum
 - **Raflar** — Okuyorum / Okuyacağım / Okudum
 - **İncelemeler** — Kitap detayında yıldız + kısa inceleme (kullanıcı başına bir)
-- **Keşfet & Ara** — Kitap keşfi ve arama
+- **Keşfet & Ara** — Kitap keşfi, gelişmiş arama filtreleri (kategori, puan, sıralama)
 - **Profil & takip** — Kullanıcı profilleri, takip sistemi, yıllık okuma hedefi
 - **Bildirimler** — Beğeni, yorum ve takip bildirimleri
-- **AI öneriler** — Gemini ile ruh hali / tür / serbest istek üzerinden kitap önerisi
+- **AI öneriler** — Gemini ile ruh hali / tür / serbest istek; off-topic istek koruması
 - **2FA** — Google Authenticator ile çift aşamalı doğrulama
 - **Admin paneli** — Kitap, kategori, kullanıcı ve yorum yönetimi; Google Books ile kitap arama
 - **API** — Sanctum ile REST API + Swagger dokümantasyonu
 - **Çoklu dil** — Türkçe / English (navbar’da TR | EN)
+- **Karanlık mod** — Açık / koyu tema seçeneği (localStorage)
+- **SEO** — Meta/OG, JSON-LD, slug URL, sitemap, robots.txt
+- **Cache** — Keşfet kategorileri ve AI önerileri (10 dk)
+
+## Demo hesapları
+
+`php artisan migrate --seed` sonrası kullanılabilir:
+
+| E-posta | Şifre | Rol |
+|---------|-------|-----|
+| `demo@bookverse.app` | `password` | Demo okuyucu (akış, raflar, incelemeler) |
+| `ayse@example.com` | `password123` | Normal kullanıcı |
+| `ayseekucuk33@gmail.com` | `password123` | Admin |
 
 ## Teknolojiler
 
@@ -28,6 +44,7 @@ Sosyal okuma platformu — kitap keşfet, rafına ekle, düşüncelerini paylaş
 | AI | Google Gemini API |
 | Kitap verisi | Google Books API |
 | Deploy | Render (canlı), Laravel Herd (lokal) |
+| CI | GitHub Actions (`php artisan test`) |
 
 ## Kurulum (lokal)
 
@@ -62,7 +79,7 @@ Herd kullanıyorsan `php artisan serve` yerine siteyi doğrudan Herd üzerinden 
 ## Ortam değişkenleri (özet)
 
 | Değişken | Açıklama |
-|----------|---------|
+|----------|----------|
 | `GOOGLE_BOOKS_API_KEY` | Admin kitap arama / import |
 | `GEMINI_API_KEY` | AI kitap önerileri (**Render’da da tanımlanmalı**) |
 | `GEMINI_MODEL` | Varsayılan: `gemini-flash-latest` |
@@ -76,6 +93,11 @@ Herd kullanıyorsan `php artisan serve` yerine siteyi doğrudan Herd üzerinden 
 - Slug URL: `/books/kitap-adi-yazar` (eski `/books/{id}` 301 yönlendirilir)
 - `/sitemap.xml` ve `/robots.txt` (admin / özel sayfalar engelli)
 
+## Testler
+
+```bash
+php artisan test
+```
 
 ## Lisans
 

@@ -104,5 +104,6 @@
         <div class="mt-8">{{ $books->links() }}</div>
     </main>
 
+    @include('partials.site-footer')
 </body>
 </html>

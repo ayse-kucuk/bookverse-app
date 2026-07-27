@@ -147,5 +147,7 @@
 
         </div>
     </div>
+
+    @include('partials.site-footer')
 </body>
 </html>

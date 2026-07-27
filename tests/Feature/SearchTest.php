@@ -106,7 +106,7 @@ class SearchTest extends TestCase
     {
         $this->get(route('home'))
             ->assertOk()
-            ->assertSee('Kitap, kullanıcı, paylaşım', false);
+            ->assertSee('id="nav-search"', false);
     }
 
     public function test_suggest_returns_matching_books_as_json(): void

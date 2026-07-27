@@ -81,5 +81,8 @@ class DatabaseSeeder extends Seeder
 
         // 4. Google Books API'den otomatik kitap ekleme
         $this->call(BookSeeder::class);
+
+        // 5. Demo akış, raflar ve etkileşim verisi
+        $this->call(DemoSeeder::class);
     }
 }

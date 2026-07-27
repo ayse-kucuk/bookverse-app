@@ -35,6 +35,6 @@ class PostShowTest extends TestCase
             'post_id' => $post->id,
         ]);
 
-        $this->assertEquals(route('posts.show', $post), $notification->url());
+        $this->assertEquals(route('posts.show', $post).'#comments', $notification->url());
     }
 }

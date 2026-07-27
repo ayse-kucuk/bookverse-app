@@ -52,5 +52,6 @@
         <div>{{ $notifications->links() }}</div>
     </main>
 
+    @include('partials.site-footer')
 </body>
 </html>

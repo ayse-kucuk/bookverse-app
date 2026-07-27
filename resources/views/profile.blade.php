@@ -93,5 +93,6 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && photoLightboxOpen) closePhotoLightbox(); });
     </script>
 
+    @include('partials.site-footer')
 </body>
 </html>

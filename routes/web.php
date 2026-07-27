@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FeedController;
@@ -30,6 +31,11 @@ Route::get('/', [FeedController::class, 'index'])->name('home');
 Route::get('/locale/{locale}', [LocaleController::class, 'switch'])
     ->whereIn('locale', ['tr', 'en'])
     ->name('locale.switch');
+
+Route::get('/hakkimizda', [PageController::class, 'about'])->name('about');
+Route::get('/about', [PageController::class, 'about']);
+Route::get('/gizlilik', [PageController::class, 'privacy'])->name('privacy');
+Route::get('/privacy', [PageController::class, 'privacy']);
 
 // Kitap keşfet sayfası
 Route::get('/kesfet', [BookController::class, 'index'])->name('explore');
