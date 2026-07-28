@@ -75,7 +75,7 @@
                             @endif
                         @endauth
                     </div>
-                    <p class="whitespace-pre-line text-sm leading-relaxed text-slate-700">{{ $comment->content }}</p>
+                    <p class="whitespace-pre-line text-sm leading-relaxed text-slate-700">{{ $comment->display_content }}</p>
                 </li>
             @endforeach
         </ul>

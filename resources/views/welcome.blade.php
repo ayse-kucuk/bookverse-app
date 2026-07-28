@@ -40,7 +40,7 @@
                 <select id="explore-category" name="category" class="bv-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
                     <option value="">{{ __('ui.explore.all') }}</option>
                     @foreach($categories ?? [] as $category)
-                        <option value="{{ $category->id }}" @selected(($currentCategory ?? null) == $category->id)>{{ $category->name }}</option>
+                        <option value="{{ $category->id }}" @selected(($currentCategory ?? null) == $category->id)>{{ $category->display_name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -70,7 +70,7 @@
                     <div class="flex min-w-0 flex-1 flex-col justify-between p-5">
                         <div>
                             <span class="inline-block border border-[#e8e4de] bg-[#f9f8f6] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-bv-accent">
-                                {{ $book->category->name ?? __('ui.explore.general') }}
+                                {{ $book->category->display_name ?? __('ui.explore.general') }}
                             </span>
                             <h2 class="mt-2 text-lg font-semibold leading-tight tracking-tight text-[#1c1c1c] transition duration-200 group-hover:text-bv-accent">{{ $book->title }}</h2>
                             <p class="mt-0.5 text-xs font-semibold text-slate-400">{{ $book->author }}</p>
@@ -81,7 +81,7 @@
                                     <span class="text-[10px] text-slate-400">({{ $book->ratings_count }})</span>
                                 </div>
                             @endif
-                            <p class="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-500">{{ $book->description }}</p>
+                            <p class="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-500">{{ $book->display_description }}</p>
                         </div>
 
                         <div class="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-3">

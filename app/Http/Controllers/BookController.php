@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Comment;
 use App\Models\Category;
+use App\Support\TranslationPrefetch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -42,6 +43,9 @@ class BookController extends Controller
 
         // Category list: cache for 10 minutes (rarely changes)
         $categories = Cache::remember('categories_all', 600, fn () => Category::orderBy('name')->get());
+
+        TranslationPrefetch::warmPaginatorBooks($books);
+        TranslationPrefetch::warmForCategories($categories);
 
         return view('welcome', [
             'books'           => $books,
@@ -140,6 +144,8 @@ class BookController extends Controller
             $userReview = $book->comments->firstWhere('user_id', auth()->id());
         }
 
+        TranslationPrefetch::warmForBooks(collect([$book]));
+
         return view('books', [
             'book' => $book,
             'userRating' => $userRating,
@@ -222,6 +228,8 @@ class BookController extends Controller
         $read = $userBooks->where('pivot.status', 'okundu');
         $willRead = $userBooks->where('pivot.status', 'okuyacagim');
         $posts = $user->posts()->with('book')->withLikeMeta($user)->paginate(10, ['*'], 'posts_page');
+
+        TranslationPrefetch::warmPaginatorPosts($posts);
 
         return view('profile', [
             'user' => $user,

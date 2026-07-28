@@ -17,4 +17,14 @@ class Category extends Model
         'name',
         'description'
     ];
+
+    public function getDisplayNameAttribute(): string
+    {
+        return trans_content($this->name, 'category');
+    }
+
+    public function getDisplayDescriptionAttribute(): string
+    {
+        return trans_content($this->description, 'category');
+    }
 }

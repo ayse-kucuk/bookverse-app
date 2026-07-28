@@ -58,4 +58,9 @@ class Post extends Model
     {
         return $this->type === 'quote';
     }
+
+    public function getDisplayContentAttribute(): string
+    {
+        return trans_content($this->content, 'post');
+    }
 }

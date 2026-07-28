@@ -17,7 +17,7 @@ Sosyal okuma platformu — kitap keşfet, rafına ekle, düşüncelerini paylaş
 - **2FA** — Google Authenticator ile çift aşamalı doğrulama
 - **Admin paneli** — Kitap, kategori, kullanıcı ve yorum yönetimi; Google Books ile kitap arama
 - **API** — Sanctum ile REST API + Swagger dokümantasyonu
-- **Çoklu dil** — Türkçe / English (navbar’da TR | EN)
+- **Çoklu dil** — Türkçe / English (navbar’da TR | EN); EN modunda paylaşım, yorum, kitap açıklaması ve kategori adları Grok API ile otomatik çevrilir (cache’lenir)
 - **Karanlık mod** — Açık / koyu tema seçeneği (localStorage)
 - **SEO** — Meta/OG, JSON-LD, slug URL, sitemap, robots.txt
 - **Cache** — Keşfet kategorileri ve AI önerileri (10 dk)
@@ -82,6 +82,8 @@ Herd kullanıyorsan `php artisan serve` yerine siteyi doğrudan Herd üzerinden 
 | `GOOGLE_BOOKS_API_KEY` | Admin kitap arama / import |
 | `GEMINI_API_KEY` | AI kitap önerileri (**Render’da da tanımlanmalı**) |
 | `GEMINI_MODEL` | Varsayılan: `gemini-flash-latest` |
+| `XAI_API_KEY` | Grok ile dinamik içerik çevirisi (EN modu) |
+| `GROK_MODEL` | Varsayılan: `grok-4.5` |
 | `PROFILE_PHOTOS_DISK` | `public` (lokal) veya `supabase` (canlı) |
 | `AWS_*` | Supabase S3 uyumlu profil fotoğrafı ayarları |
 

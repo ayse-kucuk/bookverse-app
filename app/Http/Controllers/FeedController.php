@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
+use App\Support\TranslationPrefetch;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -24,6 +25,10 @@ class FeedController extends Controller
         $books = Book::orderBy('title')->get(['id', 'title', 'author']);
         $exploreBooks = Book::with('category')->latest()->take(3)->get();
         $categories = Category::orderBy('name')->get();
+
+        TranslationPrefetch::warmPaginatorPosts($posts);
+        TranslationPrefetch::warmForBooks($exploreBooks);
+        TranslationPrefetch::warmForCategories($categories);
 
         return view('feed', [
             'posts' => $posts,

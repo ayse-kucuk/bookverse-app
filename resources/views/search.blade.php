@@ -51,7 +51,7 @@
                     <select name="category" class="bv-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
                         <option value="">{{ __('ui.explore.all') }}</option>
                         @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}" @selected($curCategory == $cat->id)>{{ $cat->name }}</option>
+                            <option value="{{ $cat->id }}" @selected($curCategory == $cat->id)>{{ $cat->display_name }}</option>
                         @endforeach
                     </select>
                 </div>

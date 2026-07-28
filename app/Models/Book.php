@@ -150,6 +150,11 @@ class Book extends Model
         return route('books.show.legacy', $this->id);
     }
 
+    public function getDisplayDescriptionAttribute(): string
+    {
+        return trans_content($this->description, 'book_description');
+    }
+
     protected $fillable = [
         'category_id',
         'title',

@@ -22,7 +22,7 @@
                 'image' => $book->image_url,
                 'url' => route('books.show', $book),
                 'numberOfPages' => $book->page_count,
-                'genre' => $book->category?->name,
+                'genre' => $book->category?->display_name,
                 'aggregateRating' => $book->ratings_count > 0 ? [
                     '@type' => 'AggregateRating',
                     'ratingValue' => (float) $book->average_rating,
@@ -91,7 +91,7 @@
 
             <div class="bv-card rounded-2xl p-5 sm:p-7 sm:p-8">
                 <span class="inline-block rounded-full bg-rose-100/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-bv-accent">
-                    {{ $book->category->name ?? __('ui.common.general') }}
+                    {{ $book->category->display_name ?? __('ui.common.general') }}
                 </span>
 
                 <h1 class="mt-3 text-2xl font-extrabold tracking-tight text-slate-800 sm:text-3xl">{{ $book->title }}</h1>
@@ -123,7 +123,7 @@
                 </div>
 
                 <h3 class="mb-2 text-sm font-extrabold uppercase tracking-wider text-slate-400">{{ __('ui.book.description') }}</h3>
-                <p class="whitespace-pre-line text-sm leading-relaxed text-slate-600 md:text-base">{{ $book->description }}</p>
+                <p class="whitespace-pre-line text-sm leading-relaxed text-slate-600 md:text-base">{{ $book->display_description }}</p>
             </div>
 
             <div class="bv-card bv-animate-up-delay-2 space-y-5 rounded-2xl p-5 sm:space-y-6 sm:p-7 sm:p-8">
@@ -246,7 +246,7 @@
                                     @endauth
                                 </div>
                             </div>
-                            <p class="whitespace-pre-line text-xs leading-relaxed text-slate-600 md:text-sm">{{ $comment->content }}</p>
+                            <p class="whitespace-pre-line text-xs leading-relaxed text-slate-600 md:text-sm">{{ $comment->display_content }}</p>
                         </div>
                     @empty
                         <div class="rounded-2xl border border-dashed border-slate-200 py-8 text-center">

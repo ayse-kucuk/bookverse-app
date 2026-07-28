@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
+use App\Support\TranslationPrefetch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -22,6 +23,9 @@ class SearchController extends Controller
 
         $results    = $this->performSearch($request->user(), $query, $category, $minRating, $sort);
         $categories = Category::orderBy('name')->get();
+
+        TranslationPrefetch::warmSearchResults($results);
+        TranslationPrefetch::warmForCategories($categories);
 
         return view('search', [
             'query'       => $query,

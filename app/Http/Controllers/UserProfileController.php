@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Support\TranslationPrefetch;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -24,6 +25,8 @@ class UserProfileController extends Controller
             ->with('book')
             ->withLikeMeta($viewer)
             ->paginate(10);
+
+        TranslationPrefetch::warmPaginatorPosts($posts);
 
         return view('users.show', [
             'profileUser' => $user,

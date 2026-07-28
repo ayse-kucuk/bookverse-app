@@ -25,4 +25,9 @@ class PostComment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getDisplayContentAttribute(): string
+    {
+        return trans_content($this->content, 'comment');
+    }
 }

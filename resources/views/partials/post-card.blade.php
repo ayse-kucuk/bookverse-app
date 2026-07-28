@@ -31,7 +31,7 @@
     @endif
 
     <p class="whitespace-pre-line text-[15px] leading-relaxed text-[#2a2a2a]">
-        <a href="{{ route('posts.show', $post) }}" class="transition hover:text-bv-accent">{{ $post->content }}</a>
+        <a href="{{ route('posts.show', $post) }}" class="transition hover:text-bv-accent">{{ $post->display_content }}</a>
     </p>
 
     <div class="mt-4 flex items-center justify-between border-t border-[#f0ece6] pt-3">

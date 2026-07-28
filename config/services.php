@@ -44,4 +44,10 @@ return [
         'model' => env('GEMINI_MODEL', 'gemini-flash-latest'),
     ],
 
+    'grok' => [
+        'key' => env('XAI_API_KEY'),
+        'model' => env('GROK_MODEL', 'grok-4.5'),
+        'base_url' => env('XAI_BASE_URL', 'https://api.x.ai/v1'),
+    ],
+
 ];

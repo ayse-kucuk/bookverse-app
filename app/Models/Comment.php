@@ -34,4 +34,9 @@ class Comment extends Model
     {
         return $this->hasMany(CommentLike::class);
     }
+
+    public function getDisplayContentAttribute(): string
+    {
+        return trans_content($this->content, 'review');
+    }
 }
